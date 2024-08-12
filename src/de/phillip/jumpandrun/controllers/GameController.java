@@ -9,7 +9,7 @@ public class GameController {
 	private ScrollPane scrollPane;
 	private GameLoopTimer loop;
 	private boolean isStarted;
-	private LevelManager levelManager;
+	private LayerManager layerManager;
 	
 	
 	public GameController(ScrollPane scrollPane)  {
@@ -18,7 +18,7 @@ public class GameController {
 
 			@Override
 			public void tic(float secondsSinceLastFrame) {
-				levelManager.update(secondsSinceLastFrame);
+				layerManager.update(secondsSinceLastFrame);
 			}
 			
 		};
@@ -27,7 +27,7 @@ public class GameController {
 	public void startGame() {
 		if (!isStarted) {
 			isStarted = true;
-			levelManager = new LevelManager((StackPane) scrollPane.getContent());
+			layerManager = new LayerManager((StackPane) scrollPane.getContent());
 		}
 		loop.start();
 	}

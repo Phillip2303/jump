@@ -12,6 +12,14 @@ import javafx.stage.Stage;
 
 public class Game extends Application {
 	
+	public final static int TILES_DEFAULT_SIZE = 32;
+	public final static float SCALE = 1.5f;
+	public final static int TILES_IN_WIDTH = 26;
+	public final static int TILES_IN_HEIGHT = 14;
+	public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
+	public final static int GAMEWIDTH = TILES_SIZE * TILES_IN_WIDTH;
+	public final static int GAMEHEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
+	
 	private GameController gameController;
 
 	@Override
@@ -30,7 +38,7 @@ public class Game extends Application {
 		gameController = new GameController(scrollPane);
 		scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 		scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
-		Scene scene = new Scene(scrollPane, 1280, 800);
+		Scene scene = new Scene(scrollPane, GAMEWIDTH, GAMEHEIGHT);
 		scene.setOnKeyPressed(e -> {
 			switch (e.getCode()) {
 				case A: 

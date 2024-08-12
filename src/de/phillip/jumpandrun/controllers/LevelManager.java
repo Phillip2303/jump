@@ -1,51 +1,55 @@
 package de.phillip.jumpandrun.controllers;
 
+import de.phillip.jumpandrun.Game;
+import de.phillip.jumpandrun.models.Level;
 import de.phillip.jumpandrun.utils.ResourcePool;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 public class LevelManager {
 	
-	private final static int TILES_DEFAULT_SIZE = 32;
-	private final static float SCALE = 1.5f;
-	private final static int TILES_IN_WIDTH = 26;
-	private final static int TILES_IN_HEIGHT = 14;
-	private final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
-	private final static int GAMEWIDTH = TILES_SIZE * TILES_IN_WIDTH;
-	private final static int GAMEHEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
+	private Image outsideAtlas;
+	private Level activeLevel;
+	private Image[] levelTiles;
 	
-	private StackPane stackPane;
-	private Canvas canvas;
-	
-	public LevelManager(StackPane stackPane) {
-		this.stackPane = stackPane;
-		canvas = new Canvas(GAMEWIDTH, GAMEHEIGHT);
-		
-		Image outsideAtlas = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.OUTSIDE_ATLAS);
-		PixelReader pr = outsideAtlas.getPixelReader();
-		
-		WritableImage wi = new WritableImage(TILES_SIZE, TILES_SIZE);
-		
-		PixelWriter pw = wi.getPixelWriter();
-		
-		for (int y = 0; y < TILES_SIZE; y++) {
-			for (int x = 0; x < TILES_SIZE; x++) {
-				Color color = pr.getColor(x, y);
-				pw.setColor(x, y, color);
-			}
-		}
-		
-		canvas.getGraphicsContext2D().drawImage(wi, 0, 0);
-		stackPane.getChildren().add(canvas);
-		
+	public LevelManager() {
+		outsideAtlas = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.OUTSIDE_ATLAS);
+		activeLevel = new Level(ResourcePool.getInstance().getLevelData());
+		createLevelTilesFromAtlas();
+		//canvas.getGraphicsContext2D().drawImage(wi, 0, 0);
 	}
 	
-	public void update(float secondsSinceLastFrame) {
-		
+	private void createLevelTilesFromAtlas() {
+		PixelReader pr = outsideAtlas.getPixelReader();
+		levelTiles = new Image[48];
+		for (int j = 0; j < 4; j++) {
+			for (int i = 0; i < 12; i ++) {
+				int index = j * 12 + i;
+				levelTiles[index] = createSubImage(pr, i, j); 
+			}
+		}
+	}
+	
+	private Image createSubImage(PixelReader pr, int x, int y) {
+		WritableImage wi = new WritableImage(Game.TILES_DEFAULT_SIZE, Game.TILES_DEFAULT_SIZE);
+		PixelWriter pw = wi.getPixelWriter();
+		for (int j = 0; j < Game.TILES_DEFAULT_SIZE; j++) {
+			for (int i = 0; i < Game.TILES_DEFAULT_SIZE; i++) {
+				Color color = pr.getColor(x * Game.TILES_DEFAULT_SIZE + i, y * Game.TILES_DEFAULT_SIZE + j);
+				pw.setColor(i, j, color);
+			}
+		}
+		return wi;
+	}
+	
+	public Image[] getLevelTiles() {
+		return levelTiles;
+	}
+	
+	public Level getActiveLevel()  {
+		return activeLevel;
 	}
 }

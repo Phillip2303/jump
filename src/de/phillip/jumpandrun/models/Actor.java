@@ -102,6 +102,10 @@ public abstract class Actor implements Drawable{
 				rotate.getTy());
 	}
 	
+	public Rectangle2D getHitBox() {
+		return new Rectangle2D(position.getX(), position.getY(), width, height);
+	}
+	
 	public abstract void drawToCanvas(GraphicsContext gc);
 	
 	public abstract void debugOut();

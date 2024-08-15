@@ -2,24 +2,35 @@ package de.phillip.jumpandrun.layers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.controllers.LevelManager;
+import de.phillip.jumpandrun.models.Actor;
 import de.phillip.jumpandrun.models.CanvasLayer;
 import de.phillip.jumpandrun.models.Drawable;
+import de.phillip.jumpandrun.models.Player;
 import de.phillip.jumpandrun.models.Tile;
+import de.phillip.jumpandrun.utils.KeyPolling;
+import de.phillip.jumpandrun.utils.ResourcePool;
+import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 
 public class ActionLayer extends Canvas implements CanvasLayer {
 	
 	private LevelManager levelManager;
 	private List<Drawable> actors = new ArrayList<Drawable>();
+	private Player player;
+	private KeyPolling kp = KeyPolling.getInstance();
 	
 	public ActionLayer(int width, int height, LevelManager levelManager) {
 		super(width, height);
 		this.levelManager = levelManager;
 		createLevel();
+		createPlayer();
 	}
 
 	private void createLevel() {
@@ -34,6 +45,13 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 			}
 		}
 	}
+	
+	private void createPlayer() {
+		Image image = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.PLAYER_ATLAS);
+		player = new Player(Player.DEFAULT_WIDTH * Game.SCALE, Player.DEFAULT_HEIGHT * Game.SCALE, image);
+		player.setDrawPosition(200, 200);
+		actors.add(player);
+	}
 
 	@Override
 	public List<Drawable> getDrawables() {
@@ -47,9 +65,53 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 
 	@Override
 	public void updateLayer(float secondsSinceLastFrame) {
-
+		Point2D oldPosition = player.getDrawPosition();
+		if (kp.isDown(KeyCode.A)) {
+			player.setDrawPosition(player.getDrawPosition().getX() - Player.SPEED, player.getDrawPosition().getY());
+			if (canMoveHere(player.getHitBox())) {
+				player.setPlayerAction(Player.RUNNING);
+			} else {
+				player.setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			}
+			
+		} else if (kp.isDown(KeyCode.D)) {
+			player.setDrawPosition(player.getDrawPosition().getX() + Player.SPEED, player.getDrawPosition().getY());
+			if (canMoveHere(player.getHitBox())) {
+				player.setPlayerAction(Player.RUNNING);
+			} else {
+				player.setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			}
+		} else if (kp.isDown(KeyCode.W)) {
+			player.setDrawPosition(player.getDrawPosition().getX(), player.getDrawPosition().getY() - Player.SPEED);
+			if (canMoveHere(player.getHitBox())) {
+				player.setPlayerAction(Player.RUNNING);
+			} else {
+				player.setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			}
+		} else if (kp.isDown(KeyCode.S)) {
+			player.setDrawPosition(player.getDrawPosition().getX(), player.getDrawPosition().getY() + Player.SPEED);
+			if (canMoveHere(player.getHitBox())) {
+				player.setPlayerAction(Player.RUNNING);
+			} else {
+				player.setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			}
+		} else {
+			player.setPlayerAction(Player.IDLE);
+		}
+		player.update();
 	}
 
+	private boolean canMoveHere(Rectangle2D playerRect) {
+		List<Tile> tiles = actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor).collect(Collectors.toList());
+		for (Tile tile: tiles) {
+			Rectangle2D hitBox = tile.getHitBox();
+			if (hitBox.intersects(playerRect)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	@Override
 	public void resetGame() {
 

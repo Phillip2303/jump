@@ -1,6 +1,7 @@
 package de.phillip.jumpandrun;
 
 import de.phillip.jumpandrun.controllers.GameController;
+import de.phillip.jumpandrun.utils.KeyPolling;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -28,6 +29,7 @@ public class Game extends Application {
 		primaryStage.setResizable(false);
 		Scene scene = createContent();
 		primaryStage.setScene(scene);
+		KeyPolling.getInstance().pollScene(scene);
 		primaryStage.show();
 		gameController.startGame();
 	}

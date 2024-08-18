@@ -65,4 +65,12 @@ public class KeyPolling {
 	public boolean isDown(KeyCode keyCode) {
 		return currentKeysDown.contains(keyCode);
 	}
+	
+	public boolean keysPressed() {
+		if (currentKeysDown.isEmpty()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 }

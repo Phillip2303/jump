@@ -39,7 +39,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 				int index = levelManager.getActiveLevel().getSpriteIndex(i, j);
 				System.out.println("Sprite Index: " + index);
 				Image image = levelManager.getLevelTiles()[index];
-				Tile tile = new Tile(Game.TILES_SIZE, Game.TILES_SIZE, image);
+				Tile tile = new Tile(Game.TILES_SIZE, Game.TILES_SIZE, image, index);
 				tile.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
 				actors.add(tile);
 			}
@@ -49,6 +49,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	private void createPlayer() {
 		Image image = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.PLAYER_ATLAS);
 		player = new Player(Player.DEFAULT_WIDTH * Game.SCALE, Player.DEFAULT_HEIGHT * Game.SCALE, image);
+		player.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor).collect(Collectors.toList()));
 		player.setDrawPosition(200, 200);
 		actors.add(player);
 	}
@@ -67,35 +68,38 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	public void updateLayer(float secondsSinceLastFrame) {
 		Point2D oldPosition = player.getDrawPosition();
 		if (kp.isDown(KeyCode.A)) {
-			player.setDrawPosition(player.getDrawPosition().getX() - Player.SPEED, player.getDrawPosition().getY());
-			if (canMoveHere(player.getHitBox())) {
+			if (player.canMoveHere(-Player.SPEED))  {
 				player.setPlayerAction(Player.RUNNING);
-			} else {
-				player.setDrawPosition(oldPosition.getX(), oldPosition.getY());
 			}
-			
-		} else if (kp.isDown(KeyCode.D)) {
-			player.setDrawPosition(player.getDrawPosition().getX() + Player.SPEED, player.getDrawPosition().getY());
-			if (canMoveHere(player.getHitBox())) {
+		} 
+		if (kp.isDown(KeyCode.D)) {
+			if (player.canMoveHere(Player.SPEED)) {
 				player.setPlayerAction(Player.RUNNING);
-			} else {
-				player.setDrawPosition(oldPosition.getX(), oldPosition.getY());
 			}
-		} else if (kp.isDown(KeyCode.W)) {
+		}  
+		if (kp.isDown(KeyCode.W)) {
 			player.setDrawPosition(player.getDrawPosition().getX(), player.getDrawPosition().getY() - Player.SPEED);
 			if (canMoveHere(player.getHitBox())) {
 				player.setPlayerAction(Player.RUNNING);
 			} else {
 				player.setDrawPosition(oldPosition.getX(), oldPosition.getY());
 			}
-		} else if (kp.isDown(KeyCode.S)) {
+		}  
+		if (kp.isDown(KeyCode.S)) {
 			player.setDrawPosition(player.getDrawPosition().getX(), player.getDrawPosition().getY() + Player.SPEED);
 			if (canMoveHere(player.getHitBox())) {
 				player.setPlayerAction(Player.RUNNING);
 			} else {
 				player.setDrawPosition(oldPosition.getX(), oldPosition.getY());
 			}
-		} else {
+		} 
+		if (kp.isDown(KeyCode.SPACE)) {
+			if (player.canJumpHere(Player.JUMPSPEED)) {
+				System.out.println("Player Action Jump");
+				player.setPlayerAction(Player.JUMPING);
+			}
+		}
+		if (!kp.keysPressed()) {
 			player.setPlayerAction(Player.IDLE);
 		}
 		player.update();
@@ -105,7 +109,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 		List<Tile> tiles = actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor).collect(Collectors.toList());
 		for (Tile tile: tiles) {
 			Rectangle2D hitBox = tile.getHitBox();
-			if (hitBox.intersects(playerRect)) {
+			if (tile.isSolid() && hitBox.intersects(playerRect)) {
 				return false;
 			}
 		}

@@ -23,7 +23,7 @@ public class Tile extends Actor {
 	public void drawToCanvas(GraphicsContext gc) {
 		gc.drawImage(imageSprite, 0, 0, imageSprite.getWidth(), imageSprite.getHeight(), 
 				getDrawPosition().getX(), getDrawPosition().getY(), Game.TILES_SIZE, Game.TILES_SIZE);
-		//drawHitBox(gc);
+		drawHitBox(gc);
 	}
 	
 	private void drawHitBox(GraphicsContext gc) {

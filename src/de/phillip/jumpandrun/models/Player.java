@@ -27,7 +27,7 @@ public class Player extends Actor {
 	public static final int DEFAULT_WIDTH = 64;
 	public static final int DEFAULT_HEIGHT = 40;
 	public static final double SPEED = 2.0;
-	public static final double JUMPSPEED = -2.25 * Game.SCALE;
+	public static final double JUMPSPEED = -2.5 * Game.SCALE;
 	
 	private Image playerSprite;
 	private Image[][] actionSprites;
@@ -36,11 +36,12 @@ public class Player extends Actor {
 	private int aniTic;
 	private int aniSpeed = 25;
 	private double hitboxWidth = 20 * Game.SCALE;
-	private double hitboxHeight = 28 * Game.SCALE;
+	private double hitboxHeight = 27 * Game.SCALE;
 	private double xOffset = 21 * Game.SCALE;
 	private double yOffset = 4 * Game.SCALE;
 	private List<Tile> tiles;
 	private double airSpeed = 0;
+	private double fallSpeedAfterCollision = 0.5 * Game.SCALE;
 	private double gravity = 0.04 * Game.SCALE;
 	private boolean isJumping = false;
 	
@@ -54,7 +55,7 @@ public class Player extends Actor {
 	@Override
 	public void drawToCanvas(GraphicsContext gc) {
 		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX(), getDrawPosition().getY(), getWidth(), getHeight());
-		//drawHitBox(gc);
+		drawHitBox(gc);
 	}
 
 	@Override
@@ -99,8 +100,20 @@ public class Player extends Actor {
 	private void updateJump() {
 		if (canJumpHere(airSpeed)) {
 			airSpeed += gravity;
-		} 
-		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + airSpeed);
+			setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + airSpeed);
+		} else {
+			if (airSpeed > 0) {
+				//System.out.println("Can not jump");
+				resetJumping();
+			} else {
+				airSpeed = fallSpeedAfterCollision;
+			}
+		}
+	}
+	
+	private void resetJumping() {
+		isJumping = false;
+		airSpeed = 0;
 	}
 
 	private void updateAnimationTic() {
@@ -141,18 +154,26 @@ public class Player extends Actor {
 		if (isJumping && playerAction == JUMPING) {
 			return;
 		}
+		this.playerAction = playerAction;
 		switch (playerAction) {
 		case JUMPING:
 			isJumping = true;
 			airSpeed = JUMPSPEED;
 			break;
+		case RUNNING:
+			if (isJumping) {
+				this.playerAction = JUMPING;
+			}
+		case IDLE:
+			if (isJumping) {
+				this.playerAction = JUMPING;
+			}
 		default: 
 			break;
 		}
-		if (this.playerAction != playerAction) {
+		if (this.playerAction != playerAction && !isJumping) {
 			resetAniTic();
 		}
-		this.playerAction = playerAction;
 	}
 	
 	private void resetAniTic() {
@@ -191,6 +212,10 @@ public class Player extends Actor {
 				setDrawPosition(oldPosition.getX(), oldPosition.getY());
 				return false;
 			}
+		}
+		if (getHitBox().getMaxY() > Game.GAMEHEIGHT) {
+			setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			return false;
 		}
 		setDrawPosition(oldPosition.getX(), oldPosition.getY());
 		return true;

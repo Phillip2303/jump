@@ -54,7 +54,7 @@ public class ResourcePool {
 				if (colorValue >= 48) {
 					colorValue = 0;
 				}
-				System.out.println("Color value " + colorValue);
+				//System.out.println("Color value " + colorValue);
 				levelData[j][i] = colorValue;
 			}
 		}

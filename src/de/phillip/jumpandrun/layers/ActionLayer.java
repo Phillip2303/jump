@@ -37,7 +37,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 		for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) { 
 			for (int i = 0; i < Game.TILES_IN_WIDTH; i++) {
 				int index = levelManager.getActiveLevel().getSpriteIndex(i, j);
-				System.out.println("Sprite Index: " + index);
+				//System.out.println("Sprite Index: " + index);
 				Image image = levelManager.getLevelTiles()[index];
 				Tile tile = new Tile(Game.TILES_SIZE, Game.TILES_SIZE, image, index);
 				tile.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
@@ -50,7 +50,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 		Image image = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.PLAYER_ATLAS);
 		player = new Player(Player.DEFAULT_WIDTH * Game.SCALE, Player.DEFAULT_HEIGHT * Game.SCALE, image);
 		player.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor).collect(Collectors.toList()));
-		player.setDrawPosition(200, 200);
+		player.setDrawPosition(200, 196);
 		actors.add(player);
 	}
 
@@ -77,7 +77,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 				player.setPlayerAction(Player.RUNNING);
 			}
 		}  
-		if (kp.isDown(KeyCode.W)) {
+		/*if (kp.isDown(KeyCode.W)) {
 			player.setDrawPosition(player.getDrawPosition().getX(), player.getDrawPosition().getY() - Player.SPEED);
 			if (canMoveHere(player.getHitBox())) {
 				player.setPlayerAction(Player.RUNNING);
@@ -92,10 +92,11 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 			} else {
 				player.setDrawPosition(oldPosition.getX(), oldPosition.getY());
 			}
-		} 
-		if (kp.isDown(KeyCode.SPACE)) {
+		} */
+		if (kp.isDown(KeyCode.J)) {
+			System.out.println("Player Action Jump");
 			if (player.canJumpHere(Player.JUMPSPEED)) {
-				System.out.println("Player Action Jump");
+				System.out.println("Can Jump");
 				player.setPlayerAction(Player.JUMPING);
 			}
 		}

@@ -44,6 +44,7 @@ public class Player extends Actor {
 	private double fallSpeedAfterCollision = 0.5 * Game.SCALE;
 	private double gravity = 0.04 * Game.SCALE;
 	private boolean isJumping = false;
+	private boolean isFalling = false;
 	
 
 	public Player(double width, double height, Image playerSprite) {
@@ -95,12 +96,30 @@ public class Player extends Actor {
 		if (isJumping) {
 			updateJump();
 		}
+		if (isFalling) {
+			updateJump();
+		}
+	}
+	
+	private void checkFalling() {
+		Point2D oldPosition = getDrawPosition();
+		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + hitboxHeight);
+		for (Tile tile: tiles) {
+			Rectangle2D hitBox = tile.getHitBox();
+			if (!tile.isSolid() && 
+					hitBox.intersects(getHitBox()) && 
+					hitBox.getMinX() < getHitBox().getMinX() && 
+					hitBox.getMaxX() > getHitBox().getMaxX()) {
+				setPlayerAction(FALLING);
+			}
+		}
+		setDrawPosition(oldPosition.getX(), oldPosition.getY());
 	}
 	
 	private void updateJump() {
 		if (canJumpHere(airSpeed)) {
-			airSpeed += gravity;
 			setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + airSpeed);
+			airSpeed += gravity;
 		} else {
 			if (airSpeed > 0) {
 				//System.out.println("Can not jump");
@@ -113,6 +132,7 @@ public class Player extends Actor {
 	
 	private void resetJumping() {
 		isJumping = false;
+		isFalling = false;
 		airSpeed = 0;
 	}
 
@@ -164,10 +184,19 @@ public class Player extends Actor {
 			if (isJumping) {
 				this.playerAction = JUMPING;
 			}
+			if (isFalling) {
+				this.playerAction = FALLING;
+			}
 		case IDLE:
 			if (isJumping) {
 				this.playerAction = JUMPING;
 			}
+			if (isFalling) {
+				this.playerAction = FALLING;
+			}
+		case FALLING:
+			isFalling = true;
+			airSpeed = fallSpeedAfterCollision;
 		default: 
 			break;
 		}
@@ -200,6 +229,9 @@ public class Player extends Actor {
 				return false;
 			}
 		}
+		if (!isJumping) {
+			checkFalling();
+		}
 		return true;
 	}
 	
@@ -209,7 +241,12 @@ public class Player extends Actor {
 		for (Tile tile: tiles) {
 			Rectangle2D hitBox = tile.getHitBox();
 			if (tile.isSolid() && hitBox.intersects(getHitBox())) {
-				setDrawPosition(oldPosition.getX(), oldPosition.getY());
+				int compare = Double.compare(speed, 0);
+				if (compare < 0) {
+					setDrawPosition(oldPosition.getX(), oldPosition.getY());
+				} else {
+					setDrawPosition(oldPosition.getX(), tile.getDrawPosition().getY() - (yOffset + hitboxHeight));
+				}
 				return false;
 			}
 		}

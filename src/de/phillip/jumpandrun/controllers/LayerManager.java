@@ -24,7 +24,7 @@ public class LayerManager {
 		this.stackPane = stackPane;
 		levelManager = new LevelManager();
 		renderer = new Renderer();
-		actionLayer = new ActionLayer(Game.GAMEWIDTH, Game.GAMEHEIGHT, levelManager);
+		actionLayer = new ActionLayer(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE, Game.GAMEHEIGHT, levelManager);
 		renderer.registerCanvasLayer(actionLayer);
 		stackPane.getChildren().add(actionLayer);
 		

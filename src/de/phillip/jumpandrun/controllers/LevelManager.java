@@ -14,11 +14,11 @@ public class LevelManager {
 	private Image outsideAtlas;
 	private Level activeLevel;
 	private Image[] levelTiles;
+	private int level = 1;
 	
 	public LevelManager() {
 		outsideAtlas = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.OUTSIDE_ATLAS);
-		activeLevel = new Level(ResourcePool.getInstance().getLevelData());
-		createLevelTilesFromAtlas();
+		createLevel();
 		//canvas.getGraphicsContext2D().drawImage(wi, 0, 0);
 	}
 	
@@ -45,11 +45,21 @@ public class LevelManager {
 		return wi;
 	}
 	
+	private void createLevel() {
+		activeLevel = new Level(ResourcePool.getInstance().getLevelData(level));
+		createLevelTilesFromAtlas();
+	}
+	
 	public Image[] getLevelTiles() {
 		return levelTiles;
 	}
 	
 	public Level getActiveLevel()  {
 		return activeLevel;
+	}
+	
+	private void setLevel(int level) {
+		this.level = level;
+		createLevel();
 	}
 }

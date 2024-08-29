@@ -41,7 +41,7 @@ public class Game extends Application {
 		scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 		scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
 		Scene scene = new Scene(scrollPane, GAMEWIDTH, GAMEHEIGHT);
-		scene.setOnKeyPressed(e -> {
+		/*scene.setOnKeyPressed(e -> {
 			switch (e.getCode()) {
 				case A: 
 					scrollPane.setHvalue(scrollPane.getHvalue() - 2 / scrollPane.getWidth());
@@ -52,7 +52,7 @@ public class Game extends Application {
 			default:
 				break;
 			}
-		});
+		});*/
 		return scene;
 		
 	}

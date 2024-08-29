@@ -45,6 +45,7 @@ public class Player extends Actor {
 	private double gravity = 0.04 * Game.SCALE;
 	private boolean isJumping = false;
 	private boolean isFalling = false;
+	private int levelWidth;
 	
 
 	public Player(double width, double height, Image playerSprite) {
@@ -187,6 +188,7 @@ public class Player extends Actor {
 			if (isFalling) {
 				this.playerAction = FALLING;
 			}
+			break;
 		case IDLE:
 			if (isJumping) {
 				this.playerAction = JUMPING;
@@ -194,6 +196,7 @@ public class Player extends Actor {
 			if (isFalling) {
 				this.playerAction = FALLING;
 			}
+			break;
 		case FALLING:
 			isFalling = true;
 			airSpeed = fallSpeedAfterCollision;
@@ -229,6 +232,10 @@ public class Player extends Actor {
 				return false;
 			}
 		}
+		if (getHitBox().getMinX() < 0 || getHitBox().getMaxX() > levelWidth) {
+			setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			return false;
+		}
 		if (!isJumping) {
 			checkFalling();
 		}
@@ -256,5 +263,9 @@ public class Player extends Actor {
 		}
 		setDrawPosition(oldPosition.getX(), oldPosition.getY());
 		return true;
+	}
+	
+	public void setLevelWidth(int levelWidth) {
+		this.levelWidth = levelWidth;
 	}
 }

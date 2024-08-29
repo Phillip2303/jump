@@ -11,7 +11,7 @@ public class ResourcePool {
 	private static final String LEVEL_PATH = "/assets/levels/";
 	public static final String OUTSIDE_ATLAS = "outside_sprites.png";
 	public static final String PLAYER_ATLAS = "player_sprites.png";
-	public static final String LEVEL_1 = "level_one_data.png";
+	public static final String LEVEL_1 = "level_one_data_long.png";
 	
 	private static ResourcePool resourcePool;
 	private Image background;
@@ -44,12 +44,19 @@ public class ResourcePool {
 		return new Image (getClass().getResource(LEVEL_PATH + atlas).toString());
 	}
 	
-	public int[][] getLevelData() {
-		int[][] levelData = new int[Game.TILES_IN_HEIGHT][Game.TILES_IN_WIDTH];
-		Image level1 = getLevelAtlas(LEVEL_1);
-		for (int j = 0; j < level1.getHeight(); j++) {
-			for (int i = 0; i < level1.getWidth(); i++) {
-				Color color = level1.getPixelReader().getColor(i, j);
+	public int[][] getLevelData(int level) {
+		Image levelAtlas = null;
+		switch (level) {
+			case 1:
+				levelAtlas = getLevelAtlas(LEVEL_1);
+				break;
+			default:
+				break;
+		}
+		int[][] levelData = new int[Game.TILES_IN_HEIGHT][(int) levelAtlas.getWidth()];
+		for (int j = 0; j < levelAtlas.getHeight(); j++) {
+			for (int i = 0; i < levelAtlas.getWidth(); i++) {
+				Color color = levelAtlas.getPixelReader().getColor(i, j);
 				int colorValue = (int) (color.getRed() * 255);
 				if (colorValue >= 48) {
 					colorValue = 0;

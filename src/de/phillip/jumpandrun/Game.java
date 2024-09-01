@@ -1,6 +1,7 @@
 package de.phillip.jumpandrun;
 
 import de.phillip.jumpandrun.controllers.GameController;
+import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.utils.KeyPolling;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.application.Application;
@@ -8,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -41,18 +43,12 @@ public class Game extends Application {
 		scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 		scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
 		Scene scene = new Scene(scrollPane, GAMEWIDTH, GAMEHEIGHT);
-		/*scene.setOnKeyPressed(e -> {
-			switch (e.getCode()) {
-				case A: 
-					scrollPane.setHvalue(scrollPane.getHvalue() - 2 / scrollPane.getWidth());
-					break;
-				case D:
-					scrollPane.setHvalue(scrollPane.getHvalue() + 2 / scrollPane.getWidth());
-					break;
-			default:
-				break;
-			}
-		});*/
+		scene.setOnMouseClicked(e -> {
+			FXEventBus.getInstance().fireEvent(e);
+		});
+		scene.setOnMouseMoved(e -> {
+			FXEventBus.getInstance().fireEvent(e);
+		});
 		return scene;
 		
 	}

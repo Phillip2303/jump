@@ -1,5 +1,6 @@
 package de.phillip.jumpandrun.controllers;
 
+import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.animation.GameLoopTimer;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
@@ -43,11 +44,17 @@ public class GameController implements EventHandler<GameEvent> {
 	public void handle(GameEvent event) {
 		switch (event.getEventType().getName()) {
 		case "JR_MOVE_LEFT":
-			moveContent(-Player.SPEED);
+			double minX = (double) event.getData();
+			if (scrollToLeft(minX))  {
+				moveContent(-Player.SPEED);
+			}
 			break;
 			
 		case "JR_MOVE_RIGHT":
-			moveContent(Player.SPEED);
+			double maxX = (double) event.getData();
+			if (scrollToRight(maxX)) {
+				moveContent(Player.SPEED);
+			}
 			break;
 			
 		default:
@@ -61,5 +68,22 @@ public class GameController implements EventHandler<GameEvent> {
 		double hValue = movingX / (contentBounds.getWidth() - viewPortBounds.getWidth());
 		double oldValue = scrollPane.getHvalue();
 		scrollPane.setHvalue(oldValue + hValue);
+	}
+	
+	private boolean scrollToRight(double maxX) {
+		if (maxX > Game.GAMEWIDTH / 2) {
+			return true;
+		} 
+		return false;
+	}
+	
+	private boolean scrollToLeft(double minX) {
+		Bounds contentBounds = scrollPane.getContent().getBoundsInLocal();
+		Bounds viewPortBounds = scrollPane.getViewportBounds();
+		int hOffset = (int) (scrollPane.getHvalue() * (contentBounds.getWidth() - viewPortBounds.getWidth()));
+		if (minX < hOffset + Game.GAMEWIDTH / 2) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -72,13 +72,13 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 		if (kp.isDown(KeyCode.A)) {
 			if (player.canMoveHere(-Player.SPEED))  {
 				player.setPlayerAction(Player.RUNNING);
-				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_MOVE_LEFT, null));
+				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_MOVE_LEFT, player.getHitBox().getMinX()));
 			}
 		} 
 		if (kp.isDown(KeyCode.D)) {
 			if (player.canMoveHere(Player.SPEED)) {
 				player.setPlayerAction(Player.RUNNING);
-				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_MOVE_RIGHT, null));
+				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_MOVE_RIGHT, player.getHitBox().getMaxX()));
 			}
 		}
 		if (kp.isDown(KeyCode.J)) {

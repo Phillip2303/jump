@@ -26,7 +26,7 @@ public class Player extends Actor {
 	public static final int ATTACK_JUMP_2 = 8;
 	public static final int DEFAULT_WIDTH = 64;
 	public static final int DEFAULT_HEIGHT = 40;
-	public static final double SPEED = 2.0;
+	public static final double SPEED = 1.5 * Game.SCALE;
 	public static final double JUMPSPEED = -2.5 * Game.SCALE;
 	
 	private Image playerSprite;
@@ -178,8 +178,12 @@ public class Player extends Actor {
 		this.playerAction = playerAction;
 		switch (playerAction) {
 		case JUMPING:
-			isJumping = true;
-			airSpeed = JUMPSPEED;
+			if (isFalling) {
+				this.playerAction = FALLING;
+			} else {
+				isJumping = true;
+				airSpeed = JUMPSPEED;
+			}
 			break;
 		case RUNNING:
 			if (isJumping) {
@@ -224,7 +228,11 @@ public class Player extends Actor {
 	
 	public boolean canMoveHere(double direction) {
 		Point2D oldPosition = getDrawPosition();
-		setDrawPosition(getDrawPosition().getX() + direction, getDrawPosition().getY());
+		if (isFalling) {
+			setDrawPosition(getDrawPosition().getX() + direction / 2, getDrawPosition().getY());
+		} else {
+			setDrawPosition(getDrawPosition().getX() + direction, getDrawPosition().getY());
+		}
 		for (Tile tile: tiles) {
 			Rectangle2D hitBox = tile.getHitBox();
 			if (tile.isSolid() && hitBox.intersects(getHitBox())) {

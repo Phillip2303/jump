@@ -14,7 +14,8 @@ public class ResourcePool {
 	public static final String LEVEL_1 = "level_one_data_long.png";
 	
 	private static ResourcePool resourcePool;
-	private Image background;
+	//private Image background;
+	private Image menuBackground;
 
 	
 	private ResourcePool() {
@@ -28,12 +29,17 @@ public class ResourcePool {
 		return resourcePool;
 	}
 
-	public Image getBackground() {
+	/*public Image getBackground() {
 		return background;
+	}*/
+	
+	public Image getMenuBackground() {
+		return menuBackground;
 	}
 	
 	public void loadResources() {
-		background = new Image(getClass().getResource("/assets/images/galaxy.jpg").toString());
+		//background = new Image(getClass().getResource("/assets/images/galaxy.jpg").toString());
+		menuBackground = new Image(getClass().getResource("/assets/images/menu_background.png").toString());
 	}
 	
 	public Image getSpriteAtlas(String atlas) {

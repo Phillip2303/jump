@@ -65,6 +65,8 @@ public class GameController implements EventHandler<GameEvent> {
 	private void moveContent(double movingX) {
 		Bounds contentBounds = scrollPane.getContent().getBoundsInLocal();
 		Bounds viewPortBounds = scrollPane.getViewportBounds();
+		int hOffset = (int) (scrollPane.getHvalue() * (contentBounds.getWidth() - viewPortBounds.getWidth()));
+		layerManager.setScrollPaneOffset(hOffset);
 		double hValue = movingX / (contentBounds.getWidth() - viewPortBounds.getWidth());
 		double oldValue = scrollPane.getHvalue();
 		scrollPane.setHvalue(oldValue + hValue);

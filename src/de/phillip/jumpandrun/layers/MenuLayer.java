@@ -1,9 +1,12 @@
 package de.phillip.jumpandrun.layers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.events.FXEventBus;
+import de.phillip.jumpandrun.events.GameEvent;
+import de.phillip.jumpandrun.models.CanvasButton;
 import de.phillip.jumpandrun.models.CanvasLayer;
 import de.phillip.jumpandrun.models.Drawable;
 import de.phillip.jumpandrun.models.Player;
@@ -11,6 +14,7 @@ import de.phillip.jumpandrun.utils.GameState;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -19,18 +23,25 @@ import javafx.scene.paint.Color;
 public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event> {
 	
 	private Image menuBackground;
+	private Image buttonSprites;
+	private List<Drawable> drawables = new ArrayList<>();
+	private CanvasButton play;
+	private CanvasButton options;
+	private CanvasButton quit;
+	private int vOffset;
 	
 	public MenuLayer(double width, double height) {
 		super(width, height);
 		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_MOVED, this);
 		menuBackground = ResourcePool.getInstance().getMenuBackground();
+		buttonSprites = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.BUTTON_SPRITES);
+		createButtons();
 	}
 
 	@Override
 	public List<Drawable> getDrawables() {
-
-		return null;
+		return drawables;
 	}
 
 	@Override
@@ -56,15 +67,46 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 	public void handle(Event event) {
 		switch (event.getEventType().getName()) {
 		case "MOUSE_CLICKED":
-			GameState.state = GameState.PLAYING;
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_HIDE_MENU, null));
 			break;
-			
 		case "MOUSE_MOVED":
+			MouseEvent mouseEvent = (MouseEvent) event;
+			mouseMoved(mouseEvent.getX(), mouseEvent.getY());
 			break;
 			
 		default:
 			break;
 		}
+	}
+	
+	private void mouseMoved(double x, double y) {
+		if (play.contains(new Point2D(x, y))) {
+			play.setActive(true);
+		} else {
+			play.setActive(false);
+		}
+		if (options.contains(new Point2D(x, y))) {
+			options.setActive(true);
+		} else {
+			options.setActive(false);
+		}
+		if (quit.contains(new Point2D(x, y))) {
+			quit.setActive(true);
+		} else {
+			quit.setActive(false);
+		}
+	}
+	
+	private void createButtons() {
+		play = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.WIDTH / 2), CanvasButton.V_OFFSET, 
+				CanvasButton.WIDTH, CanvasButton.HEIGHT, 0);
+		options = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.WIDTH / 2), CanvasButton.V_OFFSET + CanvasButton.HEIGHT, 
+				CanvasButton.WIDTH, CanvasButton.HEIGHT, 1);
+		quit = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.WIDTH / 2), CanvasButton.V_OFFSET + 2 * CanvasButton.HEIGHT, 
+				CanvasButton.WIDTH, CanvasButton.HEIGHT, 2);
+		drawables.add(play);
+		drawables.add(options);
+		drawables.add(quit);
 	}
 
 }

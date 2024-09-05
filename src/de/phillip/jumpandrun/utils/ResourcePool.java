@@ -12,6 +12,7 @@ public class ResourcePool {
 	public static final String OUTSIDE_ATLAS = "outside_sprites.png";
 	public static final String PLAYER_ATLAS = "player_sprites.png";
 	public static final String LEVEL_1 = "level_one_data_long.png";
+	public static final String BUTTON_SPRITES = "button_sprites.png";
 	
 	private static ResourcePool resourcePool;
 	//private Image background;

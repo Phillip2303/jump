@@ -13,6 +13,7 @@ import de.phillip.jumpandrun.models.CanvasLayer;
 import de.phillip.jumpandrun.models.Drawable;
 import de.phillip.jumpandrun.models.Player;
 import de.phillip.jumpandrun.models.Tile;
+import de.phillip.jumpandrun.utils.GameState;
 import de.phillip.jumpandrun.utils.KeyPolling;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.geometry.Point2D;
@@ -82,11 +83,15 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 			}
 		}
 		if (kp.isDown(KeyCode.J)) {
-			System.out.println("Player Action Jump");
+			//System.out.println("Player Action Jump");
 			if (player.canJumpHere(Player.JUMPSPEED)) {
-				System.out.println("Can Jump");
+				//System.out.println("Can Jump");
 				player.setPlayerAction(Player.JUMPING);
 			}
+		}
+		if (kp.isDown(KeyCode.ESCAPE)) {
+			//GameState.state = GameState.MENU;
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_MENU, null));
 		}
 		if (!kp.keysPressed()) {
 			player.setPlayerAction(Player.IDLE);

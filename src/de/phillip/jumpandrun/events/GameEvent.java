@@ -16,6 +16,15 @@ public class GameEvent extends Event {
 	
 	public static final EventType<GameEvent> JR_MOVE_RIGHT =
 			new EventType<>(GameEvent.ANY, "JR_MOVE_RIGHT");
+	
+	public static final EventType<GameEvent> JR_SHOW_MENU =
+			new EventType<>(GameEvent.ANY, "JR_SHOW_MENU");
+	
+	public static final EventType<GameEvent> JR_HIDE_MENU =
+			new EventType<>(GameEvent.ANY, "JR_HIDE_MENU");
+	
+	public static final EventType<GameEvent> JR_QUIT =
+			new EventType<>(GameEvent.ANY, "JR_QUIT");
 
 	public GameEvent(EventType<GameEvent> eventType, Object data) {
 		super(eventType);

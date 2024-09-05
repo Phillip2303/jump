@@ -36,7 +36,7 @@ public class Renderer {
 	
 	public void renderMenu() {
 		menuLayer.getGraphicsContext2D().save();
-		//render buttons here
+		menuLayer.getDrawables().forEach(d -> d.drawToCanvas(menuLayer.getGraphicsContext2D()));
 		menuLayer.getGraphicsContext2D().restore();
 	}
 	

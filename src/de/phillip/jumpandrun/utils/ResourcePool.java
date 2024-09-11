@@ -17,6 +17,9 @@ public class ResourcePool {
 	private static ResourcePool resourcePool;
 	//private Image background;
 	private Image menuBackground;
+	private Image bigClouds;
+	private Image smallClouds;
+	private Image playingBg;
 
 	
 	private ResourcePool() {
@@ -41,6 +44,9 @@ public class ResourcePool {
 	public void loadResources() {
 		//background = new Image(getClass().getResource("/assets/images/galaxy.jpg").toString());
 		menuBackground = new Image(getClass().getResource("/assets/images/menu_background.png").toString());
+		bigClouds = new Image(getClass().getResource("/assets/images/big_clouds.png").toString()); 
+		smallClouds = new Image(getClass().getResource("/assets/images/small_clouds.png").toString());
+		playingBg = new Image(getClass().getResource("/assets/images/playing_bg_img.png").toString());
 	}
 	
 	public Image getSpriteAtlas(String atlas) {
@@ -73,5 +79,17 @@ public class ResourcePool {
 			}
 		}
 		return levelData;
+	}
+
+	public Image getBigClouds() {
+		return bigClouds;
+	}
+
+	public Image getSmallClouds() {
+		return smallClouds;
+	}
+
+	public Image getPlayingBg() {
+		return playingBg;
 	}
 }

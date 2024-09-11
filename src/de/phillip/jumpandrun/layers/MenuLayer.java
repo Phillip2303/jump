@@ -32,7 +32,8 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 	
 	public MenuLayer(double width, double height) {
 		super(width, height);
-		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_PRESSED, this);
+		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_RELEASED, this);
 		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_MOVED, this);
 		menuBackground = ResourcePool.getInstance().getMenuBackground();
 		buttonSprites = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.BUTTON_SPRITES);
@@ -65,9 +66,13 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 
 	@Override
 	public void handle(Event event) {
+		
 		switch (event.getEventType().getName()) {
-		case "MOUSE_CLICKED":
-			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_HIDE_MENU, null));
+		case "MOUSE_PRESSED":
+			mousePressed();
+			break;
+		case "MOUSE_RELEASED":
+			mouseReleased();
 			break;
 		case "MOUSE_MOVED":
 			MouseEvent mouseEvent = (MouseEvent) event;
@@ -78,7 +83,29 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 			break;
 		}
 	}
-	
+
+	private void mouseReleased() {
+		if (play.isActive()) {
+			play.setClicked(false);
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_HIDE_MENU, null));
+		} else if (options.isActive()) {
+			options.setClicked(false);
+		} else if (quit.isActive()) {
+			quit.setClicked(false);
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_QUIT, null));
+		}
+	}
+
+	private void mousePressed() {
+		if (play.isActive()) {
+			play.setClicked(true);
+		} else if (options.isActive()) {
+			options.setClicked(true);
+		} else if (quit.isActive()) {
+			quit.setClicked(true);
+		}
+	}
+
 	private void mouseMoved(double x, double y) {
 		if (play.contains(new Point2D(x, y))) {
 			play.setActive(true);

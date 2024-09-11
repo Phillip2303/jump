@@ -21,6 +21,7 @@ public class GameController implements EventHandler<GameEvent> {
 	public GameController(ScrollPane scrollPane)  {
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_MOVE_LEFT, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_MOVE_RIGHT, this);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_QUIT, this);
 		this.scrollPane = scrollPane;
 		loop = new GameLoopTimer() {
 
@@ -56,7 +57,8 @@ public class GameController implements EventHandler<GameEvent> {
 				moveContent(Player.SPEED);
 			}
 			break;
-			
+		case "JR_QUIT":
+			System.exit(0);
 		default:
 			break;
 		}

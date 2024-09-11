@@ -5,6 +5,7 @@ import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.utils.KeyPolling;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ScrollPane;
@@ -43,8 +44,21 @@ public class Game extends Application {
 		scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 		scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
 		Scene scene = new Scene(scrollPane, GAMEWIDTH, GAMEHEIGHT);
-		scene.setOnMouseClicked(e -> {
-			FXEventBus.getInstance().fireEvent(e);
+		scene.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				FXEventBus.getInstance().fireEvent(event);
+			}
+			
+		});
+		scene.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				FXEventBus.getInstance().fireEvent(event);
+			}
+			
 		});
 		scene.setOnMouseMoved(e -> {
 			FXEventBus.getInstance().fireEvent(e);

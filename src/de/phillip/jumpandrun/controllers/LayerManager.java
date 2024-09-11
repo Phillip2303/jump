@@ -4,6 +4,7 @@ import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.layers.ActionLayer;
+import de.phillip.jumpandrun.layers.BackgroundLayer;
 import de.phillip.jumpandrun.layers.MenuLayer;
 import de.phillip.jumpandrun.rendering.Renderer;
 import de.phillip.jumpandrun.utils.GameState;
@@ -26,6 +27,7 @@ public class LayerManager implements EventHandler<GameEvent>{
 	private Renderer renderer;
 	private ActionLayer actionLayer;
 	private MenuLayer menuLayer;
+	private BackgroundLayer backgroundLayer;
 	private GameState state = GameState.MENU;
 	private int hOffset;
 	
@@ -37,12 +39,14 @@ public class LayerManager implements EventHandler<GameEvent>{
 		renderer = new Renderer();
 		actionLayer = new ActionLayer(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE, Game.GAMEHEIGHT, levelManager);
 		menuLayer = new MenuLayer(Game.GAMEWIDTH, Game.GAMEHEIGHT);
+		backgroundLayer = new BackgroundLayer(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE, Game.GAMEHEIGHT);
 		renderer.registerCanvasLayer(actionLayer);
 		renderer.registerMenuLayer(menuLayer);
-		stackPane.getChildren().add(0, actionLayer);
+		renderer.registerCanvasLayer(backgroundLayer);
+		stackPane.getChildren().add(0, backgroundLayer);
+		stackPane.getChildren().add(1, actionLayer);
 		StackPane.setAlignment(menuLayer, Pos.TOP_LEFT);
-		stackPane.getChildren().add(1, menuLayer);
-		
+		stackPane.getChildren().add(2, menuLayer);
 	}
 	
 	public void update(float secondsSinceLastFrame) {

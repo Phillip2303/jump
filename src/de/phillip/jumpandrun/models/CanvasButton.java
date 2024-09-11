@@ -18,6 +18,7 @@ public class CanvasButton implements Drawable {
 	private Image image;
 	private Rectangle2D rectangle;
 	private boolean isActive;
+	private boolean isClicked;
 	private int index;
 	
 
@@ -32,8 +33,13 @@ public class CanvasButton implements Drawable {
 		gc.save();
 		//gc.drawImage(image, rectangle.getMinX(), rectangle.getMinY());
 		if (isActive) {
-			gc.drawImage(image, 0, index * DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_HEIGHT, 
-					rectangle.getMinX(), rectangle.getMinY(), rectangle.getWidth(), rectangle.getHeight());
+			if (isClicked) {
+				gc.drawImage(image, DEFAULT_WIDTH * 2, index * DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_HEIGHT, 
+						rectangle.getMinX(), rectangle.getMinY(), rectangle.getWidth(), rectangle.getHeight());
+			} else {
+				gc.drawImage(image, 0, index * DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_HEIGHT, 
+						rectangle.getMinX(), rectangle.getMinY(), rectangle.getWidth(), rectangle.getHeight());
+			}
 		} else {
 			gc.drawImage(image, DEFAULT_WIDTH, index * DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_HEIGHT, 
 					rectangle.getMinX(), rectangle.getMinY(), rectangle.getWidth(), rectangle.getHeight());
@@ -55,6 +61,10 @@ public class CanvasButton implements Drawable {
 	
 	public void setPosition(int posX, int posY) {
 		rectangle = new Rectangle2D(posX, posY, rectangle.getWidth(), rectangle.getHeight());
+	}
+
+	public void setClicked(boolean isClicked) {
+		this.isClicked = isClicked;
 	}
 
 }

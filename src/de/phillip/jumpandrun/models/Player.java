@@ -57,7 +57,7 @@ public class Player extends Actor {
 	@Override
 	public void drawToCanvas(GraphicsContext gc) {
 		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX(), getDrawPosition().getY(), getWidth(), getHeight());
-		drawHitBox(gc);
+		//drawHitBox(gc);
 	}
 
 	@Override

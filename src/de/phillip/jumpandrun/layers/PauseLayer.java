@@ -45,7 +45,7 @@ public class PauseLayer extends Canvas implements CanvasLayer, EventHandler<Even
 	public void prepareLayer() {
 		getGraphicsContext2D().clearRect(0, 0, getWidth(), getHeight());
 		getGraphicsContext2D().drawImage(pauseBackground, 0, 0, pauseBackground.getWidth(), pauseBackground.getHeight(),
-			Game.GAMEWIDTH / 2 - ((pauseBackground.getWidth() * Game.SCALE) / 2), 80, pauseBackground.getWidth() * Game.SCALE, pauseBackground.getHeight() * Game.SCALE);
+			Game.GAMEWIDTH / 2 - ((pauseBackground.getWidth() * Game.SCALE) / 2), 60, pauseBackground.getWidth() * Game.SCALE, pauseBackground.getHeight() * Game.SCALE);
 	}
 
 	@Override

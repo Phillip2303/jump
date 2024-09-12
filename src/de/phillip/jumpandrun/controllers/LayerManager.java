@@ -54,6 +54,7 @@ public class LayerManager implements EventHandler<GameEvent>{
 		stackPane.getChildren().add(1, actionLayer);
 		StackPane.setAlignment(menuLayer, Pos.TOP_LEFT);
 		stackPane.getChildren().add(2, menuLayer);
+		StackPane.setAlignment(pauseLayer, Pos.TOP_LEFT);
 		stackPane.getChildren().add(3, pauseLayer);
 	}
 	

@@ -28,6 +28,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	private List<Drawable> actors = new ArrayList<Drawable>();
 	private Player player;
 	private KeyPolling kp = KeyPolling.getInstance();
+	private boolean isDrawable;
 	
 	public ActionLayer(int width, int height, LevelManager levelManager) {
 		super(width, height);
@@ -93,6 +94,9 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 			//GameState.state = GameState.MENU;
 			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_MENU, null));
 		}
+		if (kp.isDown(KeyCode.P)) {
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_PAUSE_MENU, null));
+		}
 		if (!kp.keysPressed()) {
 			player.setPlayerAction(Player.IDLE);
 		}
@@ -102,6 +106,16 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	@Override
 	public void resetGame() {
 
+	}
+
+	@Override
+	public void setDrawable(boolean value) {
+		isDrawable = value;
+	}
+
+	@Override
+	public boolean isDrawable() {
+		return isDrawable;
 	}
 
 }

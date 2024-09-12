@@ -18,23 +18,29 @@ public class Renderer {
 		canvasLayers.add(canvasLayer);
 	}
 	
-	public void registerMenuLayer(CanvasLayer menuLayer) {
+	/*public void registerMenuLayer(CanvasLayer menuLayer) {
 		this.menuLayer = menuLayer;
-	}
+	}*/
 
 	public void render() {
 		canvasLayers.forEach(canvas -> {
-			canvas.getGraphicsContext2D().save();
-			canvas.getDrawables().forEach(d -> d.drawToCanvas(canvas.getGraphicsContext2D()));
-			canvas.getGraphicsContext2D().restore();
+			if (canvas.isDrawable()) {
+				canvas.getGraphicsContext2D().save();
+				canvas.getDrawables().forEach(d -> d.drawToCanvas(canvas.getGraphicsContext2D()));
+				canvas.getGraphicsContext2D().restore();
+			}
 		});
 	}
 	
 	public void prepare() {
-		canvasLayers.forEach(e -> e.prepareLayer());
+		canvasLayers.forEach(canvas -> {
+			if (canvas.isDrawable()) {
+				canvas.prepareLayer();
+			}
+		});
 	}
 	
-	public void renderMenu() {
+	/*public void renderMenu() {
 		menuLayer.getGraphicsContext2D().save();
 		menuLayer.getDrawables().forEach(d -> d.drawToCanvas(menuLayer.getGraphicsContext2D()));
 		menuLayer.getGraphicsContext2D().restore();
@@ -42,6 +48,6 @@ public class Renderer {
 	
 	public void prepareMenu() {
 		menuLayer.prepareLayer();
-	}
+	}*/
 
 }

@@ -13,6 +13,7 @@ public class ResourcePool {
 	public static final String PLAYER_ATLAS = "player_sprites.png";
 	public static final String LEVEL_1 = "level_one_data_long.png";
 	public static final String BUTTON_SPRITES = "button_sprites.png";
+	public static final String SOUND_BUTTONS_SPRITES = "sound_button_sprites.png";
 	
 	private static ResourcePool resourcePool;
 	//private Image background;
@@ -20,6 +21,7 @@ public class ResourcePool {
 	private Image bigClouds;
 	private Image smallClouds;
 	private Image playingBg;
+	private Image pauseBackground;
 
 	
 	private ResourcePool() {
@@ -41,9 +43,14 @@ public class ResourcePool {
 		return menuBackground;
 	}
 	
+	public Image getPauseBackground() {
+		return pauseBackground;
+	}
+	
 	public void loadResources() {
 		//background = new Image(getClass().getResource("/assets/images/galaxy.jpg").toString());
 		menuBackground = new Image(getClass().getResource("/assets/images/menu_background.png").toString());
+		pauseBackground = new Image(getClass().getResource("/assets/images/pause_menu_background.png").toString());
 		bigClouds = new Image(getClass().getResource("/assets/images/big_clouds.png").toString()); 
 		smallClouds = new Image(getClass().getResource("/assets/images/small_clouds.png").toString());
 		playingBg = new Image(getClass().getResource("/assets/images/playing_bg_img.png").toString());

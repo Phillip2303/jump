@@ -6,6 +6,7 @@ import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.layers.ActionLayer;
 import de.phillip.jumpandrun.layers.BackgroundLayer;
 import de.phillip.jumpandrun.layers.MenuLayer;
+import de.phillip.jumpandrun.layers.PauseLayer;
 import de.phillip.jumpandrun.rendering.Renderer;
 import de.phillip.jumpandrun.utils.GameState;
 import de.phillip.jumpandrun.utils.ResourcePool;
@@ -28,6 +29,7 @@ public class LayerManager implements EventHandler<GameEvent>{
 	private ActionLayer actionLayer;
 	private MenuLayer menuLayer;
 	private BackgroundLayer backgroundLayer;
+	private PauseLayer pauseLayer;
 	private GameState state = GameState.MENU;
 	private int hOffset;
 	
@@ -36,35 +38,57 @@ public class LayerManager implements EventHandler<GameEvent>{
 		levelManager = new LevelManager();
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_SHOW_MENU, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_HIDE_MENU, this);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_H_OFFSET, this);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_SHOW_PAUSE_MENU, this);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_HIDE_PAUSE_MENU, this);
 		renderer = new Renderer();
 		actionLayer = new ActionLayer(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE, Game.GAMEHEIGHT, levelManager);
 		menuLayer = new MenuLayer(Game.GAMEWIDTH, Game.GAMEHEIGHT);
 		backgroundLayer = new BackgroundLayer(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE, Game.GAMEHEIGHT);
+		pauseLayer = new PauseLayer(Game.GAMEWIDTH, Game.GAMEHEIGHT);
 		renderer.registerCanvasLayer(actionLayer);
-		renderer.registerMenuLayer(menuLayer);
+		renderer.registerCanvasLayer(menuLayer);
 		renderer.registerCanvasLayer(backgroundLayer);
+		renderer.registerCanvasLayer(pauseLayer);
 		stackPane.getChildren().add(0, backgroundLayer);
 		stackPane.getChildren().add(1, actionLayer);
 		StackPane.setAlignment(menuLayer, Pos.TOP_LEFT);
 		stackPane.getChildren().add(2, menuLayer);
+		stackPane.getChildren().add(3, pauseLayer);
 	}
 	
 	public void update(float secondsSinceLastFrame) {
 		switch (state) {
 			case MENU: 
 				menuLayer.setVisible(true);
-				renderer.prepareMenu();
-				renderer.renderMenu();
+				menuLayer.setDrawable(true);
+				actionLayer.setDrawable(false);
+				backgroundLayer.setDrawable(false);
+				pauseLayer.setDrawable(false);
+				break;
+			case PAUSING:
+				menuLayer.setVisible(false);
+				menuLayer.setDrawable(false);
+				actionLayer.setDrawable(false);
+				backgroundLayer.setDrawable(false);
+				pauseLayer.setDrawable(true);
 				break;
 			case PLAYING:
 				menuLayer.setVisible(false);
-				renderer.prepare();
+				menuLayer.setDrawable(false);
+				actionLayer.setDrawable(true);
+				backgroundLayer.setDrawable(true);
+				pauseLayer.setDrawable(false);
+				/*renderer.prepare();
 				actionLayer.updateLayer(secondsSinceLastFrame);
-				renderer.render();
+				renderer.render();*/
 				break;
 			default:
 				break;
 		}
+		renderer.prepare();
+		actionLayer.updateLayer(secondsSinceLastFrame);
+		renderer.render();
 	}
 
 	@Override
@@ -77,13 +101,19 @@ public class LayerManager implements EventHandler<GameEvent>{
 			case "JR_HIDE_MENU": 
 				state = GameState.PLAYING;
 				break;
+			case "JR_SHOW_PAUSE_MENU": 
+				pauseLayer.setTranslateX(hOffset);
+				state = GameState.PAUSING;
+				break;
+			case "JR_HIDE_PAUSE_MENU": 
+				state = GameState.PLAYING;
+				break;
+			case "JR_H_OFFSET":
+				this.hOffset = (int) event.getData();
+				break;
 			default:
 				break;
 		}
 		
-	}
-	
-	public void setScrollPaneOffset(int hOffset) {
-		this.hOffset = hOffset;
 	}
 }

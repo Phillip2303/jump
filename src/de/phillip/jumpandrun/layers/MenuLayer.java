@@ -29,6 +29,7 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 	private CanvasButton options;
 	private CanvasButton quit;
 	private int vOffset;
+	private boolean isDrawable;
 	
 	public MenuLayer(double width, double height) {
 		super(width, height);
@@ -68,20 +69,20 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 	public void handle(Event event) {
 		
 		switch (event.getEventType().getName()) {
-		case "MOUSE_PRESSED":
-			mousePressed();
-			break;
-		case "MOUSE_RELEASED":
-			mouseReleased();
-			break;
-		case "MOUSE_MOVED":
-			MouseEvent mouseEvent = (MouseEvent) event;
-			mouseMoved(mouseEvent.getX(), mouseEvent.getY());
-			break;
-			
-		default:
-			break;
-		}
+			case "MOUSE_PRESSED":
+				mousePressed();
+				break;
+			case "MOUSE_RELEASED":
+				mouseReleased();
+				break;
+			case "MOUSE_MOVED":
+				MouseEvent mouseEvent = (MouseEvent) event;
+				mouseMoved(mouseEvent.getX(), mouseEvent.getY());
+				break;
+				
+			default:
+				break;
+			}
 	}
 
 	private void mouseReleased() {
@@ -134,6 +135,16 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 		drawables.add(play);
 		drawables.add(options);
 		drawables.add(quit);
+	}
+
+	@Override
+	public void setDrawable(boolean value) {
+		isDrawable = value;
+	}
+
+	@Override
+	public boolean isDrawable() {
+		return isDrawable;
 	}
 
 }

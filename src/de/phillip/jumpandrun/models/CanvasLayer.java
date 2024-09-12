@@ -10,4 +10,6 @@ public interface CanvasLayer {
 	public void prepareLayer();
 	public void updateLayer(float secondsSinceLastFrame);
 	public void resetGame();
+	public void setDrawable(boolean value);
+	public boolean isDrawable();
 }

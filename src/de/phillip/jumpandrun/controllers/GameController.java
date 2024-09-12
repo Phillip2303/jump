@@ -48,6 +48,7 @@ public class GameController implements EventHandler<GameEvent> {
 			double minX = (double) event.getData();
 			if (scrollToLeft(minX))  {
 				moveContent(-Player.SPEED);
+				notifyScrollListener();
 			}
 			break;
 			
@@ -55,6 +56,7 @@ public class GameController implements EventHandler<GameEvent> {
 			double maxX = (double) event.getData();
 			if (scrollToRight(maxX)) {
 				moveContent(Player.SPEED);
+				notifyScrollListener();
 			}
 			break;
 		case "JR_QUIT":
@@ -67,11 +69,16 @@ public class GameController implements EventHandler<GameEvent> {
 	private void moveContent(double movingX) {
 		Bounds contentBounds = scrollPane.getContent().getBoundsInLocal();
 		Bounds viewPortBounds = scrollPane.getViewportBounds();
-		int hOffset = (int) (scrollPane.getHvalue() * (contentBounds.getWidth() - viewPortBounds.getWidth()));
-		layerManager.setScrollPaneOffset(hOffset);
 		double hValue = movingX / (contentBounds.getWidth() - viewPortBounds.getWidth());
 		double oldValue = scrollPane.getHvalue();
 		scrollPane.setHvalue(oldValue + hValue);
+	}
+	
+	private void notifyScrollListener() {
+		Bounds contentBounds = scrollPane.getContent().getBoundsInLocal();
+		Bounds viewPortBounds = scrollPane.getViewportBounds();
+		int hOffset = (int) (scrollPane.getHvalue() * (contentBounds.getWidth() - viewPortBounds.getWidth()));
+		FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_H_OFFSET, hOffset));
 	}
 	
 	private boolean scrollToRight(double maxX) {

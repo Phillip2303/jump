@@ -30,7 +30,7 @@ public class LayerManager implements EventHandler<GameEvent>{
 	private MenuLayer menuLayer;
 	private BackgroundLayer backgroundLayer;
 	private PauseLayer pauseLayer;
-	private GameState state = GameState.MENU;
+	//private GameState state = GameState.MENU;
 	private int hOffset;
 	
 	public LayerManager(StackPane stackPane) {
@@ -59,34 +59,6 @@ public class LayerManager implements EventHandler<GameEvent>{
 	}
 	
 	public void update(float secondsSinceLastFrame) {
-		switch (state) {
-			case MENU: 
-				menuLayer.setVisible(true);
-				menuLayer.setDrawable(true);
-				actionLayer.setDrawable(false);
-				backgroundLayer.setDrawable(false);
-				pauseLayer.setDrawable(false);
-				break;
-			case PAUSING:
-				menuLayer.setVisible(false);
-				menuLayer.setDrawable(false);
-				actionLayer.setDrawable(false);
-				backgroundLayer.setDrawable(false);
-				pauseLayer.setDrawable(true);
-				break;
-			case PLAYING:
-				menuLayer.setVisible(false);
-				menuLayer.setDrawable(false);
-				actionLayer.setDrawable(true);
-				backgroundLayer.setDrawable(true);
-				pauseLayer.setDrawable(false);
-				/*renderer.prepare();
-				actionLayer.updateLayer(secondsSinceLastFrame);
-				renderer.render();*/
-				break;
-			default:
-				break;
-		}
 		renderer.prepare();
 		actionLayer.updateLayer(secondsSinceLastFrame);
 		renderer.render();
@@ -97,17 +69,16 @@ public class LayerManager implements EventHandler<GameEvent>{
 		switch(event.getEventType().getName()) {
 			case "JR_SHOW_MENU": 
 				menuLayer.setTranslateX(hOffset);
-				state = GameState.MENU;
+				setGameState(GameState.MENU);
 				break;
 			case "JR_HIDE_MENU": 
-				state = GameState.PLAYING;
+				setGameState(GameState.PLAYING);
 				break;
 			case "JR_SHOW_PAUSE_MENU": 
-				pauseLayer.setTranslateX(hOffset);
-				state = GameState.PAUSING;
+				setGameState(GameState.PAUSING);
 				break;
 			case "JR_HIDE_PAUSE_MENU": 
-				state = GameState.PLAYING;
+				setGameState(GameState.PLAYING);
 				break;
 			case "JR_H_OFFSET":
 				this.hOffset = (int) event.getData();
@@ -116,5 +87,39 @@ public class LayerManager implements EventHandler<GameEvent>{
 				break;
 		}
 		
+	}
+	
+	private void setGameState(GameState state) {
+		switch (state) {
+			case MENU: 
+				menuLayer.setVisible(true);
+				menuLayer.setDrawable(true);
+				actionLayer.setDrawable(false);
+				backgroundLayer.setDrawable(false);
+				pauseLayer.setDrawable(false);
+				pauseLayer.setVisible(false);
+				break;
+			case PAUSING:
+				menuLayer.setVisible(false);
+				menuLayer.setDrawable(false);
+				actionLayer.setDrawable(true);
+				backgroundLayer.setDrawable(true);
+				pauseLayer.setDrawable(true);
+				pauseLayer.setVisible(true);
+				break;
+			case PLAYING:
+				menuLayer.setVisible(false);
+				menuLayer.setDrawable(false);
+				actionLayer.setDrawable(true);
+				backgroundLayer.setDrawable(true);
+				pauseLayer.setDrawable(false);
+				pauseLayer.setVisible(false);
+				/*renderer.prepare();
+				actionLayer.updateLayer(secondsSinceLastFrame);
+				renderer.render();*/
+				break;
+			default:
+				break;
+		}
 	}
 }

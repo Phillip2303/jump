@@ -2,6 +2,7 @@ package de.phillip.jumpandrun;
 
 import de.phillip.jumpandrun.controllers.GameController;
 import de.phillip.jumpandrun.events.FXEventBus;
+import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.utils.KeyPolling;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.application.Application;
@@ -35,6 +36,7 @@ public class Game extends Application {
 		KeyPolling.getInstance().pollScene(scene);
 		primaryStage.show();
 		gameController.startGame();
+		FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_MENU, null));
 	}
 	
 	private Scene createContent() {

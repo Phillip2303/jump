@@ -14,6 +14,7 @@ public class ResourcePool {
 	public static final String LEVEL_1 = "level_one_data_long.png";
 	public static final String BUTTON_SPRITES = "button_sprites.png";
 	public static final String SOUND_BUTTONS_SPRITES = "sound_button_sprites.png";
+	public static final String URM_BUTTONS_SPRITES = "urm_buttons_sprites.png";
 	
 	private static ResourcePool resourcePool;
 	//private Image background;

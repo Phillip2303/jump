@@ -88,12 +88,16 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 	private void mouseReleased() {
 		if (play.isActive()) {
 			play.setClicked(false);
-			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_HIDE_MENU, null));
+			if (isDrawable()) {
+				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_HIDE_MENU, null));
+			}
 		} else if (options.isActive()) {
 			options.setClicked(false);
 		} else if (quit.isActive()) {
 			quit.setClicked(false);
-			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_QUIT, null));
+			if (isDrawable()) {
+				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_QUIT, null));
+			}
 		}
 	}
 
@@ -126,12 +130,12 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 	}
 	
 	private void createButtons() {
-		play = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.WIDTH / 2), CanvasButton.V_OFFSET, 
-				CanvasButton.WIDTH, CanvasButton.HEIGHT, 0);
-		options = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.WIDTH / 2), CanvasButton.V_OFFSET + CanvasButton.HEIGHT, 
-				CanvasButton.WIDTH, CanvasButton.HEIGHT, 1);
-		quit = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.WIDTH / 2), CanvasButton.V_OFFSET + 2 * CanvasButton.HEIGHT, 
-				CanvasButton.WIDTH, CanvasButton.HEIGHT, 2);
+		play = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.MENU_WIDTH / 2), CanvasButton.MENU_V_OFFSET, 
+				CanvasButton.MENU_WIDTH, CanvasButton.MENU_HEIGHT, 0, GameState.MENU);
+		options = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.MENU_WIDTH / 2), CanvasButton.MENU_V_OFFSET + CanvasButton.MENU_HEIGHT, 
+				CanvasButton.MENU_WIDTH, CanvasButton.MENU_HEIGHT, 1, GameState.MENU);
+		quit = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.MENU_WIDTH / 2), CanvasButton.MENU_V_OFFSET + 2 * CanvasButton.MENU_HEIGHT, 
+				CanvasButton.MENU_WIDTH, CanvasButton.MENU_HEIGHT, 2, GameState.MENU);
 		drawables.add(play);
 		drawables.add(options);
 		drawables.add(quit);

@@ -16,7 +16,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class Game extends Application {
-	
+
 	public final static int TILES_DEFAULT_SIZE = 32;
 	public final static float SCALE = 2f;
 	public final static int TILES_IN_WIDTH = 26;
@@ -24,7 +24,7 @@ public class Game extends Application {
 	public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
 	public final static int GAMEWIDTH = TILES_SIZE * TILES_IN_WIDTH;
 	public final static int GAMEHEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
-	
+
 	private GameController gameController;
 
 	@Override
@@ -38,7 +38,7 @@ public class Game extends Application {
 		gameController.startGame();
 		FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_MENU, null));
 	}
-	
+
 	private Scene createContent() {
 		StackPane stackPane = new StackPane();
 		ScrollPane scrollPane = new ScrollPane(stackPane);
@@ -52,7 +52,7 @@ public class Game extends Application {
 			public void handle(MouseEvent event) {
 				FXEventBus.getInstance().fireEvent(event);
 			}
-			
+
 		});
 		scene.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
 
@@ -60,17 +60,17 @@ public class Game extends Application {
 			public void handle(MouseEvent event) {
 				FXEventBus.getInstance().fireEvent(event);
 			}
-			
+
 		});
 		scene.setOnMouseMoved(e -> {
 			FXEventBus.getInstance().fireEvent(e);
 		});
 		return scene;
-		
+
 	}
 
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 }

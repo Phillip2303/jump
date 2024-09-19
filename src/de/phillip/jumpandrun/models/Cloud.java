@@ -6,8 +6,8 @@ import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class Cloud extends Actor implements EventHandler<GameEvent>{
-	
+public class Cloud extends Actor implements EventHandler<GameEvent> {
+
 	private double x;
 	private double y;
 	private Image image;
@@ -36,13 +36,13 @@ public class Cloud extends Actor implements EventHandler<GameEvent>{
 	@Override
 	public void handle(GameEvent event) {
 		switch (event.getEventType().getName()) {
-			case "JR_H_OFFSET":
-				hOffset = (int) event.getData();
-				break;
-			default:
-				break;
+		case "JR_H_OFFSET":
+			hOffset = (int) event.getData();
+			break;
+		default:
+			break;
 		}
-		
+
 	}
 
 }

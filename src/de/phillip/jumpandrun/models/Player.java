@@ -14,7 +14,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 public class Player extends Actor {
-	
+
 	public static final int IDLE = 0;
 	public static final int RUNNING = 1;
 	public static final int JUMPING = 2;
@@ -28,7 +28,7 @@ public class Player extends Actor {
 	public static final int DEFAULT_HEIGHT = 40;
 	public static final double SPEED = 1.5 * Game.SCALE;
 	public static final double JUMPSPEED = -2.5 * Game.SCALE;
-	
+
 	private Image playerSprite;
 	private Image[][] actionSprites;
 	private int playerAction = IDLE;
@@ -46,7 +46,6 @@ public class Player extends Actor {
 	private boolean isJumping = false;
 	private boolean isFalling = false;
 	private int levelWidth;
-	
 
 	public Player(double width, double height, Image playerSprite) {
 		super(width, height);
@@ -56,20 +55,22 @@ public class Player extends Actor {
 
 	@Override
 	public void drawToCanvas(GraphicsContext gc) {
-		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX(), getDrawPosition().getY(), getWidth(), getHeight());
-		//drawHitBox(gc);
+		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX(), getDrawPosition().getY(),
+				getWidth(), getHeight());
+		// drawHitBox(gc);
 	}
 
 	@Override
 	public void debugOut() {
 
 	}
-	
+
 	@Override
 	public Rectangle2D getHitBox() {
-		return new Rectangle2D(getDrawPosition().getX() + xOffset, getDrawPosition().getY() + yOffset, hitboxWidth, hitboxHeight);
+		return new Rectangle2D(getDrawPosition().getX() + xOffset, getDrawPosition().getY() + yOffset, hitboxWidth,
+				hitboxHeight);
 	}
-	
+
 	private void createActionSprites() {
 		PixelReader pr = playerSprite.getPixelReader();
 		actionSprites = new Image[9][6];
@@ -91,7 +92,7 @@ public class Player extends Actor {
 		}
 		return wi;
 	}
-	
+
 	public void update() {
 		updateAnimationTic();
 		if (isJumping) {
@@ -101,40 +102,39 @@ public class Player extends Actor {
 			updateJump();
 		}
 	}
-	
+
 	private void checkFalling() {
 		Point2D oldPosition = getDrawPosition();
 		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + hitboxHeight);
-		for (Tile tile: tiles) {
+		for (Tile tile : tiles) {
 			Rectangle2D hitBox = tile.getHitBox();
-			if (!tile.isSolid() && 
-					hitBox.intersects(getHitBox()) && 
-					hitBox.getMinX() < getHitBox().getMinX() && 
-					hitBox.getMaxX() > getHitBox().getMaxX()) {
+			if (!tile.isSolid() && hitBox.intersects(getHitBox()) && hitBox.getMinX() < getHitBox().getMinX()
+					&& hitBox.getMaxX() > getHitBox().getMaxX()) {
 				setPlayerAction(FALLING);
 			}
 		}
 		setDrawPosition(oldPosition.getX(), oldPosition.getY());
 	}
-	
+
 	private void updateJump() {
 		if (canJumpHere(airSpeed)) {
 			setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + airSpeed);
 			airSpeed += gravity;
 		} else {
 			if (airSpeed > 0) {
-				//System.out.println("Can not jump");
+				// System.out.println("Can not jump");
 				resetJumping();
 			} else {
 				airSpeed = fallSpeedAfterCollision;
 			}
 		}
 	}
-	
+
 	private void resetJumping() {
 		isJumping = false;
 		isFalling = false;
 		airSpeed = 0;
+		setPlayerAction(IDLE);
 	}
 
 	private void updateAnimationTic() {
@@ -147,27 +147,25 @@ public class Player extends Actor {
 			aniIndex = 0;
 		}
 	}
-	
-	
-	
+
 	private int getSpriteCount(int playerAction) {
 		switch (playerAction) {
-			case IDLE:
-				return 5;
-			case RUNNING:
-				return 6;
-			case JUMPING:
-			case ATTACK_1:
-			case ATTACK_JUMP_1:
-			case ATTACK_JUMP_2:
-				return 3;
-			case HIT:
-				return 4;
-			case GROUND:
-				return 2;
-			case FALLING:
-			default:
-				return 1;
+		case IDLE:
+			return 5;
+		case RUNNING:
+			return 6;
+		case JUMPING:
+		case ATTACK_1:
+		case ATTACK_JUMP_1:
+		case ATTACK_JUMP_2:
+			return 3;
+		case HIT:
+			return 4;
+		case GROUND:
+			return 2;
+		case FALLING:
+		default:
+			return 1;
 		}
 	}
 
@@ -204,28 +202,29 @@ public class Player extends Actor {
 		case FALLING:
 			isFalling = true;
 			airSpeed = fallSpeedAfterCollision;
-		default: 
+		default:
 			break;
 		}
 		if (this.playerAction != playerAction && !isJumping) {
 			resetAniTic();
 		}
 	}
-	
+
 	private void resetAniTic() {
 		aniTic = 0;
 		aniIndex = 0;
 	}
-	
+
 	private void drawHitBox(GraphicsContext gc) {
 		gc.setStroke(Color.RED);
-		gc.strokeRect(getDrawPosition().getX() + xOffset, getDrawPosition().getY() + yOffset, hitboxWidth, hitboxHeight);
+		gc.strokeRect(getDrawPosition().getX() + xOffset, getDrawPosition().getY() + yOffset, hitboxWidth,
+				hitboxHeight);
 	}
-	
+
 	public void setTiles(List<Tile> tiles) {
 		this.tiles = tiles;
 	}
-	
+
 	public boolean canMoveHere(double direction) {
 		Point2D oldPosition = getDrawPosition();
 		if (isFalling) {
@@ -233,7 +232,7 @@ public class Player extends Actor {
 		} else {
 			setDrawPosition(getDrawPosition().getX() + direction, getDrawPosition().getY());
 		}
-		for (Tile tile: tiles) {
+		for (Tile tile : tiles) {
 			Rectangle2D hitBox = tile.getHitBox();
 			if (tile.isSolid() && hitBox.intersects(getHitBox())) {
 				setDrawPosition(oldPosition.getX(), oldPosition.getY());
@@ -249,11 +248,11 @@ public class Player extends Actor {
 		}
 		return true;
 	}
-	
+
 	public boolean canJumpHere(double speed) {
 		Point2D oldPosition = getDrawPosition();
 		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + speed);
-		for (Tile tile: tiles) {
+		for (Tile tile : tiles) {
 			Rectangle2D hitBox = tile.getHitBox();
 			if (tile.isSolid() && hitBox.intersects(getHitBox())) {
 				int compare = Double.compare(speed, 0);
@@ -272,7 +271,7 @@ public class Player extends Actor {
 		setDrawPosition(oldPosition.getX(), oldPosition.getY());
 		return true;
 	}
-	
+
 	public void setLevelWidth(int levelWidth) {
 		this.levelWidth = levelWidth;
 	}

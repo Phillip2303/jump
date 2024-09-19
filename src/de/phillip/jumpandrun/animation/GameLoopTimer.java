@@ -15,39 +15,38 @@ public abstract class GameLoopTimer extends AnimationTimer {
 	public boolean pauseScheduled;
 	public boolean playScheduled;
 	public boolean restartScheduled;
-	
-	
+
 	public boolean isPaused() {
 		return isPaused;
 	}
-	
+
 	public boolean isActive() {
 		return isActive;
 	}
-	
+
 	public DoubleProperty animationDurationProperty() {
 		return animationDuration;
 	}
-	
+
 	public void pause() {
-		if(!isPaused) {
+		if (!isPaused) {
 			pauseScheduled = true;
 		}
 	}
-	
+
 	public void play() {
-		if(isPaused) {
+		if (isPaused) {
 			playScheduled = true;
 		}
 	}
-	
+
 	@Override
 	public void start() {
 		super.start();
 		isActive = true;
 		restartScheduled = true;
 	}
-	
+
 	@Override
 	public void stop() {
 		super.stop();
@@ -58,16 +57,16 @@ public abstract class GameLoopTimer extends AnimationTimer {
 		playScheduled = false;
 		animationDuration.set(0);
 	}
-	
+
 	@Override
 	public void handle(long now) {
-		if(pauseScheduled) {
+		if (pauseScheduled) {
 			pauseStart = now;
 			isPaused = true;
 			pauseScheduled = false;
 		}
-		if(playScheduled) {
-			animationStart = animationStart + (now-pauseStart);
+		if (playScheduled) {
+			animationStart = animationStart + (now - pauseStart);
 			isPaused = false;
 			playScheduled = false;
 		}
@@ -76,18 +75,18 @@ public abstract class GameLoopTimer extends AnimationTimer {
 			animationStart = now;
 			restartScheduled = false;
 		}
-		if(!isPaused) {
+		if (!isPaused) {
 			long aniDuration = now - animationStart;
-			animationDuration.set(aniDuration/1e9);
+			animationDuration.set(aniDuration / 1e9);
 			float secondsSinceLastFrame = (float) ((now - lastFrameTimeNanos) / 1e9);
-			if(secondsSinceLastFrame > 0.02) {
+			if (secondsSinceLastFrame > 0.02) {
 				secondsSinceLastFrame = 0.01f;
 			}
 			lastFrameTimeNanos = now;
 			tic(secondsSinceLastFrame);
 		}
-	} 
-	
+	}
+
 	public abstract void tic(float secondsSinceLastFrame);
 
 }

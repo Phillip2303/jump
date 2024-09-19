@@ -21,7 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event> {
-	
+
 	private Image menuBackground;
 	private Image buttonSprites;
 	private List<Drawable> drawables = new ArrayList<>();
@@ -29,13 +29,9 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 	private CanvasButton options;
 	private CanvasButton quit;
 	private int vOffset;
-	private boolean isDrawable;
-	
+
 	public MenuLayer(double width, double height) {
 		super(width, height);
-		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_PRESSED, this);
-		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_RELEASED, this);
-		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_MOVED, this);
 		menuBackground = ResourcePool.getInstance().getMenuBackground();
 		buttonSprites = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.BUTTON_SPRITES);
 		createButtons();
@@ -52,52 +48,50 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 		getGraphicsContext2D().setFill(Color.BLACK);
 		getGraphicsContext2D().fillRect(0, 0, getWidth(), getHeight());
 		getGraphicsContext2D().drawImage(menuBackground, 0, 0, menuBackground.getWidth(), menuBackground.getHeight(),
-			Game.GAMEWIDTH / 2 - ((menuBackground.getWidth() * Game.SCALE) / 2), 80, menuBackground.getWidth() * Game.SCALE, menuBackground.getHeight() * Game.SCALE);
+				Game.GAMEWIDTH / 2 - ((menuBackground.getWidth() * Game.SCALE) / 2), 80,
+				menuBackground.getWidth() * Game.SCALE, menuBackground.getHeight() * Game.SCALE);
 	}
 
 	@Override
 	public void updateLayer(float secondsSinceLastFrame) {
-		
+
 	}
 
 	@Override
 	public void resetGame() {
-		
+
 	}
 
 	@Override
 	public void handle(Event event) {
-		
+
 		switch (event.getEventType().getName()) {
-			case "MOUSE_PRESSED":
-				mousePressed();
-				break;
-			case "MOUSE_RELEASED":
-				mouseReleased();
-				break;
-			case "MOUSE_MOVED":
-				MouseEvent mouseEvent = (MouseEvent) event;
-				mouseMoved(mouseEvent.getX(), mouseEvent.getY());
-				break;
-				
-			default:
-				break;
-			}
+		case "MOUSE_PRESSED":
+			mousePressed();
+			break;
+		case "MOUSE_RELEASED":
+			mouseReleased();
+			break;
+		case "MOUSE_MOVED":
+			MouseEvent mouseEvent = (MouseEvent) event;
+			mouseMoved(mouseEvent.getX(), mouseEvent.getY());
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	private void mouseReleased() {
 		if (play.isActive()) {
 			play.setClicked(false);
-			if (isDrawable()) {
-				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_HIDE_MENU, null));
-			}
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_HIDE_MENU, null));
 		} else if (options.isActive()) {
 			options.setClicked(false);
 		} else if (quit.isActive()) {
 			quit.setClicked(false);
-			if (isDrawable()) {
-				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_QUIT, null));
-			}
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_QUIT, null));
+
 		}
 	}
 
@@ -128,27 +122,41 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 			quit.setActive(false);
 		}
 	}
-	
+
 	private void createButtons() {
-		play = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.MENU_WIDTH / 2), CanvasButton.MENU_V_OFFSET, 
-				CanvasButton.MENU_WIDTH, CanvasButton.MENU_HEIGHT, 0, GameState.MENU);
-		options = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.MENU_WIDTH / 2), CanvasButton.MENU_V_OFFSET + CanvasButton.MENU_HEIGHT, 
-				CanvasButton.MENU_WIDTH, CanvasButton.MENU_HEIGHT, 1, GameState.MENU);
-		quit = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.MENU_WIDTH / 2), CanvasButton.MENU_V_OFFSET + 2 * CanvasButton.MENU_HEIGHT, 
-				CanvasButton.MENU_WIDTH, CanvasButton.MENU_HEIGHT, 2, GameState.MENU);
+		play = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.MENU_WIDTH / 2),
+				CanvasButton.MENU_V_OFFSET, CanvasButton.MENU_WIDTH, CanvasButton.MENU_HEIGHT, 0, GameState.MENU);
+		options = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.MENU_WIDTH / 2),
+				CanvasButton.MENU_V_OFFSET + CanvasButton.MENU_HEIGHT, CanvasButton.MENU_WIDTH,
+				CanvasButton.MENU_HEIGHT, 1, GameState.MENU);
+		quit = new CanvasButton(buttonSprites, (int) (getWidth() / 2 - CanvasButton.MENU_WIDTH / 2),
+				CanvasButton.MENU_V_OFFSET + 2 * CanvasButton.MENU_HEIGHT, CanvasButton.MENU_WIDTH,
+				CanvasButton.MENU_HEIGHT, 2, GameState.MENU);
 		drawables.add(play);
 		drawables.add(options);
 		drawables.add(quit);
 	}
 
 	@Override
-	public void setDrawable(boolean value) {
-		isDrawable = value;
+	public void listenToEvents(boolean value) {
+		if (value) {
+			registerListeners();
+		} else {
+			unregisterListeners();
+		}
 	}
 
-	@Override
-	public boolean isDrawable() {
-		return isDrawable;
+	private void unregisterListeners() {
+		FXEventBus.getInstance().removeEventHandler(MouseEvent.MOUSE_PRESSED, this);
+		FXEventBus.getInstance().removeEventHandler(MouseEvent.MOUSE_RELEASED, this);
+		FXEventBus.getInstance().removeEventHandler(MouseEvent.MOUSE_MOVED, this);
+
+	}
+
+	private void registerListeners() {
+		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_PRESSED, this);
+		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_RELEASED, this);
+		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_MOVED, this);
 	}
 
 }

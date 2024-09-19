@@ -20,23 +20,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 public class PauseLayer extends Canvas implements CanvasLayer, EventHandler<Event> {
-	
+
 	private List<Drawable> actors = new ArrayList<>();
 	private Image pauseBackground;
 	private Image soundButtonSprites;
 	private Image urmButtonSprites;
-	private boolean isDrawable;
 	private CanvasButton musicButton;
 	private CanvasButton sfxButton;
 	private CanvasButton unpauseButton;
 	private CanvasButton restartButton;
 	private CanvasButton menuButton;
-	
+
 	public PauseLayer(double width, double height) {
 		super(width, height);
-		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_PRESSED, this);
-		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_RELEASED, this);
-		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_MOVED, this);
 		pauseBackground = ResourcePool.getInstance().getPauseBackground();
 		soundButtonSprites = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.SOUND_BUTTONS_SPRITES);
 		urmButtonSprites = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.URM_BUTTONS_SPRITES);
@@ -44,16 +40,18 @@ public class PauseLayer extends Canvas implements CanvasLayer, EventHandler<Even
 	}
 
 	private void createButtons() {
-		musicButton = new CanvasButton(soundButtonSprites, (int) ((getWidth() / 2) + (int) (32 * Game.SCALE)), CanvasButton.SOUND_V_OFFSET, 
+		musicButton = new CanvasButton(soundButtonSprites, (int) ((getWidth() / 2) + (int) (32 * Game.SCALE)),
+				CanvasButton.SOUND_V_OFFSET, CanvasButton.PAUSE_SIZE, CanvasButton.PAUSE_SIZE, 0, GameState.PAUSING);
+		sfxButton = new CanvasButton(soundButtonSprites, (int) ((getWidth() / 2) + (int) (32 * Game.SCALE)),
+				CanvasButton.SOUND_V_OFFSET + CanvasButton.PAUSE_SIZE + 5, CanvasButton.PAUSE_SIZE,
+				CanvasButton.PAUSE_SIZE, 1, GameState.PAUSING);
+		unpauseButton = new CanvasButton(urmButtonSprites,
+				(int) ((getWidth() / 2) - CanvasButton.PAUSE_SIZE) - (int) (32 * Game.SCALE), CanvasButton.URM_V_OFFSET,
 				CanvasButton.PAUSE_SIZE, CanvasButton.PAUSE_SIZE, 0, GameState.PAUSING);
-		sfxButton = new CanvasButton(soundButtonSprites, (int) ((getWidth() / 2) + (int) (32 * Game.SCALE)), CanvasButton.SOUND_V_OFFSET + CanvasButton.PAUSE_SIZE + 5, 
-				CanvasButton.PAUSE_SIZE, CanvasButton.PAUSE_SIZE, 1, GameState.PAUSING);
-		unpauseButton = new CanvasButton(urmButtonSprites, (int) ((getWidth() / 2) - CanvasButton.PAUSE_SIZE) - (int) (32 * Game.SCALE), CanvasButton.URM_V_OFFSET, 
-				CanvasButton.PAUSE_SIZE, CanvasButton.PAUSE_SIZE, 0, GameState.PAUSING);
-		restartButton = new CanvasButton(urmButtonSprites, (int) ((getWidth() / 2) - CanvasButton.PAUSE_SIZE / 2), CanvasButton.URM_V_OFFSET, 
-				CanvasButton.PAUSE_SIZE, CanvasButton.PAUSE_SIZE, 1, GameState.PAUSING);
-		menuButton = new CanvasButton(urmButtonSprites, (int) ((getWidth() / 2) + (int) (32 * Game.SCALE)), CanvasButton.URM_V_OFFSET, 
-				CanvasButton.PAUSE_SIZE, CanvasButton.PAUSE_SIZE, 2, GameState.PAUSING);
+		restartButton = new CanvasButton(urmButtonSprites, (int) ((getWidth() / 2) - CanvasButton.PAUSE_SIZE / 2),
+				CanvasButton.URM_V_OFFSET, CanvasButton.PAUSE_SIZE, CanvasButton.PAUSE_SIZE, 1, GameState.PAUSING);
+		menuButton = new CanvasButton(urmButtonSprites, (int) ((getWidth() / 2) + (int) (32 * Game.SCALE)),
+				CanvasButton.URM_V_OFFSET, CanvasButton.PAUSE_SIZE, CanvasButton.PAUSE_SIZE, 2, GameState.PAUSING);
 		actors.add(musicButton);
 		actors.add(sfxButton);
 		actors.add(unpauseButton);
@@ -70,7 +68,8 @@ public class PauseLayer extends Canvas implements CanvasLayer, EventHandler<Even
 	public void prepareLayer() {
 		getGraphicsContext2D().clearRect(0, 0, getWidth(), getHeight());
 		getGraphicsContext2D().drawImage(pauseBackground, 0, 0, pauseBackground.getWidth(), pauseBackground.getHeight(),
-			Game.GAMEWIDTH / 2 - ((pauseBackground.getWidth() * Game.SCALE) / 2), 60, pauseBackground.getWidth() * Game.SCALE, pauseBackground.getHeight() * Game.SCALE);
+				Game.GAMEWIDTH / 2 - ((pauseBackground.getWidth() * Game.SCALE) / 2), 60,
+				pauseBackground.getWidth() * Game.SCALE, pauseBackground.getHeight() * Game.SCALE);
 	}
 
 	@Override
@@ -85,28 +84,29 @@ public class PauseLayer extends Canvas implements CanvasLayer, EventHandler<Even
 
 	@Override
 	public void handle(Event event) {
-		
+
 		switch (event.getEventType().getName()) {
-			case "MOUSE_PRESSED":
-				mousePressed();
-				break;
-			case "MOUSE_RELEASED":
-				mouseReleased();
-				break;
-			case "MOUSE_MOVED":
-				MouseEvent mouseEvent = (MouseEvent) event;
-				mouseMoved(mouseEvent.getX(), mouseEvent.getY());
-				break;
-				
-			default:
-				break;
-			}
+		case "MOUSE_PRESSED":
+			mousePressed();
+			break;
+		case "MOUSE_RELEASED":
+			mouseReleased();
+			break;
+		case "MOUSE_MOVED":
+			MouseEvent mouseEvent = (MouseEvent) event;
+			mouseMoved(mouseEvent.getX(), mouseEvent.getY());
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	private void mouseReleased() {
 		if (musicButton.isActive()) {
 			musicButton.setClicked(false);
-			//FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_HIDE_MENU, null));
+			// FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_HIDE_MENU,
+			// null));
 		} else if (sfxButton.isActive()) {
 			sfxButton.setClicked(false);
 		} else if (unpauseButton.isActive()) {
@@ -125,14 +125,11 @@ public class PauseLayer extends Canvas implements CanvasLayer, EventHandler<Even
 			musicButton.setClicked(true);
 		} else if (sfxButton.isActive()) {
 			sfxButton.setClicked(true);
-		}
-		else if (unpauseButton.isActive()) {
+		} else if (unpauseButton.isActive()) {
 			unpauseButton.setClicked(true);
-		}
-		else if (restartButton.isActive()) {
+		} else if (restartButton.isActive()) {
 			restartButton.setClicked(true);
-		}
-		else if (menuButton.isActive()) {
+		} else if (menuButton.isActive()) {
 			menuButton.setClicked(true);
 		}
 	}
@@ -166,13 +163,25 @@ public class PauseLayer extends Canvas implements CanvasLayer, EventHandler<Even
 	}
 
 	@Override
-	public void setDrawable(boolean value) {
-		isDrawable = value;
+	public void listenToEvents(boolean value) {
+		if (value) {
+			registerListeners();
+		} else {
+			unregisterListeners();
+		}
 	}
 
-	@Override
-	public boolean isDrawable() {
-		return isDrawable;
+	private void unregisterListeners() {
+		FXEventBus.getInstance().removeEventHandler(MouseEvent.MOUSE_PRESSED, this);
+		FXEventBus.getInstance().removeEventHandler(MouseEvent.MOUSE_RELEASED, this);
+		FXEventBus.getInstance().removeEventHandler(MouseEvent.MOUSE_MOVED, this);
+
+	}
+
+	private void registerListeners() {
+		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_PRESSED, this);
+		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_RELEASED, this);
+		FXEventBus.getInstance().addEventHandler(MouseEvent.MOUSE_MOVED, this);
 	}
 
 }

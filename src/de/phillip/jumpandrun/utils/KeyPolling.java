@@ -12,42 +12,42 @@ public class KeyPolling {
 	private static Scene scene;
 	private static final Set<KeyCode> currentKeysDown = new HashSet<>();
 	private static KeyPolling keyPolling;
-	
+
 	private KeyPolling() {
-		
+
 	}
-	
-	public static KeyPolling getInstance () {
-		if(keyPolling == null) {
+
+	public static KeyPolling getInstance() {
+		if (keyPolling == null) {
 			keyPolling = new KeyPolling();
 		}
 		return keyPolling;
 	}
-	
+
 	public void pollScene(Scene scene) {
 		clearKeys();
 		removeCurrentKeyHandlers();
 		setScene(scene);
 	}
-	
+
 	private void clearKeys() {
 		currentKeysDown.clear();
 	}
-	
+
 	private void removeCurrentKeyHandlers() {
 		if (KeyPolling.scene != null) {
 			KeyPolling.scene.setOnKeyPressed(null);
 			KeyPolling.scene.setOnKeyReleased(null);
 		}
 	}
-	
+
 	private void setScene(Scene scene) {
 		KeyPolling.scene = scene;
 		KeyPolling.scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
 			@Override
 			public void handle(KeyEvent event) {
-				//System.out.println("Add: " + event.getCode().toString());
+				// System.out.println("Add: " + event.getCode().toString());
 				currentKeysDown.add(event.getCode());
 			}
 		});
@@ -55,17 +55,17 @@ public class KeyPolling {
 
 			@Override
 			public void handle(KeyEvent event) {
-				//System.out.println("Remove: " + event.getCode().toString());
+				// System.out.println("Remove: " + event.getCode().toString());
 				currentKeysDown.remove(event.getCode());
 			}
-			
+
 		});
 	}
-		
+
 	public boolean isDown(KeyCode keyCode) {
 		return currentKeysDown.contains(keyCode);
 	}
-	
+
 	public boolean keysPressed() {
 		if (currentKeysDown.isEmpty()) {
 			return false;

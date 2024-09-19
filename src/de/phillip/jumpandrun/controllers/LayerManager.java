@@ -20,9 +20,8 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-public class LayerManager implements EventHandler<GameEvent>{
-	
-	
+public class LayerManager implements EventHandler<GameEvent> {
+
 	private StackPane stackPane;
 	private LevelManager levelManager;
 	private Renderer renderer;
@@ -30,9 +29,9 @@ public class LayerManager implements EventHandler<GameEvent>{
 	private MenuLayer menuLayer;
 	private BackgroundLayer backgroundLayer;
 	private PauseLayer pauseLayer;
-	//private GameState state = GameState.MENU;
+	// private GameState state = GameState.MENU;
 	private int hOffset;
-	
+
 	public LayerManager(StackPane stackPane) {
 		this.stackPane = stackPane;
 		levelManager = new LevelManager();
@@ -42,9 +41,11 @@ public class LayerManager implements EventHandler<GameEvent>{
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_SHOW_PAUSE_MENU, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_HIDE_PAUSE_MENU, this);
 		renderer = new Renderer();
-		actionLayer = new ActionLayer(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE, Game.GAMEHEIGHT, levelManager);
+		actionLayer = new ActionLayer(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE,
+				Game.GAMEHEIGHT, levelManager);
 		menuLayer = new MenuLayer(Game.GAMEWIDTH, Game.GAMEHEIGHT);
-		backgroundLayer = new BackgroundLayer(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE, Game.GAMEHEIGHT);
+		backgroundLayer = new BackgroundLayer(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE,
+				Game.GAMEHEIGHT);
 		pauseLayer = new PauseLayer(Game.GAMEWIDTH, Game.GAMEHEIGHT);
 		renderer.registerCanvasLayer(actionLayer);
 		renderer.registerCanvasLayer(menuLayer);
@@ -57,7 +58,7 @@ public class LayerManager implements EventHandler<GameEvent>{
 		StackPane.setAlignment(pauseLayer, Pos.TOP_LEFT);
 		stackPane.getChildren().add(3, pauseLayer);
 	}
-	
+
 	public void update(float secondsSinceLastFrame) {
 		renderer.prepare();
 		actionLayer.updateLayer(secondsSinceLastFrame);
@@ -66,60 +67,59 @@ public class LayerManager implements EventHandler<GameEvent>{
 
 	@Override
 	public void handle(GameEvent event) {
-		switch(event.getEventType().getName()) {
-			case "JR_SHOW_MENU": 
-				menuLayer.setTranslateX(hOffset);
-				setGameState(GameState.MENU);
-				break;
-			case "JR_HIDE_MENU": 
-				setGameState(GameState.PLAYING);
-				break;
-			case "JR_SHOW_PAUSE_MENU": 
-				setGameState(GameState.PAUSING);
-				break;
-			case "JR_HIDE_PAUSE_MENU": 
-				setGameState(GameState.PLAYING);
-				break;
-			case "JR_H_OFFSET":
-				this.hOffset = (int) event.getData();
-				break;
-			default:
-				break;
+		switch (event.getEventType().getName()) {
+		case "JR_SHOW_MENU":
+			menuLayer.setTranslateX(hOffset);
+			setGameState(GameState.MENU);
+			break;
+		case "JR_HIDE_MENU":
+			setGameState(GameState.PLAYING);
+			break;
+		case "JR_SHOW_PAUSE_MENU":
+			pauseLayer.setTranslateX(hOffset);
+			setGameState(GameState.PAUSING);
+			break;
+		case "JR_HIDE_PAUSE_MENU":
+			setGameState(GameState.PLAYING);
+			break;
+		case "JR_H_OFFSET":
+			this.hOffset = (int) event.getData();
+			break;
+		default:
+			break;
 		}
-		
+
 	}
-	
+
 	private void setGameState(GameState state) {
 		switch (state) {
-			case MENU: 
-				menuLayer.setVisible(true);
-				menuLayer.setDrawable(true);
-				actionLayer.setDrawable(false);
-				backgroundLayer.setDrawable(false);
-				pauseLayer.setDrawable(false);
-				pauseLayer.setVisible(false);
-				break;
-			case PAUSING:
-				menuLayer.setVisible(false);
-				menuLayer.setDrawable(false);
-				actionLayer.setDrawable(true);
-				backgroundLayer.setDrawable(true);
-				pauseLayer.setDrawable(true);
-				pauseLayer.setVisible(true);
-				break;
-			case PLAYING:
-				menuLayer.setVisible(false);
-				menuLayer.setDrawable(false);
-				actionLayer.setDrawable(true);
-				backgroundLayer.setDrawable(true);
-				pauseLayer.setDrawable(false);
-				pauseLayer.setVisible(false);
-				/*renderer.prepare();
-				actionLayer.updateLayer(secondsSinceLastFrame);
-				renderer.render();*/
-				break;
-			default:
-				break;
+		case MENU:
+			menuLayer.setVisible(true);
+			menuLayer.listenToEvents(true);
+			pauseLayer.setVisible(false);
+			pauseLayer.listenToEvents(false);
+			actionLayer.listenToEvents(false);
+			break;
+		case PAUSING:
+			menuLayer.setVisible(false);
+			menuLayer.listenToEvents(false);
+			pauseLayer.setVisible(true);
+			pauseLayer.listenToEvents(true);
+			actionLayer.listenToEvents(false);
+			break;
+		case PLAYING:
+			menuLayer.setVisible(false);
+			menuLayer.listenToEvents(false);
+			pauseLayer.setVisible(false);
+			pauseLayer.listenToEvents(false);
+			actionLayer.listenToEvents(true);
+			/*
+			 * renderer.prepare(); actionLayer.updateLayer(secondsSinceLastFrame);
+			 * renderer.render();
+			 */
+			break;
+		default:
+			break;
 		}
 	}
 }

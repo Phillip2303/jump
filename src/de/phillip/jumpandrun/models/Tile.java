@@ -7,7 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Tile extends Actor {
-	
+
 	private Image imageSprite;
 	private boolean solid = true;
 
@@ -21,11 +21,11 @@ public class Tile extends Actor {
 
 	@Override
 	public void drawToCanvas(GraphicsContext gc) {
-		gc.drawImage(imageSprite, 0, 0, imageSprite.getWidth(), imageSprite.getHeight(), 
-				getDrawPosition().getX(), getDrawPosition().getY(), Game.TILES_SIZE, Game.TILES_SIZE);
-		//drawHitBox(gc);
+		gc.drawImage(imageSprite, 0, 0, imageSprite.getWidth(), imageSprite.getHeight(), getDrawPosition().getX(),
+				getDrawPosition().getY(), Game.TILES_SIZE, Game.TILES_SIZE);
+		// drawHitBox(gc);
 	}
-	
+
 	private void drawHitBox(GraphicsContext gc) {
 		gc.strokeRect(getDrawPosition().getX(), getDrawPosition().getY(), getWidth(), getHeight());
 	}
@@ -34,7 +34,7 @@ public class Tile extends Actor {
 	public void debugOut() {
 
 	}
-	
+
 	public boolean isSolid() {
 		return solid;
 	}

@@ -11,14 +11,13 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 
 public class GameController implements EventHandler<GameEvent> {
-	
+
 	private ScrollPane scrollPane;
 	private GameLoopTimer loop;
 	private boolean isStarted;
 	private LayerManager layerManager;
-	
-	
-	public GameController(ScrollPane scrollPane)  {
+
+	public GameController(ScrollPane scrollPane) {
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_MOVE_LEFT, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_MOVE_RIGHT, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_QUIT, this);
@@ -29,10 +28,10 @@ public class GameController implements EventHandler<GameEvent> {
 			public void tic(float secondsSinceLastFrame) {
 				layerManager.update(secondsSinceLastFrame);
 			}
-			
+
 		};
 	}
-	
+
 	public void startGame() {
 		if (!isStarted) {
 			isStarted = true;
@@ -46,12 +45,12 @@ public class GameController implements EventHandler<GameEvent> {
 		switch (event.getEventType().getName()) {
 		case "JR_MOVE_LEFT":
 			double minX = (double) event.getData();
-			if (scrollToLeft(minX))  {
+			if (scrollToLeft(minX)) {
 				moveContent(-Player.SPEED);
 				notifyScrollListener();
 			}
 			break;
-			
+
 		case "JR_MOVE_RIGHT":
 			double maxX = (double) event.getData();
 			if (scrollToRight(maxX)) {
@@ -65,7 +64,7 @@ public class GameController implements EventHandler<GameEvent> {
 			break;
 		}
 	}
-	
+
 	private void moveContent(double movingX) {
 		Bounds contentBounds = scrollPane.getContent().getBoundsInLocal();
 		Bounds viewPortBounds = scrollPane.getViewportBounds();
@@ -73,21 +72,21 @@ public class GameController implements EventHandler<GameEvent> {
 		double oldValue = scrollPane.getHvalue();
 		scrollPane.setHvalue(oldValue + hValue);
 	}
-	
+
 	private void notifyScrollListener() {
 		Bounds contentBounds = scrollPane.getContent().getBoundsInLocal();
 		Bounds viewPortBounds = scrollPane.getViewportBounds();
 		int hOffset = (int) (scrollPane.getHvalue() * (contentBounds.getWidth() - viewPortBounds.getWidth()));
 		FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_H_OFFSET, hOffset));
 	}
-	
+
 	private boolean scrollToRight(double maxX) {
 		if (maxX > Game.GAMEWIDTH / 2) {
 			return true;
-		} 
+		}
 		return false;
 	}
-	
+
 	private boolean scrollToLeft(double minX) {
 		Bounds contentBounds = scrollPane.getContent().getBoundsInLocal();
 		Bounds viewPortBounds = scrollPane.getViewportBounds();

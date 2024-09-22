@@ -1,7 +1,12 @@
 
 package de.phillip.jumpandrun.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.phillip.jumpandrun.Game;
+import de.phillip.jumpandrun.models.Enemy;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
@@ -100,5 +105,29 @@ public class ResourcePool {
 
 	public Image getPlayingBg() {
 		return playingBg;
+	}
+	
+	public List<Point2D> getEnemyPositions(int level, Enemy.Type type) {
+		Image levelAtlas = null;
+		switch (level) {
+		case 1:
+			levelAtlas = getLevelAtlas(LEVEL_1);
+			break;
+		default:
+			break;
+		}
+		List<Point2D> enemyPositions = new ArrayList<Point2D>();
+		for (int j = 0; j < levelAtlas.getHeight(); j++) {
+			for (int i = 0; i < levelAtlas.getWidth(); i++) {
+				Color color = levelAtlas.getPixelReader().getColor(i, j);
+				int colorValue = (int) (color.getGreen() * 255);
+				if (colorValue == type.getValue()) {
+					Point2D pos = new Point2D(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
+					enemyPositions.add(pos);
+				}
+			}
+		}
+		return enemyPositions;
+		
 	}
 }

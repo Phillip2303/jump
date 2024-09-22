@@ -10,7 +10,19 @@ import javafx.scene.paint.Color;
 public abstract class Enemy extends Actor {
 
 	public enum Type {
-		CRABBY, CANNON, SHARK;
+		CRABBY(0), 
+		CANNON(1), 
+		SHARK(2);
+		
+		private final int value;
+		
+		private Type(int value) {
+			this.value = value;
+		}
+		
+		public int getValue() {
+			return value;
+		}
 	}
 
 	public static final int IDLE = 0;

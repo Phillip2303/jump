@@ -5,6 +5,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public class Tile extends Actor {
 
@@ -13,6 +14,7 @@ public class Tile extends Actor {
 
 	public Tile(double width, double height, Image imageSprite, int index) {
 		super(width, height);
+		initHitbox(0, 0, width, height);
 		if (index == 11) {
 			solid = false;
 		}
@@ -23,12 +25,12 @@ public class Tile extends Actor {
 	public void drawToCanvas(GraphicsContext gc) {
 		gc.drawImage(imageSprite, 0, 0, imageSprite.getWidth(), imageSprite.getHeight(), getDrawPosition().getX(),
 				getDrawPosition().getY(), Game.TILES_SIZE, Game.TILES_SIZE);
-		// drawHitBox(gc);
+		drawHitbox(gc, Color.BLACK);
 	}
 
-	private void drawHitBox(GraphicsContext gc) {
+	/*private void drawHitBox(GraphicsContext gc) {
 		gc.strokeRect(getDrawPosition().getX(), getDrawPosition().getY(), getWidth(), getHeight());
-	}
+	}*/
 
 	@Override
 	public void debugOut() {

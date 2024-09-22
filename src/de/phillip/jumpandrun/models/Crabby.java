@@ -18,16 +18,21 @@ public class Crabby extends Enemy {
 	
 	private Image enemySprite = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.CRABBY_SPRITES);
 	private Image[][] actionSprites;
+	private double hitboxWidth = 22 * Game.SCALE;
+	private double hitboxHeight = 19 * Game.SCALE;
+	private double xOffset = 26 * Game.SCALE;
+	private double yOffset = 9 * Game.SCALE;
 	
 
 	public Crabby() {
 		super(CRABBY_WIDTH, CRABBY_HEIGHT, Enemy.Type.CRABBY);
 		createActionSprites();
+		initHitbox(0, 0, getWidth(), getHeight());
 	}
 	
 	private void createActionSprites() {
 		PixelReader pr = enemySprite.getPixelReader();
-		actionSprites = new Image[9][5];
+		actionSprites = new Image[5][9];
 		for (int j = 0; j < actionSprites.length; j++) {
 			for (int i = 0; i < actionSprites[j].length; i++) {
 				actionSprites[j][i] = createSubImage(pr, i, j);
@@ -51,11 +56,11 @@ public class Crabby extends Enemy {
 	public void drawToCanvas(GraphicsContext gc) {
 		gc.drawImage(actionSprites[getEnemyAction()][getAniIndex()], getDrawPosition().getX(), getDrawPosition().getY(),
 				getWidth(), getHeight());
-		drawHitBox(gc);
+		drawHitbox(gc, Color.BLUE);
 	}
 	
-	private void drawHitBox(GraphicsContext gc) {
+	/*private void drawHitBox(GraphicsContext gc) {
 		gc.strokeRect(getDrawPosition().getX(), getDrawPosition().getY(), getWidth(), getHeight());
-	}
+	}*/
 
 }

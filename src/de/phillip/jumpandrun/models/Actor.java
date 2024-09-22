@@ -3,6 +3,7 @@ package de.phillip.jumpandrun.models;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 
 public abstract class Actor implements Drawable {
@@ -13,6 +14,9 @@ public abstract class Actor implements Drawable {
 	private double rotation;
 	private Point2D currentThrustVector = new Point2D(0, 0);
 	private boolean debug;
+	private double xOffset;
+	private double yOffset;
+	private double hitboxWidth, hitboxHeight;
 
 	public Actor(double width, double height) {
 		this.width = width;
@@ -103,8 +107,21 @@ public abstract class Actor implements Drawable {
 	}
 
 	public Rectangle2D getHitBox() {
-		return new Rectangle2D(position.getX(), position.getY(), width, height);
+		return new Rectangle2D(position.getX() + xOffset, position.getY() + yOffset, hitboxWidth, hitboxHeight);
 	}
+	
+	public void initHitbox(double xOffset, double yOffset, double hitboxWidth, double hitboxHeight) {
+		this.xOffset = xOffset;
+		this.yOffset = yOffset;
+		this.hitboxWidth = hitboxWidth;
+		this.hitboxHeight = hitboxHeight;
+	}
+	
+	public void drawHitbox(GraphicsContext gc, Color color) {
+		gc.setStroke(color);
+		gc.strokeRect(position.getX() + xOffset, position.getY() + yOffset, hitboxWidth,
+				hitboxHeight);
+	} 
 
 	public abstract void drawToCanvas(GraphicsContext gc);
 

@@ -49,6 +49,7 @@ public class Player extends Actor {
 
 	public Player(double width, double height, Image playerSprite) {
 		super(width, height);
+		initHitbox(xOffset, yOffset, hitboxWidth, hitboxHeight);
 		this.playerSprite = playerSprite;
 		createActionSprites();
 	}
@@ -57,7 +58,7 @@ public class Player extends Actor {
 	public void drawToCanvas(GraphicsContext gc) {
 		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX(), getDrawPosition().getY(),
 				getWidth(), getHeight());
-		// drawHitBox(gc);
+		drawHitbox(gc, Color.RED);
 	}
 
 	@Override
@@ -65,11 +66,11 @@ public class Player extends Actor {
 
 	}
 
-	@Override
+	/*@Override
 	public Rectangle2D getHitBox() {
 		return new Rectangle2D(getDrawPosition().getX() + xOffset, getDrawPosition().getY() + yOffset, hitboxWidth,
 				hitboxHeight);
-	}
+	}*/
 
 	private void createActionSprites() {
 		PixelReader pr = playerSprite.getPixelReader();
@@ -103,14 +104,20 @@ public class Player extends Actor {
 		}
 	}
 
-	private void checkFalling() {
+	public void checkFalling() {
 		Point2D oldPosition = getDrawPosition();
 		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + hitboxHeight);
 		for (Tile tile : tiles) {
 			Rectangle2D hitBox = tile.getHitBox();
-			if (!tile.isSolid() && hitBox.intersects(getHitBox()) && hitBox.getMinX() < getHitBox().getMinX()
-					&& hitBox.getMaxX() > getHitBox().getMaxX()) {
-				setPlayerAction(FALLING);
+			if (isFalling) { 
+				if (!tile.isSolid() && hitBox.intersects(getHitBox())) {
+					setPlayerAction(FALLING);
+				}
+			} else {
+				if (!tile.isSolid() && hitBox.intersects(getHitBox()) && hitBox.getMinX() < getHitBox().getMinX()
+						&& hitBox.getMaxX() > getHitBox().getMaxX()) {
+					setPlayerAction(FALLING);
+				}
 			}
 		}
 		setDrawPosition(oldPosition.getX(), oldPosition.getY());
@@ -200,8 +207,10 @@ public class Player extends Actor {
 			}
 			break;
 		case FALLING:
-			isFalling = true;
-			airSpeed = fallSpeedAfterCollision;
+			if (!isFalling) {
+				isFalling = true;
+				airSpeed = fallSpeedAfterCollision;
+			}
 		default:
 			break;
 		}
@@ -215,11 +224,11 @@ public class Player extends Actor {
 		aniIndex = 0;
 	}
 
-	private void drawHitBox(GraphicsContext gc) {
+	/*private void drawHitBox(GraphicsContext gc) {
 		gc.setStroke(Color.RED);
 		gc.strokeRect(getDrawPosition().getX() + xOffset, getDrawPosition().getY() + yOffset, hitboxWidth,
 				hitboxHeight);
-	}
+	}*/
 
 	public void setTiles(List<Tile> tiles) {
 		this.tiles = tiles;

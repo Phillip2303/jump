@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import de.phillip.jumpandrun.Game;
+import de.phillip.jumpandrun.controllers.EnemyManager;
 import de.phillip.jumpandrun.controllers.LevelManager;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
@@ -25,16 +26,21 @@ import javafx.scene.input.KeyCode;
 public class ActionLayer extends Canvas implements CanvasLayer {
 
 	private LevelManager levelManager;
+	private EnemyManager enemyManager;
 	private List<Drawable> actors = new ArrayList<Drawable>();
 	private Player player;
 	private KeyPolling kp = KeyPolling.getInstance();
 	private boolean isListening = true;
+	private boolean hasStarted = true;
 
 	public ActionLayer(int width, int height, LevelManager levelManager) {
 		super(width, height);
 		this.levelManager = levelManager;
 		createLevel();
 		createPlayer();
+		enemyManager = new EnemyManager();
+		enemyManager.createEnemies(1);
+		actors.addAll(enemyManager.getDrawables());
 	}
 
 	private void createLevel() {
@@ -55,7 +61,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 		player = new Player(Player.DEFAULT_WIDTH * Game.SCALE, Player.DEFAULT_HEIGHT * Game.SCALE, image);
 		player.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
 				.collect(Collectors.toList()));
-		player.setDrawPosition(200, 196);
+		player.setDrawPosition(215, 196);
 		player.setLevelWidth((int) getWidth());
 		actors.add(player);
 	}
@@ -117,7 +123,12 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_PAUSE_MENU, null));
 		}
 		if (!kp.keysPressed()) {
-			player.setPlayerAction(Player.IDLE);
+			if (hasStarted) {
+				player.checkFalling();
+				hasStarted = false;
+			} else {
+				player.setPlayerAction(Player.IDLE);
+			}
 		}
 	}
 }

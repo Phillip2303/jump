@@ -40,6 +40,9 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 		createPlayer();
 		enemyManager = new EnemyManager();
 		enemyManager.createEnemies(1);
+		enemyManager.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
+				.collect(Collectors.toList()));
+		enemyManager.setLevelWidth((int) getWidth());
 		actors.addAll(enemyManager.getDrawables());
 	}
 
@@ -82,6 +85,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 			updateKeyEvents(secondsSinceLastFrame);
 		}
 		player.update();
+		enemyManager.update();
 	}
 
 	@Override

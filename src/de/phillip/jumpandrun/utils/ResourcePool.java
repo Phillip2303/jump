@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.phillip.jumpandrun.Game;
+import de.phillip.jumpandrun.models.Crabby;
 import de.phillip.jumpandrun.models.Enemy;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -107,7 +108,7 @@ public class ResourcePool {
 		return playingBg;
 	}
 	
-	public List<Point2D> getEnemyPositions(int level, Enemy.Type type) {
+	public List<Enemy> getEnemies(int level) {
 		Image levelAtlas = null;
 		switch (level) {
 		case 1:
@@ -116,18 +117,38 @@ public class ResourcePool {
 		default:
 			break;
 		}
-		List<Point2D> enemyPositions = new ArrayList<Point2D>();
+		List<Enemy> enemies = new ArrayList<>();
 		for (int j = 0; j < levelAtlas.getHeight(); j++) {
 			for (int i = 0; i < levelAtlas.getWidth(); i++) {
 				Color color = levelAtlas.getPixelReader().getColor(i, j);
 				int colorValue = (int) (color.getGreen() * 255);
-				if (colorValue == type.getValue()) {
-					Point2D pos = new Point2D(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
-					enemyPositions.add(pos);
+				if (colorValue == Enemy.Type.CRABBY.getValue()) {
+					Crabby crabby = createCrabby(i, j); 
+					enemies.add(crabby);
+				} else if (colorValue == Enemy.Type.CANNON.getValue()) {
+					createCannon();
+				} else if (colorValue == Enemy.Type.SHARK.getValue()) {
+					createShark();
 				}
 			}
 		}
-		return enemyPositions;
+		return enemies;
 		
+	}
+
+	private void createShark() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void createCannon() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private Crabby createCrabby(int i, int j) {
+		Crabby crabby = new Crabby();
+		crabby.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Crabby.HEIGHT - Crabby.Y_OFFSET - Crabby.HITBOX_HEIGHT));
+		return crabby;
 	}
 }

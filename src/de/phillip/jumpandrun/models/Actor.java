@@ -1,5 +1,7 @@
 package de.phillip.jumpandrun.models;
 
+import java.util.List;
+
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -122,6 +124,21 @@ public abstract class Actor implements Drawable {
 		gc.strokeRect(position.getX() + xOffset, position.getY() + yOffset, hitboxWidth,
 				hitboxHeight);
 	} 
+	
+	public boolean canMoveHere(List<Tile> tiles, Point2D oldPosition, int levelWidth) {
+		for (Tile tile : tiles) {
+			Rectangle2D hitBox = tile.getHitBox();
+			if (tile.isSolid() && hitBox.intersects(getHitBox())) {
+				setDrawPosition(oldPosition.getX(), oldPosition.getY());
+				return false;
+			}
+		}
+		if (getHitBox().getMinX() < 0 || getHitBox().getMaxX() > levelWidth) {
+			setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			return false;
+		}
+		return true;
+	}
 
 	public abstract void drawToCanvas(GraphicsContext gc);
 

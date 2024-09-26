@@ -241,21 +241,15 @@ public class Player extends Actor {
 		} else {
 			setDrawPosition(getDrawPosition().getX() + direction, getDrawPosition().getY());
 		}
-		for (Tile tile : tiles) {
-			Rectangle2D hitBox = tile.getHitBox();
-			if (tile.isSolid() && hitBox.intersects(getHitBox())) {
-				setDrawPosition(oldPosition.getX(), oldPosition.getY());
-				return false;
+		if (super.canMoveHere(tiles, oldPosition, levelWidth)) {
+			if (!isJumping) {
+				checkFalling();
 			}
-		}
-		if (getHitBox().getMinX() < 0 || getHitBox().getMaxX() > levelWidth) {
-			setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			return true;
+		} else {
 			return false;
 		}
-		if (!isJumping) {
-			checkFalling();
-		}
-		return true;
+	
 	}
 
 	public boolean canJumpHere(double speed) {

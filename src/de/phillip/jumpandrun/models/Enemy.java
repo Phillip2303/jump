@@ -1,5 +1,6 @@
 package de.phillip.jumpandrun.models;
 
+import de.phillip.jumpandrun.controllers.EnemyManager;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -24,6 +25,11 @@ public abstract class Enemy extends Actor {
 			return value;
 		}
 	}
+	
+	public enum Direction {
+		LEFT,
+		RIGHT;
+	}
 
 	public static final int IDLE = 0;
 	public static final int RUNNING = 1;
@@ -35,11 +41,25 @@ public abstract class Enemy extends Actor {
 	private int aniIndex;
 	private int aniTic;
 	private int aniSpeed = 25;
-	private int enemyAction = IDLE;
+	private int enemyAction = RUNNING;
+	private EnemyManager enemyManager;
 
 	public Enemy(double width, double height, Type type) {
 		super(width, height);
 		this.type = type;
+	}
+	
+	public EnemyManager getEnemyManager() {
+		return enemyManager;
+	}
+
+	public void setEnemyManager(EnemyManager enemyManager) {
+		this.enemyManager = enemyManager;
+	}
+
+	
+	public void update() {
+		updateAnimationTic();
 	}
 
 	private void updateAnimationTic() {

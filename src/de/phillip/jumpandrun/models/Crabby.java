@@ -1,7 +1,10 @@
 package de.phillip.jumpandrun.models;
 
+import java.util.List;
+
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.utils.ResourcePool;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -13,21 +16,23 @@ public class Crabby extends Enemy {
 	
 	public static final int CRABBY_DEFAULT_WIDTH = 72;
 	public static final int CRABBY_DEFAULT_HEIGHT = 32;
-	public static final int CRABBY_WIDTH = (int) (CRABBY_DEFAULT_WIDTH * Game.SCALE);
-	public static final int CRABBY_HEIGHT = (int) (CRABBY_DEFAULT_HEIGHT * Game.SCALE);
+	public static final int WIDTH = (int) (CRABBY_DEFAULT_WIDTH * Game.SCALE);
+	public static final int HEIGHT = (int) (CRABBY_DEFAULT_HEIGHT * Game.SCALE);
+	public static final double HITBOX_WIDTH = 22 * Game.SCALE;
+	public static final double HITBOX_HEIGHT = 19 * Game.SCALE;
+	public static final double X_OFFSET = 26 * Game.SCALE;
+	public static final double Y_OFFSET = 10 * Game.SCALE;
+	public static final double SPEED = 0.3 * Game.SCALE;
 	
 	private Image enemySprite = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.CRABBY_SPRITES);
 	private Image[][] actionSprites;
-	private double hitboxWidth = 22 * Game.SCALE;
-	private double hitboxHeight = 19 * Game.SCALE;
-	private double xOffset = 26 * Game.SCALE;
-	private double yOffset = 9 * Game.SCALE;
+	private Direction direction = Direction.LEFT;
 	
 
 	public Crabby() {
-		super(CRABBY_WIDTH, CRABBY_HEIGHT, Enemy.Type.CRABBY);
+		super(WIDTH, HEIGHT, Enemy.Type.CRABBY);
 		createActionSprites();
-		initHitbox(0, 0, getWidth(), getHeight());
+		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);
 	}
 	
 	private void createActionSprites() {
@@ -62,5 +67,34 @@ public class Crabby extends Enemy {
 	/*private void drawHitBox(GraphicsContext gc) {
 		gc.strokeRect(getDrawPosition().getX(), getDrawPosition().getY(), getWidth(), getHeight());
 	}*/
+	
+	@Override
+	public void update() {
+		updateMove();
+		super.update();
+	}
+
+	private void updateMove() {
+		Point2D oldPosition = getDrawPosition();
+		switch (direction) {
+		case LEFT:
+			setDrawPosition(getDrawPosition().getX() - SPEED, getDrawPosition().getY());
+			break;
+		case RIGHT:
+			setDrawPosition(getDrawPosition().getX() + SPEED, getDrawPosition().getY());
+			break;
+		default:
+			break;
+		}
+		if (!canMoveHere(getEnemyManager().getTiles(), getDrawPosition(), getEnemyManager().getLevelWidth())) {
+			if (direction == Direction.LEFT) {
+				direction = Direction.RIGHT;
+			} else {
+				direction = Direction.LEFT;
+			}
+		}
+	}
+	
+	
 
 }

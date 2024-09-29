@@ -9,6 +9,7 @@ import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.models.Crabby;
 import de.phillip.jumpandrun.models.Drawable;
 import de.phillip.jumpandrun.models.Enemy;
+import de.phillip.jumpandrun.models.Player;
 import de.phillip.jumpandrun.models.Tile;
 import de.phillip.jumpandrun.utils.GameState;
 import de.phillip.jumpandrun.utils.ResourcePool;
@@ -21,15 +22,17 @@ public class EnemyManager implements EventHandler<GameEvent>{
 	private List<Enemy> enemies = new ArrayList<>();
 	private List<Tile> tiles;
 	private int levelWidth;
+	private Player player;
 	
 	
 	public List<Enemy> getDrawables() {
 		return enemies;
 	}
 	
-	public EnemyManager() {
+	public EnemyManager(Player player) {
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_SHOW_PAUSE_MENU, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_HIDE_PAUSE_MENU, this);
+		this.player = player;
 	}
 	
 	public void update() {
@@ -47,6 +50,10 @@ public class EnemyManager implements EventHandler<GameEvent>{
 	
 	public List<Tile> getTiles() {
 		return tiles;
+	}
+	
+	public Player getPlayer() {
+		return player;
 	}
 
 	public int getLevelWidth() {

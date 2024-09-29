@@ -1,6 +1,8 @@
 package de.phillip.jumpandrun.models;
 
+import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.controllers.EnemyManager;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -43,6 +45,8 @@ public abstract class Enemy extends Actor {
 	private int aniSpeed = 25;
 	private int enemyAction = RUNNING;
 	private EnemyManager enemyManager;
+	private int tileY;
+	private boolean isTileY;
 
 	public Enemy(double width, double height, Type type) {
 		super(width, height);
@@ -126,5 +130,36 @@ public abstract class Enemy extends Actor {
 	public void debugOut() {
 
 	}
+	
+	@Override
+	public void setDrawPosition(double x, double y) {
+		super.setDrawPosition(x, y);
+		if (!isTileY) {
+			tileY = (int) (getHitBox().getMinY() / Game.TILES_SIZE);
+			isTileY = true;
+		}
+	}
+	
+	protected boolean canSeePlayer(Player player) {
+		int playerTileY = (int) (player.getHitBox().getMinY() / Game.TILES_SIZE);
+		if (tileY == playerTileY) {
+			if (isPlayerInSight(player)) {
+				moveTowardsPlayer();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void moveTowardsPlayer() {
+		
+	}
+
+	private boolean isPlayerInSight(Player player) {
+		int distance = (int) Math.abs(getHitBox().getMinX() - player.getHitBox().getMinX());
+		return distance <= getAttackDistance() * 5;
+	}
+	
+	public abstract int getAttackDistance();
 
 }

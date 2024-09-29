@@ -5,6 +5,7 @@ import java.util.List;
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -27,6 +28,7 @@ public class Crabby extends Enemy {
 	private Image enemySprite = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.CRABBY_SPRITES);
 	private Image[][] actionSprites;
 	private Direction direction = Direction.LEFT;
+	private final int attackDistance = Game.TILES_SIZE;
 	
 
 	public Crabby() {
@@ -93,8 +95,36 @@ public class Crabby extends Enemy {
 				direction = Direction.LEFT;
 			}
 		}
+		if (checkFalling()) {
+			if (direction == Direction.LEFT) {
+				direction = Direction.RIGHT;
+			} else {
+				direction = Direction.LEFT;
+			}
+		}
+		if (canSeePlayer(getEnemyManager().getPlayer())) {
+			System.out.println("See you");
+		}
 	}
 	
-	
+	private boolean checkFalling() {
+		Point2D oldPosition = getDrawPosition();
+		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + HITBOX_HEIGHT);
+		boolean isFalling = false;
+		for (Tile tile : getEnemyManager().getTiles()) {
+			Rectangle2D hitBox = tile.getHitBox();
+			if (!tile.isSolid() && hitBox.intersects(getHitBox()) && (hitBox.getMinX() < getHitBox().getMinX()
+						|| hitBox.getMaxX() > getHitBox().getMaxX())) {
+				isFalling = true;
+				break;
+			}
+		}
+		setDrawPosition(oldPosition.getX(), oldPosition.getY());
+		return isFalling;
+	}
 
+	@Override
+	public int getAttackDistance() {
+		return attackDistance;
+	}
 }

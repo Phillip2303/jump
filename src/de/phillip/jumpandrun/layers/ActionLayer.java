@@ -38,7 +38,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 		this.levelManager = levelManager;
 		createLevel();
 		createPlayer();
-		enemyManager = new EnemyManager();
+		enemyManager = new EnemyManager(player);
 		enemyManager.createEnemies(1);
 		enemyManager.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
 				.collect(Collectors.toList()));

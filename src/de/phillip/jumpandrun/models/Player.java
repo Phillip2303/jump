@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import de.phillip.jumpandrun.Game;
+import de.phillip.jumpandrun.events.FXEventBus;
+import de.phillip.jumpandrun.events.GameEvent;
+import de.phillip.jumpandrun.utils.ResourcePool;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -13,17 +17,15 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class Player extends Actor {
+public class Player extends Actor implements EventHandler<GameEvent> {
 
 	public static final int IDLE = 0;
 	public static final int RUNNING = 1;
 	public static final int JUMPING = 2;
 	public static final int FALLING = 3;
-	public static final int GROUND = 4;
+	public static final int ATTACK = 4;
 	public static final int HIT = 5;
-	public static final int ATTACK_1 = 6;
-	public static final int ATTACK_JUMP_1 = 7;
-	public static final int ATTACK_JUMP_2 = 8;
+	public static final int DEAD = 6;
 	public static final int DEFAULT_WIDTH = 64;
 	public static final int DEFAULT_HEIGHT = 40;
 	public static final double SPEED = 1.5 * Game.SCALE;
@@ -46,9 +48,25 @@ public class Player extends Actor {
 	private boolean isJumping = false;
 	private boolean isFalling = false;
 	private int levelWidth;
+	private Image statusBar = ResourcePool.getInstance().getHealthPowerBar();
+	private double statusBarWidth = 192 * Game.SCALE;
+	private double statusBarHeight = 58 * Game.SCALE;
+	private double statusBarX, statusBarY = 10 * Game.SCALE;
+	private double healthBarWidth = 150 * Game.SCALE;
+	private double healthBarHeight = 4 * Game.SCALE;
+	private double healthBarX = 34 * Game.SCALE;
+	private double healthBarY = 14 * Game.SCALE;
+	private double maxHealth = 100;
+	private double currentHealth = maxHealth;
+	private double healthWidth = healthBarWidth;
+	private int hOffset;
+	private int flipX = 0;
+	private int flipWidth = 1;
+	
 
 	public Player(double width, double height, Image playerSprite) {
 		super(width, height);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_H_OFFSET, this);
 		initHitbox(xOffset, yOffset, hitboxWidth, hitboxHeight);
 		this.playerSprite = playerSprite;
 		createActionSprites();
@@ -56,9 +74,16 @@ public class Player extends Actor {
 
 	@Override
 	public void drawToCanvas(GraphicsContext gc) {
-		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX(), getDrawPosition().getY(),
-				getWidth(), getHeight());
+		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX() + flipX, getDrawPosition().getY(),
+				getWidth() * flipWidth, getHeight());
 		drawHitbox(gc, Color.RED);
+		drawStatusBar(gc);
+	}
+
+	private void drawStatusBar(GraphicsContext gc) {
+		gc.drawImage(statusBar, statusBarX + hOffset, statusBarY, statusBarWidth, statusBarHeight);
+		gc.setFill(Color.RED);
+		gc.fillRect(statusBarX + healthBarX + hOffset, statusBarY + healthBarY, healthWidth, healthBarHeight);
 	}
 
 	@Override
@@ -74,7 +99,7 @@ public class Player extends Actor {
 
 	private void createActionSprites() {
 		PixelReader pr = playerSprite.getPixelReader();
-		actionSprites = new Image[9][6];
+		actionSprites = new Image[7][8];
 		for (int j = 0; j < actionSprites.length; j++) {
 			for (int i = 0; i < actionSprites[j].length; i++) {
 				actionSprites[j][i] = createSubImage(pr, i, j);
@@ -96,12 +121,17 @@ public class Player extends Actor {
 
 	public void update() {
 		updateAnimationTic();
+		updateHealthBar();
 		if (isJumping) {
 			updateJump();
 		}
 		if (isFalling) {
 			updateJump();
 		}
+	}
+
+	private void updateHealthBar() {
+		healthWidth = healthBarWidth * (currentHealth / maxHealth);
 	}
 
 	public void checkFalling() {
@@ -161,16 +191,14 @@ public class Player extends Actor {
 			return 5;
 		case RUNNING:
 			return 6;
-		case JUMPING:
-		case ATTACK_1:
-		case ATTACK_JUMP_1:
-		case ATTACK_JUMP_2:
+		case JUMPING, ATTACK:
 			return 3;
+		case FALLING:
+			return 1;
 		case HIT:
 			return 4;
-		case GROUND:
-			return 2;
-		case FALLING:
+		case DEAD:
+			return 8;
 		default:
 			return 1;
 		}
@@ -235,6 +263,7 @@ public class Player extends Actor {
 	}
 
 	public boolean canMoveHere(double direction) {
+		checkDirection(direction);
 		Point2D oldPosition = getDrawPosition();
 		if (isFalling) {
 			setDrawPosition(getDrawPosition().getX() + direction / 2, getDrawPosition().getY());
@@ -250,6 +279,19 @@ public class Player extends Actor {
 			return false;
 		}
 	
+	}
+
+	private void checkDirection(double direction) {
+		Double result = Math.signum(direction);
+		if (result.compareTo(1.0) == 0) {
+			flipX = 0;
+			flipWidth = 1;
+			setDirection(Direction.RIGHT);
+		} else if (result.compareTo(-1.0) == 0) {
+			flipX = (int) getWidth();
+			flipWidth = -1;
+			setDirection(Direction.LEFT);
+		}
 	}
 
 	public boolean canJumpHere(double speed) {
@@ -277,5 +319,17 @@ public class Player extends Actor {
 
 	public void setLevelWidth(int levelWidth) {
 		this.levelWidth = levelWidth;
+	}
+
+	@Override
+	public void handle(GameEvent event) {
+		switch (event.getEventType().getName()) {
+		case "JR_H_OFFSET":
+			hOffset = (int) event.getData();
+			break;
+		default:
+			break;
+		}
+		
 	}
 }

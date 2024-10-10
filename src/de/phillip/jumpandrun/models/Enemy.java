@@ -13,24 +13,31 @@ import javafx.scene.paint.Color;
 public abstract class Enemy extends Actor {
 
 	public enum Type {
-		CRABBY(0), 
-		CANNON(1), 
-		SHARK(2);
+		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 5), 
+		CANNON(1, Game.TILES_SIZE, Game.TILES_SIZE * 5), 
+		SHARK(2, Game.TILES_SIZE, Game.TILES_SIZE * 5);
 		
 		private final int value;
+		private final int attackDistance;
+		private final int sightDistance;
 		
-		private Type(int value) {
+		private Type(int value, int attackDistance, int sightDistance) {
 			this.value = value;
+			this.attackDistance = attackDistance;
+			this.sightDistance = sightDistance;
 		}
 		
 		public int getValue() {
 			return value;
 		}
-	}
-	
-	public enum Direction {
-		LEFT,
-		RIGHT;
+
+		public int getAttackDistance() {
+			return attackDistance;
+		}
+
+		public int getSightDistance() {
+			return sightDistance;
+		}
 	}
 
 	public static final int IDLE = 0;
@@ -74,6 +81,9 @@ public abstract class Enemy extends Actor {
 		}
 		if (aniIndex >= getSpriteCount(enemyAction)) {
 			aniIndex = 0;
+			if (enemyAction == ATTACK) {
+				enemyAction = IDLE;
+			}
 		}
 	}
 
@@ -115,8 +125,6 @@ public abstract class Enemy extends Actor {
 		return enemyAction;
 	}
 
-	
-
 	public int getAniIndex() {
 		return aniIndex;
 	}
@@ -141,25 +149,22 @@ public abstract class Enemy extends Actor {
 	}
 	
 	protected boolean canSeePlayer(Player player) {
-		int playerTileY = (int) (player.getHitBox().getMinY() / Game.TILES_SIZE);
-		if (tileY == playerTileY) {
-			if (isPlayerInSight(player)) {
-				moveTowardsPlayer();
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private void moveTowardsPlayer() {
-		
-	}
-
-	private boolean isPlayerInSight(Player player) {
-		int distance = (int) Math.abs(getHitBox().getMinX() - player.getHitBox().getMinX());
-		return distance <= getAttackDistance() * 5;
+		return checkPlayerDistance(player, type.getSightDistance());
 	}
 	
-	public abstract int getAttackDistance();
+	protected boolean canAttackPlayer(Player player) {
+		return checkPlayerDistance(player, type.getAttackDistance());
+	}
+	
+	private boolean checkPlayerDistance(Player player, int distance) {
+		int playerTileY = (int) (player.getHitBox().getMinY() / Game.TILES_SIZE);
+		if (tileY == playerTileY) {
+			int xPos = (int) Math.abs(getHitBox().getMinX() - player.getHitBox().getMinX());
+			return xPos <= distance;
+		} 
+		return false;
+	}
+	
+	//public abstract int getAttackDistance();
 
 }

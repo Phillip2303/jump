@@ -30,6 +30,7 @@ public class ResourcePool {
 	private Image smallClouds;
 	private Image playingBg;
 	private Image pauseBackground;
+	private Image healthPowerBar;
 
 	private ResourcePool() {
 
@@ -50,6 +51,10 @@ public class ResourcePool {
 		return menuBackground;
 	}
 
+	public Image getHealthPowerBar() {
+		return healthPowerBar;
+	}
+
 	public Image getPauseBackground() {
 		return pauseBackground;
 	}
@@ -62,6 +67,7 @@ public class ResourcePool {
 		bigClouds = new Image(getClass().getResource("/assets/images/big_clouds.png").toString());
 		smallClouds = new Image(getClass().getResource("/assets/images/small_clouds.png").toString());
 		playingBg = new Image(getClass().getResource("/assets/images/playing_bg_img.png").toString());
+		healthPowerBar = new Image(getClass().getResource("/assets/images/health_power_bar.png").toString());
 	}
 
 	public Image getSpriteAtlas(String atlas) {

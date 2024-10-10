@@ -9,6 +9,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 
 public abstract class Actor implements Drawable {
+	
+	public enum Direction {
+		LEFT,
+		RIGHT;
+	}
 
 	private double width;
 	private double height;
@@ -19,6 +24,7 @@ public abstract class Actor implements Drawable {
 	private double xOffset;
 	private double yOffset;
 	private double hitboxWidth, hitboxHeight;
+	private Direction direction = Direction.RIGHT;
 
 	public Actor(double width, double height) {
 		this.width = width;
@@ -143,4 +149,12 @@ public abstract class Actor implements Drawable {
 	public abstract void drawToCanvas(GraphicsContext gc);
 
 	public abstract void debugOut();
+
+	public Direction getDirection() {
+		return direction;
+	}
+
+	public void setDirection(Direction direction) {
+		this.direction = direction;
+	}
 }

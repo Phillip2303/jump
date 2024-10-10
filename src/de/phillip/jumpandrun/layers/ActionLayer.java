@@ -119,6 +119,9 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 				player.setPlayerAction(Player.JUMPING);
 			}
 		}
+		if (kp.isDown(KeyCode.E)) {
+			player.setPlayerAction(Player.ATTACK);
+		}
 		if (kp.isDown(KeyCode.ESCAPE)) {
 			// GameState.state = GameState.MENU;
 			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_MENU, null));

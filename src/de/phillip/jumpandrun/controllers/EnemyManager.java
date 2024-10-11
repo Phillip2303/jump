@@ -25,7 +25,7 @@ public class EnemyManager implements EventHandler<GameEvent>{
 	private Player player;
 	
 	
-	public List<Enemy> getDrawables() {
+	public List<Enemy> getEnemies() {
 		return enemies;
 	}
 	

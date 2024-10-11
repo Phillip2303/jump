@@ -13,18 +13,20 @@ import javafx.scene.paint.Color;
 public abstract class Enemy extends Actor {
 
 	public enum Type {
-		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 5), 
-		CANNON(1, Game.TILES_SIZE, Game.TILES_SIZE * 5), 
-		SHARK(2, Game.TILES_SIZE, Game.TILES_SIZE * 5);
+		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 5, 30), 
+		CANNON(1, Game.TILES_SIZE, Game.TILES_SIZE * 5, 100), 
+		SHARK(2, Game.TILES_SIZE, Game.TILES_SIZE * 5, 50);
 		
 		private final int value;
 		private final int attackDistance;
 		private final int sightDistance;
+		private final int health;
 		
-		private Type(int value, int attackDistance, int sightDistance) {
+		private Type(int value, int attackDistance, int sightDistance, int health) {
 			this.value = value;
 			this.attackDistance = attackDistance;
 			this.sightDistance = sightDistance;
+			this.health = health;
 		}
 		
 		public int getValue() {
@@ -37,6 +39,10 @@ public abstract class Enemy extends Actor {
 
 		public int getSightDistance() {
 			return sightDistance;
+		}
+
+		public int getHealth() {
+			return health;
 		}
 	}
 
@@ -54,10 +60,13 @@ public abstract class Enemy extends Actor {
 	private EnemyManager enemyManager;
 	private int tileY;
 	private boolean isTileY;
+	private int currentHealth;
+	private boolean active = true;
 
 	public Enemy(double width, double height, Type type) {
 		super(width, height);
 		this.type = type;
+		currentHealth = this.type.getHealth();
 	}
 	
 	public EnemyManager getEnemyManager() {
@@ -78,13 +87,26 @@ public abstract class Enemy extends Actor {
 		if (aniTic >= aniSpeed) {
 			aniTic = 0;
 			aniIndex++;
+			if (aniIndex >= getSpriteCount(enemyAction)) {
+				aniIndex = 0;
+				if (enemyAction == ATTACK || enemyAction == HIT) {
+					enemyAction = IDLE;
+				}
+				if (enemyAction == DEAD) {
+					active = false;
+				}
+			}
 		}
-		if (aniIndex >= getSpriteCount(enemyAction)) {
+	/*	if (aniIndex >= getSpriteCount(enemyAction)) {
 			aniIndex = 0;
 			if (enemyAction == ATTACK) {
 				enemyAction = IDLE;
 			}
-		}
+		}*/
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	public void setEnemyAction(int enemyAction) {
@@ -164,6 +186,20 @@ public abstract class Enemy extends Actor {
 		} 
 		return false;
 	}
+	
+	public void gotHit(int amount) {
+		currentHealth -= amount;
+		if (currentHealth <= 0) {
+			setEnemyAction(DEAD);
+		} else {
+			setEnemyAction(HIT);
+		}
+	}
+	
+	public boolean isActive() {
+		return active;
+	}
+	
 	
 	//public abstract int getAttackDistance();
 

@@ -28,6 +28,8 @@ public class Crabby extends Enemy {
 	private Image enemySprite = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.CRABBY_SPRITES);
 	private Image[][] actionSprites;
 	private Direction direction = Direction.LEFT;
+	private double maxHealth = 30;
+	private double currentHealth = maxHealth;
 
 	public Crabby() {
 		super(WIDTH, HEIGHT, Enemy.Type.CRABBY);
@@ -59,9 +61,11 @@ public class Crabby extends Enemy {
 
 	@Override
 	public void drawToCanvas(GraphicsContext gc) {
-		gc.drawImage(actionSprites[getEnemyAction()][getAniIndex()], getDrawPosition().getX(), getDrawPosition().getY(),
-				getWidth(), getHeight());
-		drawHitbox(gc, Color.BLUE);
+		if (isActive()) {
+			gc.drawImage(actionSprites[getEnemyAction()][getAniIndex()], getDrawPosition().getX(), getDrawPosition().getY(),
+					getWidth(), getHeight());
+			drawHitbox(gc, Color.BLUE);
+		}
 	}
 
 	/*
@@ -77,10 +81,17 @@ public class Crabby extends Enemy {
 			setEnemyAction(RUNNING);
 			break;
 		case ATTACK:
-			System.out.println("Attack");
+		//	System.out.println("Attack");
+			if (getAniIndex() == 0) {
+				//attackChecked = false;
+			}
+			break;
+		case HIT:
 			break;
 		case RUNNING:
 			updateMove();
+			break;
+		case DEAD:
 			break;
 		default:
 			break;

@@ -24,6 +24,7 @@ public abstract class Actor implements Drawable {
 	private double xOffset;
 	private double yOffset;
 	private double hitboxWidth, hitboxHeight;
+	private double attackBoxWidth, attackBoxHeight;
 	private Direction direction = Direction.RIGHT;
 
 	public Actor(double width, double height) {
@@ -125,11 +126,26 @@ public abstract class Actor implements Drawable {
 		this.hitboxHeight = hitboxHeight;
 	}
 	
+	public void initAttackBox(double attackBoxWidth, double attackBoxHeight) {
+		this.attackBoxWidth = attackBoxWidth;
+		this.attackBoxHeight = attackBoxHeight;
+	}
+	
+	public Rectangle2D getAttackBox(double xOffset, double yOffset) {
+		return new Rectangle2D(position.getX() + xOffset, position.getY() + yOffset, attackBoxWidth, attackBoxHeight);
+	}
+	
 	public void drawHitbox(GraphicsContext gc, Color color) {
 		gc.setStroke(color);
 		gc.strokeRect(position.getX() + xOffset, position.getY() + yOffset, hitboxWidth,
 				hitboxHeight);
 	} 
+	
+	public void drawAttackBox(GraphicsContext gc, Color color, double xOffset, double yOffset) {
+		gc.setStroke(color);
+		gc.strokeRect(position.getX() + xOffset, position.getY() + yOffset, attackBoxWidth,
+				attackBoxHeight);
+	}
 	
 	public boolean canMoveHere(List<Tile> tiles, Point2D oldPosition, int levelWidth) {
 		for (Tile tile : tiles) {

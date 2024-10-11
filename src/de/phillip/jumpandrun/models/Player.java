@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import de.phillip.jumpandrun.Game;
+import de.phillip.jumpandrun.controllers.EnemyManager;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.utils.ResourcePool;
@@ -47,6 +48,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	private double gravity = 0.04 * Game.SCALE;
 	private boolean isJumping = false;
 	private boolean isFalling = false;
+	private boolean isAttacking = false;
 	private int levelWidth;
 	private Image statusBar = ResourcePool.getInstance().getHealthPowerBar();
 	private double statusBarWidth = 192 * Game.SCALE;
@@ -62,14 +64,22 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	private int hOffset;
 	private int flipX = 0;
 	private int flipWidth = 1;
+	private EnemyManager enemyManager;
+	private double yOffsetAttackBox = 10 * Game.SCALE;
+	private boolean attackChecked;
 	
 
 	public Player(double width, double height, Image playerSprite) {
 		super(width, height);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_H_OFFSET, this);
 		initHitbox(xOffset, yOffset, hitboxWidth, hitboxHeight);
+		initAttackBox(20 * Game.SCALE, 20 * Game.SCALE);
 		this.playerSprite = playerSprite;
 		createActionSprites();
+	}
+	
+	public void setEnemyManager(EnemyManager enemyManager) {
+		this.enemyManager = enemyManager;
 	}
 
 	@Override
@@ -77,6 +87,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX() + flipX, getDrawPosition().getY(),
 				getWidth() * flipWidth, getHeight());
 		drawHitbox(gc, Color.RED);
+		drawAttackBox(gc, Color.GREEN);
 		drawStatusBar(gc);
 	}
 
@@ -84,6 +95,21 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		gc.drawImage(statusBar, statusBarX + hOffset, statusBarY, statusBarWidth, statusBarHeight);
 		gc.setFill(Color.RED);
 		gc.fillRect(statusBarX + healthBarX + hOffset, statusBarY + healthBarY, healthWidth, healthBarHeight);
+	}
+	
+	private void drawAttackBox(GraphicsContext gc, Color color) {
+		super.drawAttackBox(gc, color, getXOffsetAttackBox(), yOffsetAttackBox);
+	}
+	
+	private double getXOffsetAttackBox() {
+		switch (getDirection()) {
+		case LEFT:
+			return xOffset - hitboxWidth - 10 * Game.SCALE;
+		case RIGHT:
+			return hitboxWidth + xOffset + 10 * Game.SCALE;
+		default:
+			return hitboxWidth + xOffset + 10 * Game.SCALE;
+		}
 	}
 
 	@Override
@@ -128,10 +154,26 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		if (isFalling) {
 			updateJump();
 		}
+		if (isAttacking) {
+			checkAttack();
+		}
 	}
 
 	private void updateHealthBar() {
 		healthWidth = healthBarWidth * (currentHealth / maxHealth);
+	}
+
+	private void checkAttack() {
+		if (attackChecked || aniIndex != 1) {
+			return;
+		}
+		attackChecked = true;
+		for (Enemy enemy: enemyManager.getEnemies()) {
+			if (enemy.getHitBox().intersects(getAttackBox(getXOffsetAttackBox(), yOffsetAttackBox))) {
+				enemy.gotHit(10);
+				return;
+			}
+		}
 	}
 
 	public void checkFalling() {
@@ -182,6 +224,8 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		}
 		if (aniIndex >= getSpriteCount(playerAction)) {
 			aniIndex = 0;
+			isAttacking = false;
+			attackChecked = false;
 		}
 	}
 
@@ -239,6 +283,9 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 				isFalling = true;
 				airSpeed = fallSpeedAfterCollision;
 			}
+		case ATTACK:
+			isAttacking = true;
+			break;
 		default:
 			break;
 		}

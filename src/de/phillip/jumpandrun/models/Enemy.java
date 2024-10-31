@@ -3,6 +3,7 @@ package de.phillip.jumpandrun.models;
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.controllers.EnemyManager;
 import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -62,6 +63,7 @@ public abstract class Enemy extends Actor {
 	private boolean isTileY;
 	private int currentHealth;
 	private boolean active = true;
+	private boolean attackChecked = false;
 
 	public Enemy(double width, double height, Type type) {
 		super(width, height);
@@ -198,6 +200,27 @@ public abstract class Enemy extends Actor {
 	
 	public boolean isActive() {
 		return active;
+	}
+	
+	public void checkPlayerHit(double xOffset, double yOffset) {
+		Rectangle2D enemyAttackBox = getAttackBox(xOffset, yOffset);
+		if (enemyAttackBox.intersects(enemyManager.getPlayer().getHitBox())) {
+			enemyManager.getPlayer().gotHit(20);
+		}
+	}
+
+	/**
+	 * @return the attackChecked
+	 */
+	public boolean isAttackChecked() {
+		return attackChecked;
+	}
+
+	/**
+	 * @param attackChecked the attackChecked to set
+	 */
+	public void setAttackChecked(boolean attackChecked) {
+		this.attackChecked = attackChecked;
 	}
 	
 	

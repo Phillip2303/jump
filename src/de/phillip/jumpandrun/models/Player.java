@@ -67,6 +67,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	private EnemyManager enemyManager;
 	private double yOffsetAttackBox = 10 * Game.SCALE;
 	private boolean attackChecked;
+	private boolean isDead;
 	
 
 	public Player(double width, double height, Image playerSprite) {
@@ -169,9 +170,12 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		}
 		attackChecked = true;
 		for (Enemy enemy: enemyManager.getEnemies()) {
-			if (enemy.getHitBox().intersects(getAttackBox(getXOffsetAttackBox(), yOffsetAttackBox))) {
-				enemy.gotHit(10);
-				return;
+			if (enemy.isActive()) {
+				if (enemy.getHitBox().intersects(getAttackBox(getXOffsetAttackBox(), yOffsetAttackBox))) {
+					enemy.gotHit(10);
+					//System.out.println("Treffer");
+					return;
+				}
 			}
 		}
 	}
@@ -252,6 +256,9 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		if (isJumping && playerAction == JUMPING) {
 			return;
 		}
+		if (isDead) {
+			return;
+		}
 		this.playerAction = playerAction;
 		switch (playerAction) {
 		case JUMPING:
@@ -283,8 +290,12 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 				isFalling = true;
 				airSpeed = fallSpeedAfterCollision;
 			}
+			break;
 		case ATTACK:
 			isAttacking = true;
+			break;
+		case DEAD:
+			isDead = true;
 			break;
 		default:
 			break;
@@ -362,6 +373,15 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		}
 		setDrawPosition(oldPosition.getX(), oldPosition.getY());
 		return true;
+	}
+	
+	public void gotHit(int amount) {
+		currentHealth -= amount;
+		if (currentHealth <= 0) {
+			setPlayerAction(DEAD);
+		} else {
+			System.out.println("Treffer");
+		}
 	}
 
 	public void setLevelWidth(int levelWidth) {

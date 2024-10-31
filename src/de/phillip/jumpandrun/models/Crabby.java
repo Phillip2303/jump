@@ -35,6 +35,7 @@ public class Crabby extends Enemy {
 		super(WIDTH, HEIGHT, Enemy.Type.CRABBY);
 		createActionSprites();
 		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);
+		initAttackBox(82 * Game.SCALE, HITBOX_HEIGHT);
 	}
 
 	private void createActionSprites() {
@@ -65,7 +66,16 @@ public class Crabby extends Enemy {
 			gc.drawImage(actionSprites[getEnemyAction()][getAniIndex()], getDrawPosition().getX(), getDrawPosition().getY(),
 					getWidth(), getHeight());
 			drawHitbox(gc, Color.BLUE);
+			drawAttackBox(gc, Color.ORANGE);
 		}
+	}
+	
+	private void drawAttackBox(GraphicsContext gc, Color color) {
+		super.drawAttackBox(gc, color, getXOffsetAttackBox(), Y_OFFSET);
+	}
+	
+	private double getXOffsetAttackBox() {
+		return X_OFFSET - (31 * Game.SCALE);
 	}
 
 	/*
@@ -83,7 +93,11 @@ public class Crabby extends Enemy {
 		case ATTACK:
 		//	System.out.println("Attack");
 			if (getAniIndex() == 0) {
-				//attackChecked = false;
+				setAttackChecked(false);
+			}
+			if (getAniIndex() == 3 && isAttackChecked() == false) {
+				checkPlayerHit(getXOffsetAttackBox(), Y_OFFSET);
+				setAttackChecked(true);
 			}
 			break;
 		case HIT:
@@ -159,4 +173,6 @@ public class Crabby extends Enemy {
 		setDrawPosition(oldPosition.getX(), oldPosition.getY());
 		return isFalling;
 	}
+	
+	
 }

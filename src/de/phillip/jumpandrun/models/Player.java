@@ -256,8 +256,14 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		if (isJumping && playerAction == JUMPING) {
 			return;
 		}
+		if (isAttacking) {
+			return;
+		}
 		if (isDead) {
 			return;
+		}
+		if (this.playerAction != playerAction && !isJumping) {
+			resetAniTic();
 		}
 		this.playerAction = playerAction;
 		switch (playerAction) {
@@ -299,9 +305,6 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 			break;
 		default:
 			break;
-		}
-		if (this.playerAction != playerAction && !isJumping) {
-			resetAniTic();
 		}
 	}
 

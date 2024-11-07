@@ -2,14 +2,8 @@ package de.phillip.jumpandrun.models;
 
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.controllers.EnemyManager;
-import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
 
 public abstract class Enemy extends Actor {
 

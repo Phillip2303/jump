@@ -1,8 +1,6 @@
 package de.phillip.jumpandrun.models;
 
 import de.phillip.jumpandrun.Game;
-import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;

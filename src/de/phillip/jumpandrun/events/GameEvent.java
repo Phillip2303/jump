@@ -33,6 +33,9 @@ public class GameEvent extends Event {
 	public static final EventType<GameEvent> JR_SHOW_NEXT_LEVEL = new EventType<>(GameEvent.ANY, "JR_SHOW_NEXT_LEVEL");
 	
 	public static final EventType<GameEvent> JR_HIDE_NEXT_LEVEL = new EventType<>(GameEvent.ANY, "JR_HIDE_NEXT_LEVEL");
+	
+	public static final EventType<GameEvent> JR_RESET_LEVEL = new EventType<>(GameEvent.ANY, "JR_RESET_LEVEL");
+
 
 	public GameEvent(EventType<GameEvent> eventType, Object data) {
 		super(eventType);

@@ -7,7 +7,6 @@ import java.util.List;
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.models.Crabby;
 import de.phillip.jumpandrun.models.Enemy;
-import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
@@ -30,6 +29,7 @@ public class ResourcePool {
 	private Image smallClouds;
 	private Image playingBg;
 	private Image pauseBackground;
+	private Image gameOverBackground;
 	private Image healthPowerBar;
 
 	private ResourcePool() {
@@ -64,6 +64,7 @@ public class ResourcePool {
 		// Image(getClass().getResource("/assets/images/galaxy.jpg").toString());
 		menuBackground = new Image(getClass().getResource("/assets/images/menu_background.png").toString());
 		pauseBackground = new Image(getClass().getResource("/assets/images/pause_menu_background.png").toString());
+		gameOverBackground = new Image(getClass().getResource("/assets/images/death_menu_background.png").toString());
 		bigClouds = new Image(getClass().getResource("/assets/images/big_clouds.png").toString());
 		smallClouds = new Image(getClass().getResource("/assets/images/small_clouds.png").toString());
 		playingBg = new Image(getClass().getResource("/assets/images/playing_bg_img.png").toString());
@@ -140,6 +141,10 @@ public class ResourcePool {
 		}
 		return enemies;
 		
+	}
+
+	public Image getGameOverBackground() {
+		return gameOverBackground;
 	}
 
 	private void createShark() {

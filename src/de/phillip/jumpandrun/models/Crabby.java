@@ -1,7 +1,5 @@
 package de.phillip.jumpandrun.models;
 
-import java.util.List;
-
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.geometry.Point2D;
@@ -139,7 +137,7 @@ public class Crabby extends Enemy {
 					direction = Direction.LEFT;
 				}
 			} else {
-				if (canSeePlayer(getEnemyManager().getPlayer())) {
+				if (canSeePlayer(getEnemyManager().getPlayer()) && !getEnemyManager().getPlayer().isDead()) {
 					moveTowardsPlayer();
 					if (canAttackPlayer(getEnemyManager().getPlayer())) {
 						setEnemyAction(ATTACK);

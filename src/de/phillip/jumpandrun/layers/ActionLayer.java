@@ -9,16 +9,12 @@ import de.phillip.jumpandrun.controllers.EnemyManager;
 import de.phillip.jumpandrun.controllers.LevelManager;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
-import de.phillip.jumpandrun.models.Actor;
 import de.phillip.jumpandrun.models.CanvasLayer;
 import de.phillip.jumpandrun.models.Drawable;
 import de.phillip.jumpandrun.models.Player;
 import de.phillip.jumpandrun.models.Tile;
-import de.phillip.jumpandrun.utils.GameState;
 import de.phillip.jumpandrun.utils.KeyPolling;
 import de.phillip.jumpandrun.utils.ResourcePool;
-import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -100,28 +96,30 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	}
 
 	private void updateKeyEvents(float secondsSinceLastFrame) {
-		if (kp.isDown(KeyCode.A)) {
-			if (player.canMoveHere(-Player.SPEED)) {
-				player.setPlayerAction(Player.RUNNING);
-				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_MOVE_LEFT, player.getHitBox().getMinX()));
+		if (!player.isDead()) {
+			if (kp.isDown(KeyCode.A)) {
+				if (player.canMoveHere(-Player.SPEED)) {
+					player.setPlayerAction(Player.RUNNING);
+					FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_MOVE_LEFT, player.getHitBox().getMinX()));
+				}
 			}
-		}
-		if (kp.isDown(KeyCode.D)) {
-			if (player.canMoveHere(Player.SPEED)) {
-				player.setPlayerAction(Player.RUNNING);
-				FXEventBus.getInstance()
-						.fireEvent(new GameEvent(GameEvent.JR_MOVE_RIGHT, player.getHitBox().getMaxX()));
+			if (kp.isDown(KeyCode.D)) {
+				if (player.canMoveHere(Player.SPEED)) {
+					player.setPlayerAction(Player.RUNNING);
+					FXEventBus.getInstance()
+							.fireEvent(new GameEvent(GameEvent.JR_MOVE_RIGHT, player.getHitBox().getMaxX()));
+				}
 			}
-		}
-		if (kp.isDown(KeyCode.J)) {
-			// System.out.println("Player Action Jump");
-			if (player.canJumpHere(Player.JUMPSPEED)) {
-				// System.out.println("Can Jump");
-				player.setPlayerAction(Player.JUMPING);
+			if (kp.isDown(KeyCode.J)) {
+				// System.out.println("Player Action Jump");
+				if (player.canJumpHere(Player.JUMPSPEED)) {
+					// System.out.println("Can Jump");
+					player.setPlayerAction(Player.JUMPING);
+				}
 			}
-		}
-		if (kp.isDown(KeyCode.E)) {
-			player.setPlayerAction(Player.ATTACK);
+			if (kp.isDown(KeyCode.E)) {
+				player.setPlayerAction(Player.ATTACK);
+			}
 		}
 		if (kp.isDown(KeyCode.ESCAPE)) {
 			// GameState.state = GameState.MENU;

@@ -9,7 +9,6 @@ import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.models.CanvasButton;
 import de.phillip.jumpandrun.models.Drawable;
 import de.phillip.jumpandrun.models.Menu;
-import de.phillip.jumpandrun.utils.GameState;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,8 +16,12 @@ import javafx.scene.image.Image;
 
 public class PauseMenu implements Menu{
 	
-	private double width;
-	private double height;
+	public static final int BUTTON_DEFAULT_SIZE = 42;
+	public static final int BUTTON_SIZE = (int) (BUTTON_DEFAULT_SIZE * Game.SCALE);
+	private static final int SOUND_V_OFFSET = (int) (148 * Game.SCALE);
+	private static final int URM_V_OFFSET = (int) (340 * Game.SCALE);
+	
+
 	private List<Drawable> actors = new ArrayList<>();
 	private Image pauseBackground;
 	private Image soundButtonSprites;
@@ -27,11 +30,9 @@ public class PauseMenu implements Menu{
 	private CanvasButton sfxButton;
 	private CanvasButton unpauseButton;
 	private CanvasButton restartButton;
-	private CanvasButton menuButton;
+	private CanvasButton mainMenuButton;
 	
-	public PauseMenu(double width, double height) {
-		this.width = width;
-		this.height = height;
+	public PauseMenu() {
 		pauseBackground = ResourcePool.getInstance().getPauseBackground();
 		soundButtonSprites = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.SOUND_BUTTONS_SPRITES);
 		urmButtonSprites = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.URM_BUTTONS_SPRITES);
@@ -39,29 +40,29 @@ public class PauseMenu implements Menu{
 	}
 	
 	private void createButtons() {
-		musicButton = new CanvasButton(soundButtonSprites, (int) ((width / 2) + (int) (32 * Game.SCALE)),
-				CanvasButton.SOUND_V_OFFSET, CanvasButton.PAUSE_SIZE, CanvasButton.PAUSE_SIZE, 0, GameState.PAUSING);
-		sfxButton = new CanvasButton(soundButtonSprites, (int) ((width / 2) + (int) (32 * Game.SCALE)),
-				CanvasButton.SOUND_V_OFFSET + CanvasButton.PAUSE_SIZE + 5, CanvasButton.PAUSE_SIZE,
-				CanvasButton.PAUSE_SIZE, 1, GameState.PAUSING);
+		musicButton = new CanvasButton(soundButtonSprites, (int) ((Game.GAMEWIDTH / 2) + (int) (32 * Game.SCALE)),
+				SOUND_V_OFFSET, BUTTON_DEFAULT_SIZE, BUTTON_DEFAULT_SIZE, 0);
+		sfxButton = new CanvasButton(soundButtonSprites, (int) ((Game.GAMEWIDTH / 2) + (int) (32 * Game.SCALE)),
+				SOUND_V_OFFSET + BUTTON_SIZE + 5, BUTTON_DEFAULT_SIZE,
+				BUTTON_DEFAULT_SIZE, 1);
 		unpauseButton = new CanvasButton(urmButtonSprites,
-				(int) ((width / 2) - CanvasButton.PAUSE_SIZE) - (int) (32 * Game.SCALE), CanvasButton.URM_V_OFFSET,
-				CanvasButton.PAUSE_SIZE, CanvasButton.PAUSE_SIZE, 0, GameState.PAUSING);
-		restartButton = new CanvasButton(urmButtonSprites, (int) ((width / 2) - CanvasButton.PAUSE_SIZE / 2),
-				CanvasButton.URM_V_OFFSET, CanvasButton.PAUSE_SIZE, CanvasButton.PAUSE_SIZE, 1, GameState.PAUSING);
-		menuButton = new CanvasButton(urmButtonSprites, (int) ((width / 2) + (int) (32 * Game.SCALE)),
-				CanvasButton.URM_V_OFFSET, CanvasButton.PAUSE_SIZE, CanvasButton.PAUSE_SIZE, 2, GameState.PAUSING);
+				(int) ((Game.GAMEWIDTH / 2) - BUTTON_SIZE) - (int) (32 * Game.SCALE), URM_V_OFFSET,
+				BUTTON_DEFAULT_SIZE, BUTTON_DEFAULT_SIZE, 0);
+		restartButton = new CanvasButton(urmButtonSprites, (int) ((Game.GAMEWIDTH / 2) - BUTTON_SIZE / 2),
+				URM_V_OFFSET, BUTTON_DEFAULT_SIZE, BUTTON_DEFAULT_SIZE, 1);
+		mainMenuButton = new CanvasButton(urmButtonSprites, (int) ((Game.GAMEWIDTH / 2) + (int) (32 * Game.SCALE)),
+				URM_V_OFFSET, BUTTON_DEFAULT_SIZE, BUTTON_DEFAULT_SIZE, 2);
 		actors.add(musicButton);
 		actors.add(sfxButton);
 		actors.add(unpauseButton);
 		actors.add(restartButton);
-		actors.add(menuButton);
+		actors.add(mainMenuButton);
 	}
 		
 
 	@Override
 	public void prepareMenu(GraphicsContext gc) {
-		gc.clearRect(0, 0, width, height);
+		gc.clearRect(0, 0, Game.GAMEWIDTH, Game.GAMEHEIGHT);
 		gc.drawImage(pauseBackground, 0, 0, pauseBackground.getWidth(), pauseBackground.getHeight(),
 				Game.GAMEWIDTH / 2 - ((pauseBackground.getWidth() * Game.SCALE) / 2), 60,
 				pauseBackground.getWidth() * Game.SCALE, pauseBackground.getHeight() * Game.SCALE);
@@ -94,10 +95,10 @@ public class PauseMenu implements Menu{
 		} else {
 			restartButton.setActive(false);
 		}
-		if (menuButton.contains(new Point2D(x, y))) {
-			menuButton.setActive(true);
+		if (mainMenuButton.contains(new Point2D(x, y))) {
+			mainMenuButton.setActive(true);
 		} else {
-			menuButton.setActive(false);
+			mainMenuButton.setActive(false);
 		}
 	}
 
@@ -111,8 +112,8 @@ public class PauseMenu implements Menu{
 			unpauseButton.setClicked(true);
 		} else if (restartButton.isActive()) {
 			restartButton.setClicked(true);
-		} else if (menuButton.isActive()) {
-			menuButton.setClicked(true);
+		} else if (mainMenuButton.isActive()) {
+			mainMenuButton.setClicked(true);
 		}
 	}
 
@@ -129,8 +130,8 @@ public class PauseMenu implements Menu{
 			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_HIDE_PAUSE_MENU, null));
 		} else if (restartButton.isActive()) {
 			restartButton.setClicked(false);
-		} else if (menuButton.isActive()) {
-			menuButton.setClicked(false);
+		} else if (mainMenuButton.isActive()) {
+			mainMenuButton.setClicked(false);
 			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_MENU, null));
 		}
 	}

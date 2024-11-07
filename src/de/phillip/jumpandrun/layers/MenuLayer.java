@@ -1,27 +1,17 @@
 package de.phillip.jumpandrun.layers;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.events.FXEventBus;
-import de.phillip.jumpandrun.events.GameEvent;
-import de.phillip.jumpandrun.models.CanvasButton;
 import de.phillip.jumpandrun.models.CanvasLayer;
 import de.phillip.jumpandrun.models.Drawable;
 import de.phillip.jumpandrun.models.Menu;
-import de.phillip.jumpandrun.models.Player;
-import de.phillip.jumpandrun.utils.GameState;
-import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 
 public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event> {
 	
@@ -55,6 +45,11 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 	
 	public void showMenu(Menu menu) {
 		this.menu = menu;
+		this.setVisible(true);
+	}
+	
+	public void hideMenu() {
+		this.setVisible(false);
 	}
 
 	@Override

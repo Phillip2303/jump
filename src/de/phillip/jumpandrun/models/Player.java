@@ -1,7 +1,6 @@
 package de.phillip.jumpandrun.models;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.controllers.EnemyManager;
@@ -67,7 +66,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	private EnemyManager enemyManager;
 	private double yOffsetAttackBox = 10 * Game.SCALE;
 	private boolean attackChecked;
-	private boolean isDead;
+	private boolean dead;
 	
 
 	public Player(double width, double height, Image playerSprite) {
@@ -227,7 +226,11 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 			aniIndex++;
 		}
 		if (aniIndex >= getSpriteCount(playerAction)) {
-			aniIndex = 0;
+			if (isDead()) {
+				aniIndex = 7;
+			} else {
+				aniIndex = 0;
+			}
 			isAttacking = false;
 			attackChecked = false;
 		}
@@ -259,7 +262,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		if (isAttacking) {
 			return;
 		}
-		if (isDead) {
+		if (dead) {
 			return;
 		}
 		if (this.playerAction != playerAction && !isJumping) {
@@ -301,7 +304,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 			isAttacking = true;
 			break;
 		case DEAD:
-			isDead = true;
+			dead = true;
 			break;
 		default:
 			break;
@@ -382,6 +385,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		currentHealth -= amount;
 		if (currentHealth <= 0) {
 			setPlayerAction(DEAD);
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
 		} else {
 			System.out.println("Treffer");
 		}
@@ -389,6 +393,10 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 
 	public void setLevelWidth(int levelWidth) {
 		this.levelWidth = levelWidth;
+	}
+
+	public boolean isDead() {
+		return dead;
 	}
 
 	@Override

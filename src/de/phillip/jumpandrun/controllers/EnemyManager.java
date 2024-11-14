@@ -30,12 +30,20 @@ public class EnemyManager implements EventHandler<GameEvent>{
 	}
 	
 	public void update() {
+		boolean enemiesAlive = false;
 		for (Enemy enemy: enemies) {
 			enemy.update();
+			if (enemiesAlive == false && enemy.isActive()) {
+				enemiesAlive = true;
+			}
+		}
+		if (!enemiesAlive) {
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_NEXT_LEVEL, null));
 		}
 	}
 	
 	public void createEnemies(int level) {
+		enemies.clear();
 		this.enemies.addAll(ResourcePool.getInstance().getEnemies(level));
 		for (Enemy enemy: enemies) {
 			enemy.setEnemyManager(this);

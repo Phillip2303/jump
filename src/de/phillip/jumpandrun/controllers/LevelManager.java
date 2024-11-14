@@ -46,7 +46,7 @@ public class LevelManager {
 	}
 
 	private void createLevel() {
-		activeLevel = new Level(ResourcePool.getInstance().getLevelData(level));
+		activeLevel = new Level(level);
 		createLevelTilesFromAtlas();
 	}
 
@@ -58,7 +58,7 @@ public class LevelManager {
 		return activeLevel;
 	}
 
-	private void setLevel(int level) {
+	public void setLevel(int level) {
 		this.level = level;
 		createLevel();
 	}

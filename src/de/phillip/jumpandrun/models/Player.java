@@ -410,4 +410,11 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		}
 		
 	}
+	
+	public void reset() {
+		hOffset = 0;
+		dead = false;
+		setPlayerAction(IDLE);
+		currentHealth = maxHealth;
+	}
 }

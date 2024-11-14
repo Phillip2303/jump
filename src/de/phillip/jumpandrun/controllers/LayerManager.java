@@ -8,6 +8,7 @@ import de.phillip.jumpandrun.layers.BackgroundLayer;
 import de.phillip.jumpandrun.layers.MenuLayer;
 import de.phillip.jumpandrun.layers.menus.GameOverMenu;
 import de.phillip.jumpandrun.layers.menus.MainMenu;
+import de.phillip.jumpandrun.layers.menus.NextLevelMenu;
 import de.phillip.jumpandrun.layers.menus.PauseMenu;
 import de.phillip.jumpandrun.rendering.Renderer;
 import javafx.event.EventHandler;
@@ -28,6 +29,7 @@ public class LayerManager implements EventHandler<GameEvent> {
 	private MainMenu mainMenu;
 	private PauseMenu pauseMenu;
 	private GameOverMenu gameOverMenu;
+	private NextLevelMenu nextLevelMenu;
 
 	public LayerManager(StackPane stackPane) {
 		this.stackPane = stackPane;
@@ -38,9 +40,9 @@ public class LayerManager implements EventHandler<GameEvent> {
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_SHOW_PAUSE_MENU, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_HIDE_PAUSE_MENU, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_SHOW_GAME_OVER, this);
-		FXEventBus.getInstance().addEventHandler(GameEvent.JR_HIDE_GAME_OVER, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_SHOW_NEXT_LEVEL, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_HIDE_NEXT_LEVEL, this);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_RESET_GAME, this);
 		renderer = new Renderer();
 		actionLayer = new ActionLayer(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE,
 				Game.GAMEHEIGHT, levelManager);
@@ -61,6 +63,7 @@ public class LayerManager implements EventHandler<GameEvent> {
 		mainMenu = new MainMenu();
 		pauseMenu = new PauseMenu();
 		gameOverMenu = new GameOverMenu();
+		nextLevelMenu = new NextLevelMenu();
 		
 		menuLayer.setVisible(false);
 	}
@@ -70,7 +73,12 @@ public class LayerManager implements EventHandler<GameEvent> {
 		actionLayer.updateLayer(secondsSinceLastFrame);
 		renderer.render();
 	}
-
+	
+	private void resetToLevel(int level) {
+		levelManager.setLevel(level);
+		actionLayer.resetLevel();
+	}
+	
 	@Override
 	public void handle(GameEvent event) {
 		switch (event.getEventType().getName()) {
@@ -94,11 +102,16 @@ public class LayerManager implements EventHandler<GameEvent> {
 			menuLayer.showMenu(gameOverMenu);
 			actionLayer.listenToEvents(false);
 			break;
-		case "JR_HIDE_GAME_OVER":
-			break;
 		case "JR_SHOW_NEXT_LEVEL":
+			menuLayer.showMenu(nextLevelMenu);
+			actionLayer.listenToEvents(false);
 			break;
 		case "JR_HIDE_NEXT_LEVEL":
+			break;
+		case "JR_RESET_GAME":
+			resetToLevel(1);
+			menuLayer.hideMenu();
+			actionLayer.listenToEvents(true);
 			break;
 		case "JR_H_OFFSET":
 			int hOffset = (int) event.getData();

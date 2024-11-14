@@ -71,7 +71,7 @@ public class GameOverMenu implements Menu{
 			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_MENU, null));
 		} else if (restartButton.isActive()) {
 			restartButton.setClicked(false);
-			//restart Level!!!!
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_RESET_GAME, null));
 		}
 	}
 

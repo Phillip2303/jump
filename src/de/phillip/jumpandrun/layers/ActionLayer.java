@@ -32,18 +32,14 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	public ActionLayer(int width, int height, LevelManager levelManager) {
 		super(width, height);
 		this.levelManager = levelManager;
-		createLevel();
+		createLevelTiles();
 		createPlayer();
 		enemyManager = new EnemyManager(player);
 		player.setEnemyManager(enemyManager);
-		enemyManager.createEnemies(1);
-		enemyManager.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
-				.collect(Collectors.toList()));
-		enemyManager.setLevelWidth((int) getWidth());
-		actors.addAll(enemyManager.getEnemies());
+		initEnemies();
 	}
 
-	private void createLevel() {
+	private void createLevelTiles() {
 		for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
 			for (int i = 0; i < levelManager.getActiveLevel().getTilesInWidth(); i++) {
 				int index = levelManager.getActiveLevel().getSpriteIndex(i, j);
@@ -59,13 +55,26 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	private void createPlayer() {
 		Image image = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.PLAYER_ATLAS);
 		player = new Player(Player.DEFAULT_WIDTH * Game.SCALE, Player.DEFAULT_HEIGHT * Game.SCALE, image);
+		initPlayer();
+	}
+	
+	private void initPlayer() {
+		player.reset();
 		player.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
 				.collect(Collectors.toList()));
 		player.setDrawPosition(215, 196);
 		player.setLevelWidth((int) getWidth());
 		actors.add(player);
 	}
-
+	
+	private void initEnemies() {
+		enemyManager.createEnemies(levelManager.getActiveLevel().getLevelNumber());
+		enemyManager.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
+				.collect(Collectors.toList()));
+		enemyManager.setLevelWidth((int) getWidth());
+		actors.addAll(enemyManager.getEnemies());
+	}
+	
 	@Override
 	public List<Drawable> getDrawables() {
 		return actors;
@@ -86,8 +95,12 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	}
 
 	@Override
-	public void resetGame() {
-
+	public void resetLevel() {
+		hasStarted = true;
+		actors.clear();
+		createLevelTiles();
+		initPlayer();
+		initEnemies();
 	}
 
 	@Override

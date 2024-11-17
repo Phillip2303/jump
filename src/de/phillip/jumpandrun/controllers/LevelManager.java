@@ -15,6 +15,7 @@ public class LevelManager {
 	private Level activeLevel;
 	private Image[] levelTiles;
 	private int level = 1;
+	private int oldLevel = 1;
 
 	public LevelManager() {
 		outsideAtlas = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.OUTSIDE_ATLAS);
@@ -59,7 +60,15 @@ public class LevelManager {
 	}
 
 	public void setLevel(int level) {
+		oldLevel = level;
 		this.level = level;
 		createLevel();
+	}
+
+	/**
+	 * @return the oldLevel
+	 */
+	public int getOldLevel() {
+		return oldLevel;
 	}
 }

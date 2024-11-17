@@ -12,20 +12,20 @@ public abstract class Enemy extends Actor {
 		CANNON(1, Game.TILES_SIZE, Game.TILES_SIZE * 5, 100), 
 		SHARK(2, Game.TILES_SIZE, Game.TILES_SIZE * 5, 50);
 		
-		private final int value;
+		private final int colorValue;
 		private final int attackDistance;
 		private final int sightDistance;
 		private final int health;
 		
-		private Type(int value, int attackDistance, int sightDistance, int health) {
-			this.value = value;
+		private Type(int colorValue, int attackDistance, int sightDistance, int health) {
+			this.colorValue = colorValue;
 			this.attackDistance = attackDistance;
 			this.sightDistance = sightDistance;
 			this.health = health;
 		}
 		
-		public int getValue() {
-			return value;
+		public int getColorValue() {
+			return colorValue;
 		}
 
 		public int getAttackDistance() {

@@ -28,9 +28,9 @@ public class GameEvent extends Event {
 	
 	public static final EventType<GameEvent> JR_SHOW_GAME_OVER = new EventType<>(GameEvent.ANY, "JR_SHOW_GAME_OVER");
 		
-	public static final EventType<GameEvent> JR_SHOW_NEXT_LEVEL = new EventType<>(GameEvent.ANY, "JR_SHOW_NEXT_LEVEL");
+	public static final EventType<GameEvent> JR_SHOW_LEVEL_COMPLETED = new EventType<>(GameEvent.ANY, "JR_SHOW_LEVEL_COMPLETED");
 	
-	public static final EventType<GameEvent> JR_HIDE_NEXT_LEVEL = new EventType<>(GameEvent.ANY, "JR_HIDE_NEXT_LEVEL");
+	public static final EventType<GameEvent> JR_NEXT_LEVEL = new EventType<>(GameEvent.ANY, "JR_NEXT_LEVEL");
 	
 	public static final EventType<GameEvent> JR_RESET_LEVEL = new EventType<>(GameEvent.ANY, "JR_RESET_LEVEL");
 	

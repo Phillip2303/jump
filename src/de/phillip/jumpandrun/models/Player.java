@@ -59,6 +59,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	private double healthBarY = 14 * Game.SCALE;
 	private double maxHealth = 100;
 	private double currentHealth = maxHealth;
+	private double oldCurrentHealth;
 	private double healthWidth = healthBarWidth;
 	private int hOffset;
 	private int flipX = 0;
@@ -411,10 +412,12 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		
 	}
 	
-	public void reset() {
+	public void reset(boolean nextLevel) {
 		hOffset = 0;
 		dead = false;
 		setPlayerAction(IDLE);
-		currentHealth = maxHealth;
+		if (!nextLevel) {
+			currentHealth = maxHealth;
+		}
 	}
 }

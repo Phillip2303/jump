@@ -14,20 +14,20 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class GameOverMenu implements Menu{
+public class LevelCompletedMenu implements Menu{
 	
-	private static final int URM_V_OFFSET = (int) (166 * Game.SCALE);
+	private static final int URM_V_OFFSET = (int) (196 * Game.SCALE);
 	private static final int BG_V_OFFSET = (int) (63 * Game.SCALE);
 	
 	private List<Drawable> actors = new ArrayList<>();
-	private Image gameOverBackground;
+	private Image levelCompletedBackground;
 	private Image urmButtonSprites;
 	
-	private CanvasButton restartButton;
+	private CanvasButton nextLevelButton;
 	private CanvasButton mainMenuButton;
 	
-	public GameOverMenu() {
-		gameOverBackground = ResourcePool.getInstance().getGameOverBackground();
+	public LevelCompletedMenu() {
+		levelCompletedBackground = ResourcePool.getInstance().getLevelCompletedBackground();
 		urmButtonSprites = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.URM_BUTTONS_SPRITES);
 		createButtons();
 	}
@@ -36,44 +36,24 @@ public class GameOverMenu implements Menu{
 		mainMenuButton = new CanvasButton(urmButtonSprites,
 				(int) ((Game.GAMEWIDTH / 2) - PauseMenu.BUTTON_SIZE) - (int) (32 * Game.SCALE), URM_V_OFFSET,
 				PauseMenu.BUTTON_DEFAULT_SIZE, PauseMenu.BUTTON_DEFAULT_SIZE, 2);
-		restartButton = new CanvasButton(urmButtonSprites, (int) ((Game.GAMEWIDTH / 2) + (int) (32 * Game.SCALE)),
+		nextLevelButton = new CanvasButton(urmButtonSprites, (int) ((Game.GAMEWIDTH / 2) + (int) (32 * Game.SCALE)),
 				URM_V_OFFSET, PauseMenu.BUTTON_DEFAULT_SIZE, PauseMenu.BUTTON_DEFAULT_SIZE, 0);
 		actors.add(mainMenuButton);
-		actors.add(restartButton);
+		actors.add(nextLevelButton);
+		
 	}
 
 	@Override
 	public void prepareMenu(GraphicsContext gc) {
 		gc.clearRect(0, 0, Game.GAMEWIDTH, Game.GAMEHEIGHT);
-		gc.drawImage(gameOverBackground, 0, 0, gameOverBackground.getWidth(), gameOverBackground.getHeight(),
-				Game.GAMEWIDTH / 2 - ((gameOverBackground.getWidth() * Game.SCALE) / 2), BG_V_OFFSET,
-				gameOverBackground.getWidth() * Game.SCALE, gameOverBackground.getHeight() * Game.SCALE);
-		
+		gc.drawImage(levelCompletedBackground, 0, 0, levelCompletedBackground.getWidth(), levelCompletedBackground.getHeight(),
+				Game.GAMEWIDTH / 2 - ((levelCompletedBackground.getWidth() * Game.SCALE) / 2), BG_V_OFFSET,
+				levelCompletedBackground.getWidth() * Game.SCALE, levelCompletedBackground.getHeight() * Game.SCALE);
 	}
 
 	@Override
 	public List<Drawable> getDrawables() {
 		return actors;
-	}
-
-	@Override
-	public void mousePressed() {
-		if (mainMenuButton.isActive()) {
-			mainMenuButton.setClicked(true);
-		} else if (restartButton.isActive()) {
-			restartButton.setClicked(true);
-		}
-	}
-
-	@Override
-	public void mouseReleased() {
-		if (mainMenuButton.isActive()) {
-			mainMenuButton.setClicked(false);
-			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_MENU, null));
-		} else if (restartButton.isActive()) {
-			restartButton.setClicked(false);
-			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_RESET_GAME, null));
-		}
 	}
 
 	@Override
@@ -83,10 +63,32 @@ public class GameOverMenu implements Menu{
 		} else {
 			mainMenuButton.setActive(false);
 		}
-		if (restartButton.contains(new Point2D(x, y))) {
-			restartButton.setActive(true);
+		if (nextLevelButton.contains(new Point2D(x, y))) {
+			nextLevelButton.setActive(true);
 		} else {
-			restartButton.setActive(false);
+			nextLevelButton.setActive(false);
+		}
+		
+	}
+
+	@Override
+	public void mousePressed() {
+		if (mainMenuButton.isActive()) {
+			mainMenuButton.setClicked(true);
+		} else if (nextLevelButton.isActive()) {
+			nextLevelButton.setClicked(true);
+		}
+		
+	}
+
+	@Override
+	public void mouseReleased() {
+		if (mainMenuButton.isActive()) {
+			mainMenuButton.setClicked(false);
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_MENU, null));
+		} else if (nextLevelButton.isActive()) {
+			nextLevelButton.setClicked(false);
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_NEXT_LEVEL, null));
 		}
 		
 	}

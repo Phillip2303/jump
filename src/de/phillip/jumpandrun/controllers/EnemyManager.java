@@ -6,6 +6,7 @@ import java.util.List;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.models.Enemy;
+import de.phillip.jumpandrun.models.Level;
 import de.phillip.jumpandrun.models.Player;
 import de.phillip.jumpandrun.models.Tile;
 import de.phillip.jumpandrun.utils.ResourcePool;
@@ -17,6 +18,7 @@ public class EnemyManager implements EventHandler<GameEvent>{
 	private List<Tile> tiles;
 	private int levelWidth;
 	private Player player;
+	private boolean isActive = true;
 	
 	
 	public List<Enemy> getEnemies() {
@@ -30,21 +32,25 @@ public class EnemyManager implements EventHandler<GameEvent>{
 	}
 	
 	public void update() {
-		boolean enemiesAlive = false;
-		for (Enemy enemy: enemies) {
-			enemy.update();
-			if (enemiesAlive == false && enemy.isActive()) {
-				enemiesAlive = true;
+		if (isActive) {
+			boolean enemiesAlive = false;
+			for (Enemy enemy: enemies) {
+				enemy.update();
+				if (enemy.isActive()) {
+					enemiesAlive = true;
+				}
 			}
-		}
-		if (!enemiesAlive) {
-			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_NEXT_LEVEL, null));
+			if (!enemiesAlive) {
+				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_LEVEL_COMPLETED, null));
+				isActive = false;
+			}
 		}
 	}
 	
-	public void createEnemies(int level) {
+	public void createEnemies(Level level) {
 		enemies.clear();
-		this.enemies.addAll(ResourcePool.getInstance().getEnemies(level));
+		isActive = true;
+		this.enemies.addAll(level.getEnemies());
 		for (Enemy enemy: enemies) {
 			enemy.setEnemyManager(this);
 		}

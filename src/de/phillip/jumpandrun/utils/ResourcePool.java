@@ -30,6 +30,7 @@ public class ResourcePool {
 	private Image playingBg;
 	private Image pauseBackground;
 	private Image gameOverBackground;
+	private Image levelCompletedBackground;
 	private Image healthPowerBar;
 
 	private ResourcePool() {
@@ -65,6 +66,7 @@ public class ResourcePool {
 		menuBackground = new Image(getClass().getResource("/assets/images/menu_background.png").toString());
 		pauseBackground = new Image(getClass().getResource("/assets/images/pause_menu_background.png").toString());
 		gameOverBackground = new Image(getClass().getResource("/assets/images/death_menu_background.png").toString());
+		levelCompletedBackground = new Image(getClass().getResource("/assets/images/completed_background.png").toString());
 		bigClouds = new Image(getClass().getResource("/assets/images/big_clouds.png").toString());
 		smallClouds = new Image(getClass().getResource("/assets/images/small_clouds.png").toString());
 		playingBg = new Image(getClass().getResource("/assets/images/playing_bg_img.png").toString());
@@ -80,14 +82,8 @@ public class ResourcePool {
 	}
 
 	public int[][] getLevelData(int level) {
-		Image levelAtlas = null;
-		switch (level) {
-		case 1:
-			levelAtlas = getLevelAtlas(LEVEL_1);
-			break;
-		default:
-			break;
-		}
+		String resourcePath = LEVEL_PATH + String.valueOf(level) + ".png"; 
+		Image levelAtlas = new Image(getClass().getResource(resourcePath).toString());
 		int[][] levelData = new int[Game.TILES_IN_HEIGHT][(int) levelAtlas.getWidth()];
 		for (int j = 0; j < levelAtlas.getHeight(); j++) {
 			for (int i = 0; i < levelAtlas.getWidth(); i++) {
@@ -116,25 +112,19 @@ public class ResourcePool {
 	}
 	
 	public List<Enemy> getEnemies(int level) {
-		Image levelAtlas = null;
-		switch (level) {
-		case 1:
-			levelAtlas = getLevelAtlas(LEVEL_1);
-			break;
-		default:
-			break;
-		}
+		String resourcePath = LEVEL_PATH + String.valueOf(level) + ".png"; 
+		Image levelAtlas = new Image(getClass().getResource(resourcePath).toString());		
 		List<Enemy> enemies = new ArrayList<>();
 		for (int j = 0; j < levelAtlas.getHeight(); j++) {
 			for (int i = 0; i < levelAtlas.getWidth(); i++) {
 				Color color = levelAtlas.getPixelReader().getColor(i, j);
 				int colorValue = (int) (color.getGreen() * 255);
-				if (colorValue == Enemy.Type.CRABBY.getValue()) {
+				if (colorValue == Enemy.Type.CRABBY.getColorValue()) {
 					Crabby crabby = createCrabby(i, j); 
 					enemies.add(crabby);
-				} else if (colorValue == Enemy.Type.CANNON.getValue()) {
+				} else if (colorValue == Enemy.Type.CANNON.getColorValue()) {
 					createCannon();
-				} else if (colorValue == Enemy.Type.SHARK.getValue()) {
+				} else if (colorValue == Enemy.Type.SHARK.getColorValue()) {
 					createShark();
 				}
 			}
@@ -145,6 +135,13 @@ public class ResourcePool {
 
 	public Image getGameOverBackground() {
 		return gameOverBackground;
+	}
+
+	/**
+	 * @return the levelCompletedBackround
+	 */
+	public Image getLevelCompletedBackground() {
+		return levelCompletedBackground;
 	}
 
 	private void createShark() {

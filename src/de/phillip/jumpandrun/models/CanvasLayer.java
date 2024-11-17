@@ -13,7 +13,7 @@ public interface CanvasLayer {
 
 	public void updateLayer(float secondsSinceLastFrame);
 
-	public void resetLevel();
+	public void buildLevel(boolean nextLevel);
 
 	public void listenToEvents(boolean value);
 }

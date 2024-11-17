@@ -56,7 +56,7 @@ public class BackgroundLayer extends Canvas implements CanvasLayer {
 	}
 
 	@Override
-	public void resetLevel() {
+	public void buildLevel(boolean nextLevel) {
 
 	}
 

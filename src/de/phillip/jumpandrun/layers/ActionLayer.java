@@ -55,11 +55,19 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	private void createPlayer() {
 		Image image = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.PLAYER_ATLAS);
 		player = new Player(Player.DEFAULT_WIDTH * Game.SCALE, Player.DEFAULT_HEIGHT * Game.SCALE, image);
-		initPlayer();
+		initPlayer(false);
 	}
 	
-	private void initPlayer() {
-		player.reset();
+	private void initPlayer(boolean nextLevel) {
+		if (levelManager.getOldLevel() == 1) {
+			//add health here
+		}
+		
+		
+		
+		
+		
+		player.reset(nextLevel);
 		player.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
 				.collect(Collectors.toList()));
 		player.setDrawPosition(215, 196);
@@ -68,7 +76,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	}
 	
 	private void initEnemies() {
-		enemyManager.createEnemies(levelManager.getActiveLevel().getLevelNumber());
+		enemyManager.createEnemies(levelManager.getActiveLevel());
 		enemyManager.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
 				.collect(Collectors.toList()));
 		enemyManager.setLevelWidth((int) getWidth());
@@ -95,11 +103,11 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	}
 
 	@Override
-	public void resetLevel() {
+	public void buildLevel(boolean nextLevel) {
 		hasStarted = true;
 		actors.clear();
 		createLevelTiles();
-		initPlayer();
+		initPlayer(nextLevel);
 		initEnemies();
 	}
 

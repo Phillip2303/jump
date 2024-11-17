@@ -58,7 +58,7 @@ public class MenuLayer extends Canvas implements CanvasLayer, EventHandler<Event
 	}
 
 	@Override
-	public void resetLevel() {
+	public void buildLevel(boolean nextLevel) {
 
 	}
 

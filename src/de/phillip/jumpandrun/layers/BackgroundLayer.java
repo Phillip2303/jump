@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.phillip.jumpandrun.Game;
+import de.phillip.jumpandrun.controllers.LevelManager;
 import de.phillip.jumpandrun.models.CanvasLayer;
 import de.phillip.jumpandrun.models.Cloud;
 import de.phillip.jumpandrun.models.Drawable;
@@ -28,10 +29,12 @@ public class BackgroundLayer extends Canvas implements CanvasLayer {
 	private Image playingBg;
 	private Image bigClouds;
 	private Image smallClouds;
+	private LevelManager levelManager;
 	private List<Drawable> actors = new ArrayList<Drawable>();
 
-	public BackgroundLayer(double width, double height) {
+	public BackgroundLayer(double width, double height, LevelManager levelManager) {
 		super(width, height);
+		this.levelManager = levelManager;
 		playingBg = ResourcePool.getInstance().getPlayingBg();
 		bigClouds = ResourcePool.getInstance().getBigClouds();
 		smallClouds = ResourcePool.getInstance().getSmallClouds();
@@ -57,7 +60,7 @@ public class BackgroundLayer extends Canvas implements CanvasLayer {
 
 	@Override
 	public void buildLevel(boolean nextLevel) {
-
+		setWidth(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE);
 	}
 
 	private void createBigClouds() {

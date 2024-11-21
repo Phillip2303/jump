@@ -35,6 +35,8 @@ public class GameEvent extends Event {
 	public static final EventType<GameEvent> JR_RESET_LEVEL = new EventType<>(GameEvent.ANY, "JR_RESET_LEVEL");
 	
 	public static final EventType<GameEvent> JR_RESET_GAME = new EventType<>(GameEvent.ANY, "JR_RESET_GAME");
+	
+	public static final EventType<GameEvent> JR_RESET_H_OFFSET = new EventType<>(GameEvent.ANY, "JR_RESET_H_OFFSET");
 
 
 	public GameEvent(EventType<GameEvent> eventType, Object data) {

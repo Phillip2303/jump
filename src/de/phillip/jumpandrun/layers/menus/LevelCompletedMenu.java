@@ -85,9 +85,12 @@ public class LevelCompletedMenu implements Menu{
 	public void mouseReleased() {
 		if (mainMenuButton.isActive()) {
 			mainMenuButton.setClicked(false);
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_RESET_H_OFFSET, null));
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_RESET_LEVEL, Boolean.FALSE)); //Object hideMenu
 			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_MENU, null));
 		} else if (nextLevelButton.isActive()) {
 			nextLevelButton.setClicked(false);
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_RESET_H_OFFSET, null));
 			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_NEXT_LEVEL, null));
 		}
 		

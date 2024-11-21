@@ -30,6 +30,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	public static final int DEFAULT_HEIGHT = 40;
 	public static final double SPEED = 1.5 * Game.SCALE;
 	public static final double JUMPSPEED = -2.5 * Game.SCALE;
+	public static final double MAXHEALTH = 100;
 
 	private Image playerSprite;
 	private Image[][] actionSprites;
@@ -57,9 +58,8 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	private double healthBarHeight = 4 * Game.SCALE;
 	private double healthBarX = 34 * Game.SCALE;
 	private double healthBarY = 14 * Game.SCALE;
-	private double maxHealth = 100;
-	private double currentHealth = maxHealth;
-	private double oldCurrentHealth;
+	private double currentHealth = MAXHEALTH;
+	private double oldHealth = currentHealth;
 	private double healthWidth = healthBarWidth;
 	private int hOffset;
 	private int flipX = 0;
@@ -161,7 +161,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	}
 
 	private void updateHealthBar() {
-		healthWidth = healthBarWidth * (currentHealth / maxHealth);
+		healthWidth = healthBarWidth * (currentHealth / MAXHEALTH);
 	}
 
 	private void checkAttack() {
@@ -412,12 +412,31 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		
 	}
 	
-	public void reset(boolean nextLevel) {
+	public void reset() {
 		hOffset = 0;
 		dead = false;
 		setPlayerAction(IDLE);
-		if (!nextLevel) {
-			currentHealth = maxHealth;
-		}
+	}
+
+	/**
+	 * @return the oldHealth
+	 */
+	public double getOldHealth() {
+		return oldHealth;
+	}
+
+	/**
+	 * @param oldCurrentHealth the oldHealth to set
+	 */
+	public void setOldHealth(double oldHealth) {
+		this.oldHealth = oldHealth;
+	}
+
+	public double getCurrentHealth() {
+		return currentHealth;
+	}
+	
+	public void setCurrentHealth(double currentHealth) {
+		this.currentHealth = currentHealth;
 	}
 }

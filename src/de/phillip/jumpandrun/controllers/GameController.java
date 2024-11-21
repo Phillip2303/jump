@@ -22,6 +22,7 @@ public class GameController implements EventHandler<GameEvent> {
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_MOVE_RIGHT, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_QUIT, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_RESET_GAME, this);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_RESET_H_OFFSET, this);
 		this.scrollPane = scrollPane;
 		loop = new GameLoopTimer() {
 
@@ -64,6 +65,10 @@ public class GameController implements EventHandler<GameEvent> {
 			break;
 		case "JR_RESET_GAME":
 			scrollPane.setHvalue(0);
+			break;
+		case "JR_RESET_H_OFFSET":
+			scrollPane.setHvalue(0);
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_H_OFFSET, 0));
 			break;
 		default:
 			break;

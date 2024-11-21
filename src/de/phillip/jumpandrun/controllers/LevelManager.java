@@ -60,7 +60,7 @@ public class LevelManager {
 	}
 
 	public void setLevel(int level) {
-		oldLevel = level;
+		oldLevel = this.level;
 		this.level = level;
 		createLevel();
 	}

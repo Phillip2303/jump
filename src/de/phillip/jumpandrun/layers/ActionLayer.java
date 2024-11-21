@@ -59,15 +59,19 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	}
 	
 	private void initPlayer(boolean nextLevel) {
-		if (levelManager.getOldLevel() == 1) {
-			//add health here
+		if (!nextLevel) {
+			if (levelManager.getOldLevel() == levelManager.getActiveLevel().getLevelNumber()) {
+				//reset level
+				player.setCurrentHealth(player.getOldHealth());
+			} else {
+				//reset game
+				player.setCurrentHealth(Player.MAXHEALTH);
+			}
+		} else {
+			//next level
+			player.setOldHealth(player.getCurrentHealth());
 		}
-		
-		
-		
-		
-		
-		player.reset(nextLevel);
+		player.reset();
 		player.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
 				.collect(Collectors.toList()));
 		player.setDrawPosition(215, 196);
@@ -104,6 +108,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 
 	@Override
 	public void buildLevel(boolean nextLevel) {
+		setWidth(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE);
 		hasStarted = true;
 		actors.clear();
 		createLevelTiles();

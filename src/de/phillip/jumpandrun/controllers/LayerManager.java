@@ -43,12 +43,13 @@ public class LayerManager implements EventHandler<GameEvent> {
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_SHOW_LEVEL_COMPLETED, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_NEXT_LEVEL, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_RESET_GAME, this);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_RESET_LEVEL, this);
 		renderer = new Renderer();
 		actionLayer = new ActionLayer(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE,
 				Game.GAMEHEIGHT, levelManager);
 		menuLayer = new MenuLayer(Game.GAMEWIDTH, Game.GAMEHEIGHT);
 		backgroundLayer = new BackgroundLayer(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE,
-				Game.GAMEHEIGHT);
+				Game.GAMEHEIGHT, levelManager);
 		//pauseLayer = new PauseLayer(Game.GAMEWIDTH, Game.GAMEHEIGHT);
 		renderer.registerCanvasLayer(actionLayer);
 		renderer.registerCanvasLayer(menuLayer);
@@ -74,15 +75,28 @@ public class LayerManager implements EventHandler<GameEvent> {
 		renderer.render();
 	}
 	
-	private void resetToLevel(int level) {
+	/*private void resetToLevel(int level) {
 		levelManager.setLevel(level);
 		actionLayer.buildLevel(false);
-	}
+	}*/
 	
 	private void nextLevel() {
 		int level = levelManager.getActiveLevel().getLevelNumber() + 1;
 		levelManager.setLevel(level);
 		actionLayer.buildLevel(true);
+		backgroundLayer.buildLevel(true);
+	}
+	
+	private void resetGame() {
+		levelManager.setLevel(1);
+		actionLayer.buildLevel(true);
+		backgroundLayer.buildLevel(true);
+	}
+	
+	private void resetLevel() {
+		levelManager.setLevel(levelManager.getActiveLevel().getLevelNumber());
+		actionLayer.buildLevel(false);
+		backgroundLayer.buildLevel(false);
 	}
 	
 	@Override
@@ -118,9 +132,20 @@ public class LayerManager implements EventHandler<GameEvent> {
 			actionLayer.listenToEvents(true);
 			break;
 		case "JR_RESET_GAME":
-			resetToLevel(1);
-			menuLayer.hideMenu();
-			actionLayer.listenToEvents(true);
+			resetGame();
+			boolean hideMenu1 = (boolean) event.getData();
+			if (hideMenu1) {
+				menuLayer.hideMenu();
+				actionLayer.listenToEvents(true);
+			}
+			break;
+		case "JR_RESET_LEVEL":
+			resetLevel();
+			boolean hideMenu2 = (boolean) event.getData();
+			if (hideMenu2) {
+				menuLayer.hideMenu();
+				actionLayer.listenToEvents(true);
+			}
 			break;
 		case "JR_H_OFFSET":
 			int hOffset = (int) event.getData();

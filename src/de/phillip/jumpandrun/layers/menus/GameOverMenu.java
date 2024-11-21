@@ -69,10 +69,13 @@ public class GameOverMenu implements Menu{
 	public void mouseReleased() {
 		if (mainMenuButton.isActive()) {
 			mainMenuButton.setClicked(false);
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_RESET_H_OFFSET, null));
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_RESET_GAME, Boolean.FALSE));
 			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_MENU, null));
 		} else if (restartButton.isActive()) {
 			restartButton.setClicked(false);
-			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_RESET_GAME, null));
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_RESET_H_OFFSET, null));
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_RESET_GAME, Boolean.TRUE));
 		}
 	}
 

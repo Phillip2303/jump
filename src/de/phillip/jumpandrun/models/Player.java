@@ -4,6 +4,7 @@ import java.util.List;
 
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.controllers.EnemyManager;
+import de.phillip.jumpandrun.controllers.GameObjectManager;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.utils.ResourcePool;
@@ -65,6 +66,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	private int flipX = 0;
 	private int flipWidth = 1;
 	private EnemyManager enemyManager;
+	private GameObjectManager gameObjectManager;
 	private double yOffsetAttackBox = 10 * Game.SCALE;
 	private boolean attackChecked;
 	private boolean dead;
@@ -81,6 +83,10 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	
 	public void setEnemyManager(EnemyManager enemyManager) {
 		this.enemyManager = enemyManager;
+	}
+	
+	public void setGameObjectManager(GameObjectManager gameObjectManager) {
+		this.gameObjectManager = gameObjectManager;
 	}
 
 	@Override
@@ -157,6 +163,30 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		}
 		if (isAttacking) {
 			checkAttack();
+		}
+		if (!isDead()) {
+			checkGameObjects();
+		}
+	}
+
+	private void checkGameObjects() {
+		for (GameObject gameObject: gameObjectManager.getGameObjects()) {
+			switch (gameObject.getType()) {
+			case SPIKE:
+				checkForSpikeTrap(gameObject);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	private void checkForSpikeTrap(GameObject gameObject) {
+		if (getHitBox().intersects(gameObject.getHitBox())) {
+			currentHealth = 0;
+			setPlayerAction(DEAD);
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
+			setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() - Game.TILES_SIZE);
 		}
 	}
 

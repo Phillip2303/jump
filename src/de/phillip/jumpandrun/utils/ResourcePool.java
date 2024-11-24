@@ -5,8 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.phillip.jumpandrun.Game;
+import de.phillip.jumpandrun.controllers.EnemyManager;
+import de.phillip.jumpandrun.controllers.GameObjectManager;
 import de.phillip.jumpandrun.models.Crabby;
 import de.phillip.jumpandrun.models.Enemy;
+import de.phillip.jumpandrun.models.GameObject;
+import de.phillip.jumpandrun.models.Spike;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
@@ -32,6 +36,7 @@ public class ResourcePool {
 	private Image gameOverBackground;
 	private Image levelCompletedBackground;
 	private Image healthPowerBar;
+	private Image spike;
 
 	private ResourcePool() {
 
@@ -71,6 +76,7 @@ public class ResourcePool {
 		smallClouds = new Image(getClass().getResource("/assets/images/small_clouds.png").toString());
 		playingBg = new Image(getClass().getResource("/assets/images/playing_bg_img.png").toString());
 		healthPowerBar = new Image(getClass().getResource("/assets/images/health_power_bar.png").toString());
+		spike = new Image(getClass().getResource("/assets/images/spikes_atlas.png").toString());
 	}
 
 	public Image getSpriteAtlas(String atlas) {
@@ -119,17 +125,42 @@ public class ResourcePool {
 			for (int i = 0; i < levelAtlas.getWidth(); i++) {
 				Color color = levelAtlas.getPixelReader().getColor(i, j);
 				int colorValue = (int) (color.getGreen() * 255);
-				if (colorValue == Enemy.Type.CRABBY.getColorValue()) {
+				if (colorValue == EnemyManager.Type.CRABBY.getColorValue()) {
 					Crabby crabby = createCrabby(i, j); 
 					enemies.add(crabby);
-				} else if (colorValue == Enemy.Type.CANNON.getColorValue()) {
+				} else if (colorValue == EnemyManager.Type.CANNON.getColorValue()) {
 					createCannon();
-				} else if (colorValue == Enemy.Type.SHARK.getColorValue()) {
+				} else if (colorValue == EnemyManager.Type.SHARK.getColorValue()) {
 					createShark();
 				}
 			}
 		}
 		return enemies;
+		
+	}
+	
+	public List<GameObject> getGameObjects(int level) {
+		String resourcePath = LEVEL_PATH + String.valueOf(level) + ".png"; 
+		Image levelAtlas = new Image(getClass().getResource(resourcePath).toString());		
+		List<GameObject> gameObjects = new ArrayList<>();
+		for (int j = 0; j < levelAtlas.getHeight(); j++) {
+			for (int i = 0; i < levelAtlas.getWidth(); i++) {
+				Color color = levelAtlas.getPixelReader().getColor(i, j);
+				int colorValue = (int) (color.getBlue() * 255);
+				if (colorValue == GameObjectManager.Type.SPIKE.getColorValue()) {
+					Spike spike = createSpikes(i, j);
+					gameObjects.add(spike);
+				}
+			}
+		}
+		return gameObjects;
+		
+	}
+
+	private Spike createSpikes(int i, int j) {
+		Spike spike = new Spike();
+		spike.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Spike.HEIGHT - Spike.Y_OFFSET - Spike.HITBOX_HEIGHT));
+		return spike;
 		
 	}
 
@@ -142,6 +173,13 @@ public class ResourcePool {
 	 */
 	public Image getLevelCompletedBackground() {
 		return levelCompletedBackground;
+	}
+
+	/**
+	 * @return the spike
+	 */
+	public Image getSpike() {
+		return spike;
 	}
 
 	private void createShark() {
@@ -158,5 +196,5 @@ public class ResourcePool {
 		Crabby crabby = new Crabby();
 		crabby.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Crabby.HEIGHT - Crabby.Y_OFFSET - Crabby.HITBOX_HEIGHT));
 		return crabby;
-	}
+	} 
 }

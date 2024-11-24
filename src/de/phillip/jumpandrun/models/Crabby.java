@@ -1,6 +1,7 @@
 package de.phillip.jumpandrun.models;
 
 import de.phillip.jumpandrun.Game;
+import de.phillip.jumpandrun.controllers.EnemyManager;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
@@ -13,10 +14,10 @@ import javafx.scene.paint.Color;
 
 public class Crabby extends Enemy {
 
-	public static final int CRABBY_DEFAULT_WIDTH = 72;
-	public static final int CRABBY_DEFAULT_HEIGHT = 32;
-	public static final int WIDTH = (int) (CRABBY_DEFAULT_WIDTH * Game.SCALE);
-	public static final int HEIGHT = (int) (CRABBY_DEFAULT_HEIGHT * Game.SCALE);
+	public static final int DEFAULT_WIDTH = 72;
+	public static final int DEFAULT_HEIGHT = 32;
+	public static final int WIDTH = (int) (DEFAULT_WIDTH * Game.SCALE);
+	public static final int HEIGHT = (int) (DEFAULT_HEIGHT * Game.SCALE);
 	public static final double HITBOX_WIDTH = 22 * Game.SCALE;
 	public static final double HITBOX_HEIGHT = 19 * Game.SCALE;
 	public static final double X_OFFSET = 26 * Game.SCALE;
@@ -30,7 +31,7 @@ public class Crabby extends Enemy {
 	private double currentHealth = maxHealth;
 
 	public Crabby() {
-		super(WIDTH, HEIGHT, Enemy.Type.CRABBY);
+		super(WIDTH, HEIGHT, EnemyManager.Type.CRABBY);
 		createActionSprites();
 		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);
 		initAttackBox(82 * Game.SCALE, HITBOX_HEIGHT);
@@ -47,11 +48,11 @@ public class Crabby extends Enemy {
 	}
 
 	private Image createSubImage(PixelReader pr, int x, int y) {
-		WritableImage wi = new WritableImage(CRABBY_DEFAULT_WIDTH, CRABBY_DEFAULT_HEIGHT);
+		WritableImage wi = new WritableImage(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		PixelWriter pw = wi.getPixelWriter();
-		for (int j = 0; j < CRABBY_DEFAULT_HEIGHT; j++) {
-			for (int i = 0; i < CRABBY_DEFAULT_WIDTH; i++) {
-				Color color = pr.getColor(x * CRABBY_DEFAULT_WIDTH + i, y * CRABBY_DEFAULT_HEIGHT + j);
+		for (int j = 0; j < DEFAULT_HEIGHT; j++) {
+			for (int i = 0; i < DEFAULT_WIDTH; i++) {
+				Color color = pr.getColor(x * DEFAULT_WIDTH + i, y * DEFAULT_HEIGHT + j);
 				pw.setColor(i, j, color);
 			}
 		}

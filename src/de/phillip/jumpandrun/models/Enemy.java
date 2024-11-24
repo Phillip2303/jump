@@ -7,47 +7,13 @@ import javafx.scene.canvas.GraphicsContext;
 
 public abstract class Enemy extends Actor {
 
-	public enum Type {
-		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 5, 30), 
-		CANNON(1, Game.TILES_SIZE, Game.TILES_SIZE * 5, 100), 
-		SHARK(2, Game.TILES_SIZE, Game.TILES_SIZE * 5, 50);
-		
-		private final int colorValue;
-		private final int attackDistance;
-		private final int sightDistance;
-		private final int health;
-		
-		private Type(int colorValue, int attackDistance, int sightDistance, int health) {
-			this.colorValue = colorValue;
-			this.attackDistance = attackDistance;
-			this.sightDistance = sightDistance;
-			this.health = health;
-		}
-		
-		public int getColorValue() {
-			return colorValue;
-		}
-
-		public int getAttackDistance() {
-			return attackDistance;
-		}
-
-		public int getSightDistance() {
-			return sightDistance;
-		}
-
-		public int getHealth() {
-			return health;
-		}
-	}
-
 	public static final int IDLE = 0;
 	public static final int RUNNING = 1;
 	public static final int ATTACK = 2;
 	public static final int HIT = 3;
 	public static final int DEAD = 4;
 
-	private Type type;
+	private EnemyManager.Type type;
 	private int aniIndex;
 	private int aniTic;
 	private int aniSpeed = 25;
@@ -59,7 +25,7 @@ public abstract class Enemy extends Actor {
 	private boolean active = true;
 	private boolean attackChecked = false;
 
-	public Enemy(double width, double height, Type type) {
+	public Enemy(double width, double height, EnemyManager.Type type) {
 		super(width, height);
 		this.type = type;
 		currentHealth = this.type.getHealth();

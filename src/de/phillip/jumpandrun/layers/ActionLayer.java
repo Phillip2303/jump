@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.controllers.EnemyManager;
+import de.phillip.jumpandrun.controllers.GameObjectManager;
 import de.phillip.jumpandrun.controllers.LevelManager;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
@@ -23,6 +24,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 
 	private LevelManager levelManager;
 	private EnemyManager enemyManager;
+	private GameObjectManager gameObjectManager;
 	private List<Drawable> actors = new ArrayList<Drawable>();
 	private Player player;
 	private KeyPolling kp = KeyPolling.getInstance();
@@ -37,6 +39,9 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 		enemyManager = new EnemyManager(player);
 		player.setEnemyManager(enemyManager);
 		initEnemies();
+		gameObjectManager = new GameObjectManager();
+		player.setGameObjectManager(gameObjectManager);
+		initGameObjects();
 	}
 
 	private void createLevelTiles() {
@@ -87,6 +92,11 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 		actors.addAll(enemyManager.getEnemies());
 	}
 	
+	private void initGameObjects() {
+		gameObjectManager.createGameObjects(levelManager.getActiveLevel());
+		actors.addAll(gameObjectManager.getGameObjects());
+	}
+	
 	@Override
 	public List<Drawable> getDrawables() {
 		return actors;
@@ -114,6 +124,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 		createLevelTiles();
 		initPlayer(nextLevel);
 		initEnemies();
+		initGameObjects();
 	}
 
 	@Override

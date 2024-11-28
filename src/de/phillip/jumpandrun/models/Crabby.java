@@ -138,7 +138,7 @@ public class Crabby extends Enemy {
 					direction = Direction.LEFT;
 				}
 			} else {
-				if (canSeePlayer(getEnemyManager().getPlayer()) && !getEnemyManager().getPlayer().isDead()) {
+				if (canSeePlayer(getEnemyManager().getPlayer()) && !getEnemyManager().getPlayer().isDying()) {
 					moveTowardsPlayer();
 					if (canAttackPlayer(getEnemyManager().getPlayer())) {
 						setEnemyAction(ATTACK);

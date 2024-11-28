@@ -29,7 +29,7 @@ public class Spike extends GameObject {
 	public void drawToCanvas(GraphicsContext gc) {
 		gc.drawImage(spikeImage, 0, 0, spikeImage.getWidth(), spikeImage.getHeight(), 
 				getDrawPosition().getX(), getDrawPosition().getY(), WIDTH, HEIGHT);
-		drawHitbox(gc, Color.CYAN);
+		//drawHitbox(gc, Color.CYAN);
 	}
 
 }

@@ -89,8 +89,8 @@ public class LayerManager implements EventHandler<GameEvent> {
 	
 	private void resetGame() {
 		levelManager.setLevel(1);
-		actionLayer.buildLevel(true);
-		backgroundLayer.buildLevel(true);
+		actionLayer.buildLevel(false);
+		backgroundLayer.buildLevel(false);
 	}
 	
 	private void resetLevel() {

@@ -9,30 +9,48 @@ import de.phillip.jumpandrun.models.GameObject;
 import de.phillip.jumpandrun.models.Level;
 
 public class GameObjectManager {
-
+	
 	public enum Type {
-		RED_POTION(0),
-		BLUE_POTION(1),
-		BARREL(2),
-		BOX(3),
-		SPIKE(4),
-		CANNON_LEFT(5),
-		CANNON_RIGHT(6),
-		TREE_1(7),
-		TREE_2(8),
-		TREE_3(9);
+		RED_POTION(0, 15, 0),
+		BLUE_POTION(1, 0, 10),
+		BARREL(2, 0, 0),
+		BOX(3, 0, 0),
+		SPIKE(4, 0, 0),
+		CANNON_LEFT(5, 0, 0),
+		CANNON_RIGHT(6, 0, 0),
+		TREE_1(7, 0, 0),
+		TREE_2(8, 0, 0),
+		TREE_3(9, 0, 0);
 		
 		private final int colorValue;
+		private final int healthValue;
+		private final int powerValue;
 		
-		private Type(int colorValue) {
+		private Type(int colorValue, int healthValue, int powerValue) {
 			this.colorValue = colorValue;
+			this.healthValue = healthValue;
+			this.powerValue = powerValue;
 		}
-
+		
 		/**
 		 * @return the colorValue
 		 */
 		public int getColorValue() {
 			return colorValue;
+		}
+
+		/**
+		 * @return the healthValue
+		 */
+		public int getHealthValue() {
+			return healthValue;
+		}
+
+		/**
+		 * @return the powerValue
+		 */
+		public int getPowerValue() {
+			return powerValue;
 		}
 	}
 	
@@ -40,6 +58,14 @@ public class GameObjectManager {
 	
 	public GameObjectManager() {
 		
+	}
+	
+	public void update() {
+		for (GameObject gameObject: gameObjects) {
+			if (gameObject.isActive()) {
+				gameObject.update();
+			}
+		}
 	}
 	
 	public void createGameObjects(Level level) {

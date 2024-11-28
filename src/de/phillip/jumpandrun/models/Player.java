@@ -70,6 +70,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	private double yOffsetAttackBox = 10 * Game.SCALE;
 	private boolean attackChecked;
 	private boolean dead;
+	private boolean dying;
 	
 
 	public Player(double width, double height, Image playerSprite) {
@@ -93,8 +94,8 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	public void drawToCanvas(GraphicsContext gc) {
 		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX() + flipX, getDrawPosition().getY(),
 				getWidth() * flipWidth, getHeight());
-		drawHitbox(gc, Color.RED);
-		drawAttackBox(gc, Color.GREEN);
+		//drawHitbox(gc, Color.RED);
+		//drawAttackBox(gc, Color.GREEN);
 		drawStatusBar(gc);
 	}
 
@@ -153,19 +154,21 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	}
 
 	public void update() {
-		updateAnimationTic();
-		updateHealthBar();
-		if (isJumping) {
-			updateJump();
-		}
-		if (isFalling) {
-			updateJump();
-		}
-		if (isAttacking) {
-			checkAttack();
-		}
-		if (!isDead()) {
-			checkGameObjects();
+		if (!dead) {
+			updateAnimationTic();
+			updateHealthBar();
+			if (!dying) {
+				if (isJumping) {
+					updateJump();
+				}
+				if (isFalling) {
+					updateJump();
+				}
+				if (isAttacking) {
+					checkAttack();
+				}
+				checkGameObjects();
+			}
 		}
 	}
 
@@ -185,8 +188,8 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		if (getHitBox().intersects(gameObject.getHitBox())) {
 			currentHealth = 0;
 			setPlayerAction(DEAD);
-			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
-			setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() - Game.TILES_SIZE);
+			//FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
+			//setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() - Game.TILES_SIZE);
 		}
 	}
 
@@ -257,8 +260,12 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 			aniIndex++;
 		}
 		if (aniIndex >= getSpriteCount(playerAction)) {
-			if (isDead()) {
+			if (dying) {
+				dead = true;
 				aniIndex = 7;
+			}
+			if (dead) {
+				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
 			} else {
 				aniIndex = 0;
 			}
@@ -293,7 +300,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		if (isAttacking) {
 			return;
 		}
-		if (dead) {
+		if (dying) {
 			return;
 		}
 		if (this.playerAction != playerAction && !isJumping) {
@@ -335,7 +342,9 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 			isAttacking = true;
 			break;
 		case DEAD:
-			dead = true;
+			dying = true;
+			aniTic = 0;
+			aniIndex = 1;
 			break;
 		default:
 			break;
@@ -416,7 +425,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		currentHealth -= amount;
 		if (currentHealth <= 0) {
 			setPlayerAction(DEAD);
-			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
+			//FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
 		} else {
 			System.out.println("Treffer");
 		}
@@ -426,8 +435,12 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		this.levelWidth = levelWidth;
 	}
 
-	public boolean isDead() {
+	/*public boolean isDead() {
 		return dead;
+	}*/
+	
+	public boolean isDying() {
+		return dying;
 	}
 
 	@Override

@@ -7,9 +7,12 @@ import java.util.List;
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.controllers.EnemyManager;
 import de.phillip.jumpandrun.controllers.GameObjectManager;
+import de.phillip.jumpandrun.controllers.GameObjectManager.Type;
+import de.phillip.jumpandrun.models.Container;
 import de.phillip.jumpandrun.models.Crabby;
 import de.phillip.jumpandrun.models.Enemy;
 import de.phillip.jumpandrun.models.GameObject;
+import de.phillip.jumpandrun.models.Potion;
 import de.phillip.jumpandrun.models.Spike;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -25,6 +28,8 @@ public class ResourcePool {
 	public static final String SOUND_BUTTONS_SPRITES = "sound_button_sprites.png";
 	public static final String URM_BUTTONS_SPRITES = "urm_buttons_sprites.png";
 	public static final String CRABBY_SPRITES = "crabby_sprites.png";
+	public static final String POTION_SPRITES = "potions_sprites.png";
+	public static final String CONTAINER_SPRITES = "objects_sprites.png";
 
 	private static ResourcePool resourcePool;
 	// private Image background;
@@ -150,6 +155,18 @@ public class ResourcePool {
 				if (colorValue == GameObjectManager.Type.SPIKE.getColorValue()) {
 					Spike spike = createSpikes(i, j);
 					gameObjects.add(spike);
+				} else if (colorValue == GameObjectManager.Type.BLUE_POTION.getColorValue()) {
+					Potion bluePotion = createPotion(i, j, GameObjectManager.Type.BLUE_POTION);
+					gameObjects.add(bluePotion);
+				} else if (colorValue == GameObjectManager.Type.RED_POTION.getColorValue()) {
+					Potion redPotion = createPotion(i, j, GameObjectManager.Type.RED_POTION);
+					gameObjects.add(redPotion);
+				} else if (colorValue == GameObjectManager.Type.BOX.getColorValue()) {
+					Container box = createContainer(i, j, GameObjectManager.Type.BOX);
+					gameObjects.add(box);
+				} else if (colorValue == GameObjectManager.Type.BARREL.getColorValue()) {
+					Container barrel = createContainer(i, j, GameObjectManager.Type.BARREL);
+					gameObjects.add(barrel);
 				}
 			}
 		}
@@ -162,6 +179,23 @@ public class ResourcePool {
 		spike.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Spike.HEIGHT - Spike.Y_OFFSET - Spike.HITBOX_HEIGHT));
 		return spike;
 		
+	}
+	
+	private Potion createPotion(int i, int j, Type type) {
+		System.out.println("Create Potion Type: " + type);
+		Potion potion = new Potion(type);
+		potion.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Potion.HEIGHT - Potion.Y_OFFSET - Potion.HITBOX_HEIGHT));
+		return potion;
+	}
+	
+	private Container createContainer(int i, int j, Type type) {
+		System.out.println("Create Container Type: " + type);
+		Container container = new Container(type);
+		if (type == GameObjectManager.Type.BOX) {
+			container.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Container.HEIGHT - Container.BOX_Y_OFFSET - Container.BOX_HITBOX_HEIGHT));	
+		} else 
+			container.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Container.HEIGHT - Container.BARREL_Y_OFFSET - Container.BARREL_HITBOX_HEIGHT));	
+		return container;
 	}
 
 	public Image getGameOverBackground() {

@@ -114,6 +114,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 		}
 		player.update();
 		enemyManager.update();
+		gameObjectManager.update();
 	}
 
 	@Override
@@ -133,7 +134,7 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	}
 
 	private void updateKeyEvents(float secondsSinceLastFrame) {
-		if (!player.isDead()) {
+		if (!player.isDying()) {
 			if (kp.isDown(KeyCode.A)) {
 				if (player.canMoveHere(-Player.SPEED)) {
 					player.setPlayerAction(Player.RUNNING);

@@ -1,7 +1,6 @@
 package de.phillip.jumpandrun.models;
 
 import de.phillip.jumpandrun.Game;
-import de.phillip.jumpandrun.controllers.EnemyManager;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
@@ -31,7 +30,7 @@ public class Crabby extends Enemy {
 	private double currentHealth = maxHealth;
 
 	public Crabby() {
-		super(WIDTH, HEIGHT, EnemyManager.Type.CRABBY);
+		super(WIDTH, HEIGHT, Enemy.Type.CRABBY);
 		createActionSprites();
 		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);
 		initAttackBox(82 * Game.SCALE, HITBOX_HEIGHT);

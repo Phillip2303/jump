@@ -1,7 +1,6 @@
 package de.phillip.jumpandrun.models;
 
 import de.phillip.jumpandrun.Game;
-import de.phillip.jumpandrun.controllers.GameObjectManager;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -21,7 +20,7 @@ public class Spike extends GameObject {
 	private Image spikeImage = ResourcePool.getInstance().getSpike();
 
 	public Spike() {
-		super(WIDTH, HEIGHT, GameObjectManager.Type.SPIKE);
+		super(WIDTH, HEIGHT, GameObject.Type.SPIKE);
 		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);
 	}
 	

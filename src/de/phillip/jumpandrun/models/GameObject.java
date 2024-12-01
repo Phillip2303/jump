@@ -1,17 +1,60 @@
 package de.phillip.jumpandrun.models;
 
-import de.phillip.jumpandrun.controllers.GameObjectManager;
 import javafx.scene.canvas.GraphicsContext;
 
 public class GameObject extends Actor {
 	
-	private GameObjectManager.Type type;
+	public enum Type {
+		RED_POTION(0, 15, 0),
+		BLUE_POTION(1, 0, 10),
+		BARREL(2, 0, 0),
+		BOX(3, 0, 0),
+		SPIKE(4, 0, 0),
+		CANNON_LEFT(5, 0, 0),
+		CANNON_RIGHT(6, 0, 0),
+		TREE_1(7, 0, 0),
+		TREE_2(8, 0, 0),
+		TREE_3(9, 0, 0);
+		
+		private final int colorValue;
+		private final int healthValue;
+		private final int powerValue;
+		
+		private Type(int colorValue, int healthValue, int powerValue) {
+			this.colorValue = colorValue;
+			this.healthValue = healthValue;
+			this.powerValue = powerValue;
+		}
+		
+		/**
+		 * @return the colorValue
+		 */
+		public int getColorValue() {
+			return colorValue;
+		}
+	
+		/**
+		 * @return the healthValue
+		 */
+		public int getHealthValue() {
+			return healthValue;
+		}
+	
+		/**
+		 * @return the powerValue
+		 */
+		public int getPowerValue() {
+			return powerValue;
+		}
+	}
+
+	private GameObject.Type type;
 	private boolean active = true;
 	private int aniIndex;
 	private int aniTic;
 	private int aniSpeed = 25;
 
-	public GameObject(double width, double height, GameObjectManager.Type type) {
+	public GameObject(double width, double height, GameObject.Type type) {
 		super(width, height);
 		this.type = type;
 	}
@@ -38,7 +81,11 @@ public class GameObject extends Actor {
 			aniTic = 0;
 			aniIndex++;
 			if (aniIndex >= getSpriteCount()) {
-				aniIndex = 0;
+				if (getType() == Type.BARREL || getType() == Type.BOX) {
+					setActive(false);
+				} else {
+					aniIndex = 0;
+				}
 			}
 		}
 	}
@@ -54,7 +101,7 @@ public class GameObject extends Actor {
 		}
 	}
 
-	public GameObjectManager.Type getType() {
+	public GameObject.Type getType() {
 		return type;
 	}
 
@@ -89,5 +136,9 @@ public class GameObject extends Actor {
 
 	public int getAniIndex() {
 		return aniIndex;
+	}
+	
+	public void setAniIndex(int aniIndex) {
+		this.aniIndex = aniIndex;
 	}
 }

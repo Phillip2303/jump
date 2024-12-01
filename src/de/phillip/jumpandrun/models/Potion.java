@@ -1,7 +1,7 @@
 package de.phillip.jumpandrun.models;
 
 import de.phillip.jumpandrun.Game;
-import de.phillip.jumpandrun.controllers.GameObjectManager.Type;
+import de.phillip.jumpandrun.models.GameObject.Type;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -24,7 +24,7 @@ public class Potion extends GameObject {
 	private Image potionSprite = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.POTION_SPRITES);
 	private Image[][] potionSprites;
 
-	public Potion(Type type) {
+	public Potion(GameObject.Type type) {
 		super(WIDTH, HEIGHT, type);
 		createSprites();
 		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);

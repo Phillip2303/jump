@@ -1,8 +1,7 @@
 package de.phillip.jumpandrun.models;
 
 import de.phillip.jumpandrun.Game;
-import de.phillip.jumpandrun.controllers.GameObjectManager;
-import de.phillip.jumpandrun.controllers.GameObjectManager.Type;
+import de.phillip.jumpandrun.models.GameObject.Type;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -28,11 +27,12 @@ public class Container extends GameObject {
 	
 	private Image containerSprite = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.CONTAINER_SPRITES);
 	private Image[][] containerSprites;
+	private boolean animate;
 
-	public Container(Type type) {
+	public Container(GameObject.Type type) {
 		super(WIDTH, HEIGHT, type);
 		createSprites();
-		if (type == GameObjectManager.Type.BOX) {
+		if (type == GameObject.Type.BOX) {
 			initHitbox(BOX_X_OFFSET, BOX_Y_OFFSET, BOX_HITBOX_WIDTH, BOX_HITBOX_HEIGHT);
 		} else {
 			initHitbox(BARREL_X_OFFSET, BARREL_Y_OFFSET, BARREL_HITBOX_WIDTH, BARREL_HITBOX_HEIGHT);
@@ -68,8 +68,22 @@ public class Container extends GameObject {
 		if (isActive()) {
 			gc.drawImage(containerSprites[getSpriteIndex()][getAniIndex()], getDrawPosition().getX(), getDrawPosition().getY(),
 					getWidth(), getHeight());
-			//drawHitbox(gc, Color.CYAN);
+			drawSpriteBox(gc, Color.LIME);
+			drawHitbox(gc, Color.CYAN);
 		}
+	}
+	
+	@Override
+	public void update() {
+		if (animate) {
+			super.update();
+		}
+	}
+	
+	public void gotHit() {
+		System.out.println("Container got hit");
+		setAniIndex(2);
+		animate = true;
 	}
 
 }

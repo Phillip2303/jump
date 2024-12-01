@@ -18,7 +18,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class Player extends Actor implements EventHandler<GameEvent> {
+public class Player extends Actor {
 
 	public static final int IDLE = 0;
 	public static final int RUNNING = 1;
@@ -51,31 +51,32 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	private boolean isFalling = false;
 	private boolean isAttacking = false;
 	private int levelWidth;
-	private Image statusBar = ResourcePool.getInstance().getHealthPowerBar();
-	private double statusBarWidth = 192 * Game.SCALE;
+	/*private double statusBarWidth = 192 * Game.SCALE;
 	private double statusBarHeight = 58 * Game.SCALE;
 	private double statusBarX, statusBarY = 10 * Game.SCALE;
 	private double healthBarWidth = 150 * Game.SCALE;
 	private double healthBarHeight = 4 * Game.SCALE;
 	private double healthBarX = 34 * Game.SCALE;
-	private double healthBarY = 14 * Game.SCALE;
+	private double healthBarY = 14 * Game.SCALE;*/
 	private double currentHealth = MAXHEALTH;
 	private double oldHealth = currentHealth;
-	private double healthWidth = healthBarWidth;
-	private int hOffset;
+	/*private double healthWidth = healthBarWidth;
+	private int hOffset;*/
 	private int flipX = 0;
 	private int flipWidth = 1;
 	private EnemyManager enemyManager;
 	private GameObjectManager gameObjectManager;
 	private double yOffsetAttackBox = 10 * Game.SCALE;
 	private boolean attackChecked;
+	private boolean containerChecked;
 	private boolean dead;
 	private boolean dying;
+	private StatusBar statusBar;
 	
 
 	public Player(double width, double height, Image playerSprite) {
 		super(width, height);
-		FXEventBus.getInstance().addEventHandler(GameEvent.JR_H_OFFSET, this);
+		statusBar = new StatusBar();
 		initHitbox(xOffset, yOffset, hitboxWidth, hitboxHeight);
 		initAttackBox(20 * Game.SCALE, 20 * Game.SCALE);
 		this.playerSprite = playerSprite;
@@ -94,15 +95,10 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	public void drawToCanvas(GraphicsContext gc) {
 		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX() + flipX, getDrawPosition().getY(),
 				getWidth() * flipWidth, getHeight());
+		statusBar.drawToCanvas(gc);
 		//drawHitbox(gc, Color.RED);
 		//drawAttackBox(gc, Color.GREEN);
-		drawStatusBar(gc);
-	}
-
-	private void drawStatusBar(GraphicsContext gc) {
-		gc.drawImage(statusBar, statusBarX + hOffset, statusBarY, statusBarWidth, statusBarHeight);
-		gc.setFill(Color.RED);
-		gc.fillRect(statusBarX + healthBarX + hOffset, statusBarY + healthBarY, healthWidth, healthBarHeight);
+		
 	}
 	
 	private void drawAttackBox(GraphicsContext gc, Color color) {
@@ -156,7 +152,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	public void update() {
 		if (!dead) {
 			updateAnimationTic();
-			updateHealthBar();
+			statusBar.updateHealthBar(currentHealth);
 			if (!dying) {
 				if (isJumping) {
 					updateJump();
@@ -178,10 +174,51 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 			case SPIKE:
 				checkForSpikeTrap(gameObject);
 				break;
+			case RED_POTION:
+				checkForPotionsTouch((Potion) gameObject);
+				break;
+			case BLUE_POTION:
+				checkForPotionsTouch((Potion) gameObject);
+				break;
+			case BOX, BARREL:
+				if (isAttacking) {
+					checkForContainerHit((Container) gameObject);
+				}
+				break;
 			default:
 				break;
 			}
 		}
+	}
+
+	private void checkForPotionsTouch(Potion gameObject) {
+		if (gameObject.isActive() && getHitBox().intersects(gameObject.getHitBox())) {
+			drinkPotion(gameObject);
+		}
+	}
+
+	private void drinkPotion(Potion gameObject) {
+		//drink potion
+		switch (gameObject.getType()) {
+		case RED_POTION:
+			if (currentHealth <= MAXHEALTH - 10)
+			currentHealth += 10;
+			break;
+		case BLUE_POTION:
+			//power bar
+			break;
+		default:
+			break;
+		}
+		gameObject.setActive(false);
+	}
+
+	private void checkForContainerHit(Container gameObject) {
+		if (gameObject.isActive() && !containerChecked && getAttackBox(getXOffsetAttackBox(), yOffsetAttackBox).intersects(gameObject.getHitBox())) {
+			containerChecked = true;
+			gameObject.gotHit();
+		}
+		
 	}
 
 	private void checkForSpikeTrap(GameObject gameObject) {
@@ -193,9 +230,9 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 		}
 	}
 
-	private void updateHealthBar() {
+	/*private void updateHealthBar() {
 		healthWidth = healthBarWidth * (currentHealth / MAXHEALTH);
-	}
+	}*/
 
 	private void checkAttack() {
 		if (attackChecked || aniIndex != 1) {
@@ -271,6 +308,7 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 			}
 			isAttacking = false;
 			attackChecked = false;
+			containerChecked = false;
 		}
 	}
 
@@ -442,22 +480,12 @@ public class Player extends Actor implements EventHandler<GameEvent> {
 	public boolean isDying() {
 		return dying;
 	}
-
-	@Override
-	public void handle(GameEvent event) {
-		switch (event.getEventType().getName()) {
-		case "JR_H_OFFSET":
-			hOffset = (int) event.getData();
-			break;
-		default:
-			break;
-		}
-		
-	}
 	
 	public void reset() {
-		hOffset = 0;
+		statusBar.reset();
+		airSpeed = 0;
 		dead = false;
+		dying = false;
 		setPlayerAction(IDLE);
 	}
 

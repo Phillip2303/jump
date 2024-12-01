@@ -111,8 +111,8 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	public void updateLayer(float secondsSinceLastFrame) {
 		if (isListening) {
 			updateKeyEvents(secondsSinceLastFrame);
+			player.update();
 		}
-		player.update();
 		enemyManager.update();
 		gameObjectManager.update();
 	}

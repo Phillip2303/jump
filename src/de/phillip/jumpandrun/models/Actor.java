@@ -147,6 +147,11 @@ public abstract class Actor implements Drawable {
 				attackBoxHeight);
 	}
 	
+	public void drawSpriteBox(GraphicsContext gc, Color color) {
+		gc.setStroke(color);
+		gc.strokeRect(position.getX(), position.getY(), getWidth(), getHeight());
+	}
+	
 	public boolean canMoveHere(List<Tile> tiles, Point2D oldPosition, int levelWidth) {
 		for (Tile tile : tiles) {
 			Rectangle2D hitBox = tile.getHitBox();

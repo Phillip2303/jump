@@ -30,6 +30,8 @@ public class Game extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		ResourcePool.getInstance().loadResources();
 		primaryStage.setResizable(false);
+		primaryStage.setMinWidth(GAMEWIDTH);
+		primaryStage.setMinHeight(GAMEHEIGHT);
 		Scene scene = createContent();
 		primaryStage.setScene(scene);
 		KeyPolling.getInstance().pollScene(scene);

@@ -5,13 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.phillip.jumpandrun.Game;
-import de.phillip.jumpandrun.controllers.EnemyManager;
-import de.phillip.jumpandrun.controllers.GameObjectManager;
-import de.phillip.jumpandrun.controllers.GameObjectManager.Type;
 import de.phillip.jumpandrun.models.Container;
 import de.phillip.jumpandrun.models.Crabby;
 import de.phillip.jumpandrun.models.Enemy;
 import de.phillip.jumpandrun.models.GameObject;
+import de.phillip.jumpandrun.models.GameObject.Type;
 import de.phillip.jumpandrun.models.Potion;
 import de.phillip.jumpandrun.models.Spike;
 import javafx.scene.image.Image;
@@ -130,12 +128,12 @@ public class ResourcePool {
 			for (int i = 0; i < levelAtlas.getWidth(); i++) {
 				Color color = levelAtlas.getPixelReader().getColor(i, j);
 				int colorValue = (int) (color.getGreen() * 255);
-				if (colorValue == EnemyManager.Type.CRABBY.getColorValue()) {
+				if (colorValue == Enemy.Type.CRABBY.getColorValue()) {
 					Crabby crabby = createCrabby(i, j); 
 					enemies.add(crabby);
-				} else if (colorValue == EnemyManager.Type.CANNON.getColorValue()) {
+				} else if (colorValue == Enemy.Type.CANNON.getColorValue()) {
 					createCannon();
-				} else if (colorValue == EnemyManager.Type.SHARK.getColorValue()) {
+				} else if (colorValue == Enemy.Type.SHARK.getColorValue()) {
 					createShark();
 				}
 			}
@@ -152,20 +150,20 @@ public class ResourcePool {
 			for (int i = 0; i < levelAtlas.getWidth(); i++) {
 				Color color = levelAtlas.getPixelReader().getColor(i, j);
 				int colorValue = (int) (color.getBlue() * 255);
-				if (colorValue == GameObjectManager.Type.SPIKE.getColorValue()) {
+				if (colorValue == GameObject.Type.SPIKE.getColorValue()) {
 					Spike spike = createSpikes(i, j);
 					gameObjects.add(spike);
-				} else if (colorValue == GameObjectManager.Type.BLUE_POTION.getColorValue()) {
-					Potion bluePotion = createPotion(i, j, GameObjectManager.Type.BLUE_POTION);
+				} else if (colorValue == GameObject.Type.BLUE_POTION.getColorValue()) {
+					Potion bluePotion = createPotion(i, j, GameObject.Type.BLUE_POTION);
 					gameObjects.add(bluePotion);
-				} else if (colorValue == GameObjectManager.Type.RED_POTION.getColorValue()) {
-					Potion redPotion = createPotion(i, j, GameObjectManager.Type.RED_POTION);
+				} else if (colorValue == GameObject.Type.RED_POTION.getColorValue()) {
+					Potion redPotion = createPotion(i, j, GameObject.Type.RED_POTION);
 					gameObjects.add(redPotion);
-				} else if (colorValue == GameObjectManager.Type.BOX.getColorValue()) {
-					Container box = createContainer(i, j, GameObjectManager.Type.BOX);
+				} else if (colorValue == GameObject.Type.BOX.getColorValue()) {
+					Container box = createContainer(i, j, GameObject.Type.BOX);
 					gameObjects.add(box);
-				} else if (colorValue == GameObjectManager.Type.BARREL.getColorValue()) {
-					Container barrel = createContainer(i, j, GameObjectManager.Type.BARREL);
+				} else if (colorValue == GameObject.Type.BARREL.getColorValue()) {
+					Container barrel = createContainer(i, j, GameObject.Type.BARREL);
 					gameObjects.add(barrel);
 				}
 			}
@@ -181,20 +179,20 @@ public class ResourcePool {
 		
 	}
 	
-	private Potion createPotion(int i, int j, Type type) {
-		System.out.println("Create Potion Type: " + type);
+	private Potion createPotion(int i, int j, GameObject.Type type) {
+		//System.out.println("Create Potion Type: " + type);
 		Potion potion = new Potion(type);
 		potion.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Potion.HEIGHT - Potion.Y_OFFSET - Potion.HITBOX_HEIGHT));
 		return potion;
 	}
 	
-	private Container createContainer(int i, int j, Type type) {
-		System.out.println("Create Container Type: " + type);
+	private Container createContainer(int i, int j, GameObject.Type type) {
+		//System.out.println("Create Container Type: " + type);
 		Container container = new Container(type);
-		if (type == GameObjectManager.Type.BOX) {
-			container.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Container.HEIGHT - Container.BOX_Y_OFFSET - Container.BOX_HITBOX_HEIGHT));	
+		if (type == GameObject.Type.BOX) {
+			container.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + 2 * Game.SCALE);	
 		} else 
-			container.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Container.HEIGHT - Container.BARREL_Y_OFFSET - Container.BARREL_HITBOX_HEIGHT));	
+			container.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + 2 * Game.SCALE);	
 		return container;
 	}
 

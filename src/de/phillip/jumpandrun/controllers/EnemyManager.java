@@ -3,7 +3,6 @@ package de.phillip.jumpandrun.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.models.Enemy;
@@ -14,40 +13,6 @@ import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.event.EventHandler;
 
 public class EnemyManager implements EventHandler<GameEvent>{
-	
-	public enum Type {
-		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 5, 30), 
-		CANNON(1, Game.TILES_SIZE, Game.TILES_SIZE * 5, 100), 
-		SHARK(2, Game.TILES_SIZE, Game.TILES_SIZE * 5, 50);
-		
-		private final int colorValue;
-		private final int attackDistance;
-		private final int sightDistance;
-		private final int health;
-		
-		private Type(int colorValue, int attackDistance, int sightDistance, int health) {
-			this.colorValue = colorValue;
-			this.attackDistance = attackDistance;
-			this.sightDistance = sightDistance;
-			this.health = health;
-		}
-		
-		public int getColorValue() {
-			return colorValue;
-		}
-
-		public int getAttackDistance() {
-			return attackDistance;
-		}
-
-		public int getSightDistance() {
-			return sightDistance;
-		}
-
-		public int getHealth() {
-			return health;
-		}
-	}
 	
 	private List<Enemy> enemies = new ArrayList<>();
 	private List<Tile> tiles;

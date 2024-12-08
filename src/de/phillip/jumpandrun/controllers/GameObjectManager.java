@@ -6,7 +6,10 @@ import java.util.List;
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.models.Enemy;
 import de.phillip.jumpandrun.models.GameObject;
+import de.phillip.jumpandrun.models.GameObject.Type;
 import de.phillip.jumpandrun.models.Level;
+import de.phillip.jumpandrun.models.Potion;
+import javafx.geometry.Point2D;
 
 public class GameObjectManager {
 	
@@ -34,6 +37,13 @@ public class GameObjectManager {
 	 */
 	public List<GameObject> getGameObjects() {
 		return gameObjects;
+	}
+	
+	public Potion getPotion(Type type, Point2D point2D) {
+		Potion potion = new Potion(type);
+		potion.setDrawPosition(point2D.getX(), point2D.getY());
+		gameObjects.add(potion);
+		return potion;
 	}
 	
 }

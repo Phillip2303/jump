@@ -37,6 +37,11 @@ public class GameEvent extends Event {
 	public static final EventType<GameEvent> JR_RESET_GAME = new EventType<>(GameEvent.ANY, "JR_RESET_GAME");
 	
 	public static final EventType<GameEvent> JR_RESET_H_OFFSET = new EventType<>(GameEvent.ANY, "JR_RESET_H_OFFSET");
+	
+	public static final EventType<GameEvent> JR_CREATE_RED_POTION = new EventType<>(GameEvent.ANY, "JR_CREATE_RED_POTION");
+	
+	public static final EventType<GameEvent> JR_CREATE_BLUE_POTION = new EventType<>(GameEvent.ANY, "JR_CREATE_BLUE_POTION");
+
 
 
 	public GameEvent(EventType<GameEvent> eventType, Object data) {

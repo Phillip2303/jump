@@ -5,6 +5,7 @@ import java.util.List;
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.controllers.EnemyManager;
 import de.phillip.jumpandrun.controllers.GameObjectManager;
+import de.phillip.jumpandrun.controllers.LevelManager;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.utils.ResourcePool;
@@ -31,7 +32,7 @@ public class Player extends Actor {
 	public static final int DEFAULT_HEIGHT = 40;
 	public static final double SPEED = 1.5 * Game.SCALE;
 	public static final double JUMPSPEED = -2.5 * Game.SCALE;
-	public static final double MAXHEALTH = 100;
+	//public static final double MAXHEALTH = 100;
 
 	private Image playerSprite;
 	private Image[][] actionSprites;
@@ -58,25 +59,26 @@ public class Player extends Actor {
 	private double healthBarHeight = 4 * Game.SCALE;
 	private double healthBarX = 34 * Game.SCALE;
 	private double healthBarY = 14 * Game.SCALE;*/
-	private double currentHealth = MAXHEALTH;
-	private double oldHealth = currentHealth;
+	//private double currentHealth = MAXHEALTH;
+	//private double oldHealth = currentHealth;
 	/*private double healthWidth = healthBarWidth;
 	private int hOffset;*/
 	private int flipX = 0;
 	private int flipWidth = 1;
 	private EnemyManager enemyManager;
 	private GameObjectManager gameObjectManager;
+	private LevelManager levelManager;
 	private double yOffsetAttackBox = 10 * Game.SCALE;
 	private boolean attackChecked;
 	private boolean containerChecked;
 	private boolean dead;
 	private boolean dying;
-	private StatusBar statusBar;
+	private PlayerStatus playerStatus;
 	
 
 	public Player(double width, double height, Image playerSprite) {
 		super(width, height);
-		statusBar = new StatusBar();
+		playerStatus = new PlayerStatus();
 		initHitbox(xOffset, yOffset, hitboxWidth, hitboxHeight);
 		initAttackBox(20 * Game.SCALE, 20 * Game.SCALE);
 		this.playerSprite = playerSprite;
@@ -90,12 +92,16 @@ public class Player extends Actor {
 	public void setGameObjectManager(GameObjectManager gameObjectManager) {
 		this.gameObjectManager = gameObjectManager;
 	}
+	
+	public void setLevelManager(LevelManager levelManager) {
+		this.levelManager = levelManager;
+	}
 
 	@Override
 	public void drawToCanvas(GraphicsContext gc) {
 		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX() + flipX, getDrawPosition().getY(),
 				getWidth() * flipWidth, getHeight());
-		statusBar.drawToCanvas(gc);
+		playerStatus.drawToCanvas(gc);
 		//drawHitbox(gc, Color.RED);
 		//drawAttackBox(gc, Color.GREEN);
 		
@@ -152,7 +158,6 @@ public class Player extends Actor {
 	public void update() {
 		if (!dead) {
 			updateAnimationTic();
-			statusBar.updateHealthBar(currentHealth);
 			if (!dying) {
 				if (isJumping) {
 					updateJump();
@@ -201,11 +206,11 @@ public class Player extends Actor {
 		//drink potion
 		switch (gameObject.getType()) {
 		case RED_POTION:
-			if (currentHealth <= MAXHEALTH - 10)
-			currentHealth += 10;
+			playerStatus.increaseHealth();
 			break;
 		case BLUE_POTION:
 			//power bar
+			playerStatus.increasePower();
 			break;
 		default:
 			break;
@@ -223,7 +228,7 @@ public class Player extends Actor {
 
 	private void checkForSpikeTrap(GameObject gameObject) {
 		if (getHitBox().intersects(gameObject.getHitBox())) {
-			currentHealth = 0;
+			playerStatus.setCurrentHealth(0);
 			setPlayerAction(DEAD);
 			//FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
 			//setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() - Game.TILES_SIZE);
@@ -460,8 +465,8 @@ public class Player extends Actor {
 	}
 	
 	public void gotHit(int amount) {
-		currentHealth -= amount;
-		if (currentHealth <= 0) {
+		playerStatus.decreaseHealth(amount);
+		if (playerStatus.getCurrentHealth() <= 0) {
 			setPlayerAction(DEAD);
 			//FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
 		} else {
@@ -481,33 +486,23 @@ public class Player extends Actor {
 		return dying;
 	}
 	
-	public void reset() {
-		statusBar.reset();
+	public void reset(boolean nextLevel) {
+		if (!nextLevel) {
+			if (levelManager.getOldLevel() == levelManager.getActiveLevel().getLevelNumber()) {
+				//reset level
+				playerStatus.resetLevel();
+			} else {
+				//reset game
+				playerStatus.resetGame();
+			}
+		} else {
+			//next level
+			playerStatus.nextLevel();
+		}
+		playerStatus.reset();
 		airSpeed = 0;
 		dead = false;
 		dying = false;
 		setPlayerAction(IDLE);
-	}
-
-	/**
-	 * @return the oldHealth
-	 */
-	public double getOldHealth() {
-		return oldHealth;
-	}
-
-	/**
-	 * @param oldCurrentHealth the oldHealth to set
-	 */
-	public void setOldHealth(double oldHealth) {
-		this.oldHealth = oldHealth;
-	}
-
-	public double getCurrentHealth() {
-		return currentHealth;
-	}
-	
-	public void setCurrentHealth(double currentHealth) {
-		this.currentHealth = currentHealth;
 	}
 }

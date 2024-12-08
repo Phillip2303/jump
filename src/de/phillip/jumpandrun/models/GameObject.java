@@ -1,5 +1,7 @@
 package de.phillip.jumpandrun.models;
 
+import de.phillip.jumpandrun.events.FXEventBus;
+import de.phillip.jumpandrun.events.GameEvent;
 import javafx.scene.canvas.GraphicsContext;
 
 public class GameObject extends Actor {
@@ -83,6 +85,7 @@ public class GameObject extends Actor {
 			if (aniIndex >= getSpriteCount()) {
 				if (getType() == Type.BARREL || getType() == Type.BOX) {
 					setActive(false);
+					openContainer();
 				} else {
 					aniIndex = 0;
 				}
@@ -90,6 +93,17 @@ public class GameObject extends Actor {
 		}
 	}
 	
+	private void openContainer() {
+		switch (getType()) {
+		case BOX:
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_CREATE_RED_POTION, getDrawPosition()));
+			break;
+		case BARREL:
+			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_CREATE_BLUE_POTION, getDrawPosition()));
+			break;
+		}
+	}
+
 	private int getSpriteCount() {
 		switch (type) {
 		case RED_POTION, BLUE_POTION:

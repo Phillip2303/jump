@@ -12,15 +12,20 @@ import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.models.CanvasLayer;
 import de.phillip.jumpandrun.models.Drawable;
+import de.phillip.jumpandrun.models.GameObject.Type;
 import de.phillip.jumpandrun.models.Player;
+import de.phillip.jumpandrun.models.PlayerStatus;
+import de.phillip.jumpandrun.models.Potion;
 import de.phillip.jumpandrun.models.Tile;
 import de.phillip.jumpandrun.utils.KeyPolling;
 import de.phillip.jumpandrun.utils.ResourcePool;
+import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
-public class ActionLayer extends Canvas implements CanvasLayer {
+public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<GameEvent> {
 
 	private LevelManager levelManager;
 	private EnemyManager enemyManager;
@@ -33,9 +38,13 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 
 	public ActionLayer(int width, int height, LevelManager levelManager) {
 		super(width, height);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_CREATE_RED_POTION, this);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_CREATE_BLUE_POTION, this);
 		this.levelManager = levelManager;
 		createLevelTiles();
 		createPlayer();
+		player.setLevelManager(levelManager);
+		initPlayer(false);
 		enemyManager = new EnemyManager(player);
 		player.setEnemyManager(enemyManager);
 		initEnemies();
@@ -60,23 +69,10 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 	private void createPlayer() {
 		Image image = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.PLAYER_ATLAS);
 		player = new Player(Player.DEFAULT_WIDTH * Game.SCALE, Player.DEFAULT_HEIGHT * Game.SCALE, image);
-		initPlayer(false);
 	}
 	
 	private void initPlayer(boolean nextLevel) {
-		if (!nextLevel) {
-			if (levelManager.getOldLevel() == levelManager.getActiveLevel().getLevelNumber()) {
-				//reset level
-				player.setCurrentHealth(player.getOldHealth());
-			} else {
-				//reset game
-				player.setCurrentHealth(Player.MAXHEALTH);
-			}
-		} else {
-			//next level
-			player.setOldHealth(player.getCurrentHealth());
-		}
-		player.reset();
+		player.reset(nextLevel);
 		player.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
 				.collect(Collectors.toList()));
 		player.setDrawPosition(215, 196);
@@ -174,5 +170,25 @@ public class ActionLayer extends Canvas implements CanvasLayer {
 				player.setPlayerAction(Player.IDLE);
 			}
 		}
+	}
+
+	@Override
+	public void handle(GameEvent event) {
+		switch (event.getEventType().getName()) {
+		case "JR_CREATE_RED_POTION":
+			Point2D pos1 = (Point2D) event.getData();
+			Potion p1 = gameObjectManager.getPotion(Type.RED_POTION, pos1);
+			//actors.add(p1);
+			break;
+		case "JR_CREATE_BLUE_POTION":
+			Point2D pos2 = (Point2D) event.getData();
+			Potion p2 = gameObjectManager.getPotion(Type.BLUE_POTION, pos2);
+			//actors.add(p2);
+			break;
+		default:
+			break;
+			
+		}
+		
 	}
 }

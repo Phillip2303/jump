@@ -26,12 +26,11 @@ public class Container extends GameObject {
 	public static final double BARREL_Y_OFFSET = 5 * Game.SCALE;
 	
 	private Image containerSprite = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.CONTAINER_SPRITES);
-	private Image[][] containerSprites;
-	private boolean animate;
+	private Image[][] containerSprites = new Image[2][8];
 
 	public Container(GameObject.Type type) {
 		super(WIDTH, HEIGHT, type);
-		createSprites();
+		createActionSprites(containerSprite, containerSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		if (type == GameObject.Type.BOX) {
 			initHitbox(BOX_X_OFFSET, BOX_Y_OFFSET, BOX_HITBOX_WIDTH, BOX_HITBOX_HEIGHT);
 		} else {
@@ -39,28 +38,6 @@ public class Container extends GameObject {
 		}
 		
 		// TODO Auto-generated constructor stub
-	}
-	
-	private void createSprites() {
-		PixelReader pr = containerSprite.getPixelReader();
-		containerSprites = new Image[2][8];
-		for (int j = 0; j < containerSprites.length; j++) {
-			for (int i = 0; i < containerSprites[j].length; i++) {
-				containerSprites[j][i] = createSubImage(pr, i, j);
-			}
-		}
-	}
-
-	private Image createSubImage(PixelReader pr, int x, int y) {
-		WritableImage wi = new WritableImage(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		PixelWriter pw = wi.getPixelWriter();
-		for (int j = 0; j < DEFAULT_HEIGHT; j++) {
-			for (int i = 0; i < DEFAULT_WIDTH; i++) {
-				Color color = pr.getColor(x * DEFAULT_WIDTH + i, y * DEFAULT_HEIGHT + j);
-				pw.setColor(i, j, color);
-			}
-		}
-		return wi;
 	}
 	
 	@Override
@@ -73,17 +50,10 @@ public class Container extends GameObject {
 		}
 	}
 	
-	@Override
-	public void update() {
-		if (animate) {
-			super.update();
-		}
-	}
-	
 	public void gotHit() {
 		System.out.println("Container got hit");
 		setAniIndex(2);
-		animate = true;
+		doAnimation(true);
 	}
 
 }

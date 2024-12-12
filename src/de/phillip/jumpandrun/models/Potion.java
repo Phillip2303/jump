@@ -22,43 +22,23 @@ public class Potion extends GameObject {
 	public static final double Y_OFFSET = 2 * Game.SCALE;
 
 	private Image potionSprite = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.POTION_SPRITES);
-	private Image[][] potionSprites;
+	private Image[][] potionSprites = new Image[2][7];
 
 	public Potion(GameObject.Type type) {
 		super(WIDTH, HEIGHT, type);
-		createSprites();
+		doAnimation(true);
+		createActionSprites(potionSprite, potionSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);
 		// TODO Auto-generated constructor stub
 	}
-	
-	private void createSprites() {
-		PixelReader pr = potionSprite.getPixelReader();
-		potionSprites = new Image[2][7];
-		for (int j = 0; j < potionSprites.length; j++) {
-			for (int i = 0; i < potionSprites[j].length; i++) {
-				potionSprites[j][i] = createSubImage(pr, i, j);
-			}
-		}
-	}
 
-	private Image createSubImage(PixelReader pr, int x, int y) {
-		WritableImage wi = new WritableImage(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		PixelWriter pw = wi.getPixelWriter();
-		for (int j = 0; j < DEFAULT_HEIGHT; j++) {
-			for (int i = 0; i < DEFAULT_WIDTH; i++) {
-				Color color = pr.getColor(x * DEFAULT_WIDTH + i, y * DEFAULT_HEIGHT + j);
-				pw.setColor(i, j, color);
-			}
-		}
-		return wi;
-	}
-	
 	@Override
 	public void drawToCanvas(GraphicsContext gc) {
 		if (isActive()) {
 			gc.drawImage(potionSprites[getSpriteIndex()][getAniIndex()], getDrawPosition().getX(), getDrawPosition().getY(),
 					getWidth(), getHeight());
 			//drawHitbox(gc, Color.CYAN);
+			drawSpriteBox(gc, Color.RED);
 		}
 	}
 

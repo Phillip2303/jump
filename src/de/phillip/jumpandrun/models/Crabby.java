@@ -24,38 +24,16 @@ public class Crabby extends Enemy {
 	public static final double SPEED = 0.3 * Game.SCALE;
 
 	private Image enemySprite = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.CRABBY_SPRITES);
-	private Image[][] actionSprites;
+	private Image[][] actionSprites = new Image[5][9];
 	private Direction direction = Direction.LEFT;
 	private double maxHealth = 30;
 	private double currentHealth = maxHealth;
 
 	public Crabby() {
 		super(WIDTH, HEIGHT, Enemy.Type.CRABBY);
-		createActionSprites();
+		createActionSprites(enemySprite, actionSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);
 		initAttackBox(82 * Game.SCALE, HITBOX_HEIGHT);
-	}
-
-	private void createActionSprites() {
-		PixelReader pr = enemySprite.getPixelReader();
-		actionSprites = new Image[5][9];
-		for (int j = 0; j < actionSprites.length; j++) {
-			for (int i = 0; i < actionSprites[j].length; i++) {
-				actionSprites[j][i] = createSubImage(pr, i, j);
-			}
-		}
-	}
-
-	private Image createSubImage(PixelReader pr, int x, int y) {
-		WritableImage wi = new WritableImage(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		PixelWriter pw = wi.getPixelWriter();
-		for (int j = 0; j < DEFAULT_HEIGHT; j++) {
-			for (int i = 0; i < DEFAULT_WIDTH; i++) {
-				Color color = pr.getColor(x * DEFAULT_WIDTH + i, y * DEFAULT_HEIGHT + j);
-				pw.setColor(i, j, color);
-			}
-		}
-		return wi;
 	}
 
 	@Override

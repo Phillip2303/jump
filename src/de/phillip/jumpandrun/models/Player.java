@@ -35,7 +35,7 @@ public class Player extends Actor {
 	//public static final double MAXHEALTH = 100;
 
 	private Image playerSprite;
-	private Image[][] actionSprites;
+	private Image[][] actionSprites = new Image[7][8];
 	private int playerAction = IDLE;
 	private int aniIndex;
 	private int aniTic;
@@ -70,7 +70,6 @@ public class Player extends Actor {
 	private LevelManager levelManager;
 	private double yOffsetAttackBox = 10 * Game.SCALE;
 	private boolean attackChecked;
-	private boolean containerChecked;
 	private boolean dead;
 	private boolean dying;
 	private PlayerStatus playerStatus;
@@ -82,7 +81,7 @@ public class Player extends Actor {
 		initHitbox(xOffset, yOffset, hitboxWidth, hitboxHeight);
 		initAttackBox(20 * Game.SCALE, 20 * Game.SCALE);
 		this.playerSprite = playerSprite;
-		createActionSprites();
+		createActionSprites(playerSprite, actionSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 	
 	public void setEnemyManager(EnemyManager enemyManager) {
@@ -127,34 +126,6 @@ public class Player extends Actor {
 
 	}
 
-	/*@Override
-	public Rectangle2D getHitBox() {
-		return new Rectangle2D(getDrawPosition().getX() + xOffset, getDrawPosition().getY() + yOffset, hitboxWidth,
-				hitboxHeight);
-	}*/
-
-	private void createActionSprites() {
-		PixelReader pr = playerSprite.getPixelReader();
-		actionSprites = new Image[7][8];
-		for (int j = 0; j < actionSprites.length; j++) {
-			for (int i = 0; i < actionSprites[j].length; i++) {
-				actionSprites[j][i] = createSubImage(pr, i, j);
-			}
-		}
-	}
-
-	private Image createSubImage(PixelReader pr, int x, int y) {
-		WritableImage wi = new WritableImage(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		PixelWriter pw = wi.getPixelWriter();
-		for (int j = 0; j < DEFAULT_HEIGHT; j++) {
-			for (int i = 0; i < DEFAULT_WIDTH; i++) {
-				Color color = pr.getColor(x * DEFAULT_WIDTH + i, y * DEFAULT_HEIGHT + j);
-				pw.setColor(i, j, color);
-			}
-		}
-		return wi;
-	}
-
 	public void update() {
 		if (!dead) {
 			updateAnimationTic();
@@ -190,6 +161,8 @@ public class Player extends Actor {
 					checkForContainerHit((Container) gameObject);
 				}
 				break;
+			case CANNON_LEFT, CANNON_RIGHT:
+				break;
 			default:
 				break;
 			}
@@ -219,8 +192,7 @@ public class Player extends Actor {
 	}
 
 	private void checkForContainerHit(Container gameObject) {
-		if (gameObject.isActive() && !containerChecked && getAttackBox(getXOffsetAttackBox(), yOffsetAttackBox).intersects(gameObject.getHitBox())) {
-			containerChecked = true;
+		if (gameObject.isActive() && !gameObject.isAnimate() && getAttackBox(getXOffsetAttackBox(), yOffsetAttackBox).intersects(gameObject.getHitBox())) {
 			gameObject.gotHit();
 		}
 		
@@ -313,7 +285,6 @@ public class Player extends Actor {
 			}
 			isAttacking = false;
 			attackChecked = false;
-			containerChecked = false;
 		}
 	}
 

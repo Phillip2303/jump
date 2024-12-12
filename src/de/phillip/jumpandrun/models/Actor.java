@@ -5,6 +5,10 @@ import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 
@@ -165,6 +169,27 @@ public abstract class Actor implements Drawable {
 			return false;
 		}
 		return true;
+	}
+	
+	public void createActionSprites(Image sprite, Image[][] actionSprites, int defaultWidth, int defaultHeight) {
+		PixelReader pr = sprite.getPixelReader();
+		for (int j = 0; j < actionSprites.length; j++) {
+			for (int i = 0; i < actionSprites[j].length; i++) {
+				actionSprites[j][i] = createSubImage(pr, i, j, defaultWidth, defaultHeight);
+			}
+		}
+	}
+
+	private Image createSubImage(PixelReader pr, int x, int y, int defaultWidth, int defaultHeight) {
+		WritableImage wi = new WritableImage(defaultWidth, defaultHeight);
+		PixelWriter pw = wi.getPixelWriter();
+		for (int j = 0; j < defaultHeight; j++) {
+			for (int i = 0; i < defaultWidth; i++) {
+				Color color = pr.getColor(x * defaultWidth + i, y * defaultHeight + j);
+				pw.setColor(i, j, color);
+			}
+		}
+		return wi;
 	}
 
 	public abstract void drawToCanvas(GraphicsContext gc);

@@ -1,5 +1,6 @@
 package de.phillip.jumpandrun.models;
 
+import de.phillip.jumpandrun.controllers.GameObjectManager;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
 import javafx.scene.canvas.GraphicsContext;
@@ -55,6 +56,8 @@ public class GameObject extends Actor {
 	private int aniIndex;
 	private int aniTic;
 	private int aniSpeed = 25;
+	private boolean animate;
+	private GameObjectManager gameObjectManager;
 
 	public GameObject(double width, double height, GameObject.Type type) {
 		super(width, height);
@@ -74,7 +77,9 @@ public class GameObject extends Actor {
 	}
 	
 	public void update() {
-		updateAnimationTic();
+		if (animate) {
+			updateAnimationTic();
+		}
 	}
 
 	private void updateAnimationTic() {
@@ -86,6 +91,9 @@ public class GameObject extends Actor {
 				if (getType() == Type.BARREL || getType() == Type.BOX) {
 					setActive(false);
 					openContainer();
+				} else if (getType() == Type.CANNON_LEFT || getType() == Type.CANNON_RIGHT) {
+					animate = false;
+					aniIndex = 0;
 				} else {
 					aniIndex = 0;
 				}
@@ -110,6 +118,8 @@ public class GameObject extends Actor {
 			return 7;
 		case BOX, BARREL:
 			return 8;
+		case CANNON_LEFT, CANNON_RIGHT:
+			return 7;
 		default:
 			return 0;
 		}
@@ -143,6 +153,8 @@ public class GameObject extends Actor {
 			return 0;
 		case BARREL:
 			return 1;
+		case CANNON_LEFT, CANNON_RIGHT:
+			return 0;
 		default:
 			return 0;
 		}
@@ -154,5 +166,21 @@ public class GameObject extends Actor {
 	
 	public void setAniIndex(int aniIndex) {
 		this.aniIndex = aniIndex;
+	}
+	
+	public void doAnimation(boolean animate) {
+		this.animate = animate;
+	}
+	
+	public boolean isAnimate()  {
+		return animate;
+	}
+	
+	public void setGameObjectManager(GameObjectManager gameObjectManager) {
+		this.gameObjectManager = gameObjectManager;
+	}
+
+	public GameObjectManager getGameObjectManager() {
+		return gameObjectManager;
 	}
 }

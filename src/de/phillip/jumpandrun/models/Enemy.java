@@ -9,8 +9,7 @@ public abstract class Enemy extends Actor {
 
 	public enum Type {
 		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 5, 30), 
-		CANNON(1, Game.TILES_SIZE, Game.TILES_SIZE * 5, 100), 
-		SHARK(2, Game.TILES_SIZE, Game.TILES_SIZE * 5, 50);
+		SHARK(1, Game.TILES_SIZE, Game.TILES_SIZE * 5, 50);
 		
 		private final int colorValue;
 		private final int attackDistance;

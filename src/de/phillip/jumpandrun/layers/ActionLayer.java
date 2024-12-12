@@ -48,7 +48,7 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 		enemyManager = new EnemyManager(player);
 		player.setEnemyManager(enemyManager);
 		initEnemies();
-		gameObjectManager = new GameObjectManager();
+		gameObjectManager = new GameObjectManager(player);
 		player.setGameObjectManager(gameObjectManager);
 		initGameObjects();
 	}
@@ -177,13 +177,13 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 		switch (event.getEventType().getName()) {
 		case "JR_CREATE_RED_POTION":
 			Point2D pos1 = (Point2D) event.getData();
-			Potion p1 = gameObjectManager.getPotion(Type.RED_POTION, pos1);
-			//actors.add(p1);
+			Potion p1 = gameObjectManager.createPotion(Type.RED_POTION, pos1);
+			actors.add(p1);
 			break;
 		case "JR_CREATE_BLUE_POTION":
 			Point2D pos2 = (Point2D) event.getData();
-			Potion p2 = gameObjectManager.getPotion(Type.BLUE_POTION, pos2);
-			//actors.add(p2);
+			Potion p2 = gameObjectManager.createPotion(Type.BLUE_POTION, pos2);
+			actors.add(p2);
 			break;
 		default:
 			break;

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.phillip.jumpandrun.Game;
+import de.phillip.jumpandrun.models.Cannon;
 import de.phillip.jumpandrun.models.Container;
 import de.phillip.jumpandrun.models.Crabby;
 import de.phillip.jumpandrun.models.Enemy;
@@ -28,6 +29,7 @@ public class ResourcePool {
 	public static final String CRABBY_SPRITES = "crabby_sprites.png";
 	public static final String POTION_SPRITES = "potions_sprites.png";
 	public static final String CONTAINER_SPRITES = "objects_sprites.png";
+	public static final String CANNON_SPRITES = "cannon_sprites.png";
 
 	private static ResourcePool resourcePool;
 	// private Image background;
@@ -131,8 +133,6 @@ public class ResourcePool {
 				if (colorValue == Enemy.Type.CRABBY.getColorValue()) {
 					Crabby crabby = createCrabby(i, j); 
 					enemies.add(crabby);
-				} else if (colorValue == Enemy.Type.CANNON.getColorValue()) {
-					createCannon();
 				} else if (colorValue == Enemy.Type.SHARK.getColorValue()) {
 					createShark();
 				}
@@ -165,11 +165,23 @@ public class ResourcePool {
 				} else if (colorValue == GameObject.Type.BARREL.getColorValue()) {
 					Container barrel = createContainer(i, j, GameObject.Type.BARREL);
 					gameObjects.add(barrel);
+				} else if (colorValue == GameObject.Type.CANNON_LEFT.getColorValue()) {
+					Cannon cannonLeft = createCannon(i, j, GameObject.Type.CANNON_LEFT);
+					gameObjects.add(cannonLeft);
+				} else if (colorValue == GameObject.Type.CANNON_RIGHT.getColorValue()) {
+					Cannon cannonRight = createCannon(i, j, GameObject.Type.CANNON_RIGHT);
+					gameObjects.add(cannonRight);
 				}
 			}
 		}
 		return gameObjects;
 		
+	}
+
+	private Cannon createCannon(int i, int j, GameObject.Type type) {
+		Cannon cannon = new Cannon(type);
+		cannon.setDrawPosition(i * Game.TILES_SIZE + Cannon.X_OFFSET, j * Game.TILES_SIZE + Cannon.Y_OFFSET);
+		return cannon;
 	}
 
 	private Spike createSpikes(int i, int j) {
@@ -182,7 +194,7 @@ public class ResourcePool {
 	private Potion createPotion(int i, int j, GameObject.Type type) {
 		//System.out.println("Create Potion Type: " + type);
 		Potion potion = new Potion(type);
-		potion.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Potion.HEIGHT - Potion.Y_OFFSET - Potion.HITBOX_HEIGHT));
+		potion.setDrawPosition(i * Game.TILES_SIZE + ((Game.TILES_SIZE - potion.getWidth()) / 2), j * Game.TILES_SIZE + (Potion.HEIGHT - Potion.Y_OFFSET - Potion.HITBOX_HEIGHT));
 		return potion;
 	}
 	
@@ -215,11 +227,6 @@ public class ResourcePool {
 	}
 
 	private void createShark() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void createCannon() {
 		// TODO Auto-generated method stub
 		
 	}

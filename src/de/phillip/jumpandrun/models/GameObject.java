@@ -17,7 +17,8 @@ public class GameObject extends Actor {
 		CANNON_RIGHT(6, 0, 0),
 		TREE_1(7, 0, 0),
 		TREE_2(8, 0, 0),
-		TREE_3(9, 0, 0);
+		TREE_3(9, 0, 0),
+		CANNON_BALL(10, 0, 0);
 		
 		private final int colorValue;
 		private final int healthValue;

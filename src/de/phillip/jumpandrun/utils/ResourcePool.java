@@ -42,6 +42,7 @@ public class ResourcePool {
 	private Image levelCompletedBackground;
 	private Image healthPowerBar;
 	private Image spike;
+	private Image cannonBall;
 
 	private ResourcePool() {
 
@@ -82,6 +83,7 @@ public class ResourcePool {
 		playingBg = new Image(getClass().getResource("/assets/images/playing_bg_img.png").toString());
 		healthPowerBar = new Image(getClass().getResource("/assets/images/health_power_bar.png").toString());
 		spike = new Image(getClass().getResource("/assets/images/spikes_atlas.png").toString());
+		cannonBall = new Image(getClass().getResource("/assets/images/ball.png").toString());
 	}
 
 	public Image getSpriteAtlas(String atlas) {
@@ -235,5 +237,9 @@ public class ResourcePool {
 		Crabby crabby = new Crabby();
 		crabby.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Crabby.HEIGHT - Crabby.Y_OFFSET - Crabby.HITBOX_HEIGHT));
 		return crabby;
+	}
+
+	public Image getCannonBall() {
+		return cannonBall;
 	} 
 }

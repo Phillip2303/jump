@@ -10,6 +10,7 @@ import de.phillip.jumpandrun.controllers.GameObjectManager;
 import de.phillip.jumpandrun.controllers.LevelManager;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
+import de.phillip.jumpandrun.models.CannonBall;
 import de.phillip.jumpandrun.models.CanvasLayer;
 import de.phillip.jumpandrun.models.Drawable;
 import de.phillip.jumpandrun.models.GameObject.Type;
@@ -40,6 +41,7 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 		super(width, height);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_CREATE_RED_POTION, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_CREATE_BLUE_POTION, this);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_SHOOT_BALL, this);
 		this.levelManager = levelManager;
 		createLevelTiles();
 		createPlayer();
@@ -90,6 +92,9 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 	
 	private void initGameObjects() {
 		gameObjectManager.createGameObjects(levelManager.getActiveLevel());
+		gameObjectManager.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
+				.collect(Collectors.toList()));
+		gameObjectManager.setLevelWidth((int) getWidth());
 		actors.addAll(gameObjectManager.getGameObjects());
 	}
 	
@@ -184,6 +189,11 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 			Point2D pos2 = (Point2D) event.getData();
 			Potion p2 = gameObjectManager.createPotion(Type.BLUE_POTION, pos2);
 			actors.add(p2);
+			break;
+		case "JR_SHOOT_BALL":
+			CannonBall ball = (CannonBall) event.getData();
+			gameObjectManager.getGameObjects().add(ball);
+			actors.add(ball);
 			break;
 		default:
 			break;

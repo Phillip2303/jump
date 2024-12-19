@@ -10,12 +10,15 @@ import de.phillip.jumpandrun.models.GameObject.Type;
 import de.phillip.jumpandrun.models.Level;
 import de.phillip.jumpandrun.models.Player;
 import de.phillip.jumpandrun.models.Potion;
+import de.phillip.jumpandrun.models.Tile;
 import javafx.geometry.Point2D;
 
 public class GameObjectManager {
 	
 	private List<GameObject> gameObjects = new ArrayList<>();
 	private Player player;
+	private List<Tile> tiles;
+	private int levelWidth;
 	
 	public GameObjectManager(Player player) {
 		this.player = player;
@@ -54,6 +57,28 @@ public class GameObjectManager {
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	public void setTiles(List<Tile> tiles) {
+		this.tiles = tiles;
+	}
+	
+	public List<Tile> getTiles() {
+		return tiles;
+	}
+
+	/**
+	 * @return the levelWidth
+	 */
+	public int getLevelWidth() {
+		return levelWidth;
+	}
+
+	/**
+	 * @param levelWidth the levelWidth to set
+	 */
+	public void setLevelWidth(int levelWidth) {
+		this.levelWidth = levelWidth;
 	}
 	
 }

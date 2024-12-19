@@ -15,8 +15,18 @@ import javafx.scene.transform.Rotate;
 public abstract class Actor implements Drawable {
 	
 	public enum Direction {
-		LEFT,
-		RIGHT;
+		LEFT(-1),
+		RIGHT(1);
+		
+		private int value;
+		
+		private Direction(int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return value;
+		}
 	}
 
 	private double width;

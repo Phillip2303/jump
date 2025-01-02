@@ -5,12 +5,13 @@ import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.models.Actor.Direction;
 import de.phillip.jumpandrun.utils.ResourcePool;
+import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-public class Cannon extends GameObject {
+public class Cannon extends GameObject implements EventHandler<GameEvent> {
 	
 	public static final int DEFAULT_WIDTH = 40;
 	public static final int DEFAULT_HEIGHT = 26;
@@ -26,11 +27,13 @@ public class Cannon extends GameObject {
 	private int flipX;
 	private int flipWidth;
 	private Direction direction;
+	private int hOffset;
 
 	public Cannon(Type type) {
 		super(WIDTH, HEIGHT, type);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_H_OFFSET, this);
 		initHitbox(0, 0, HITBOX_WIDTH, HITBOX_HEIGHT);
-		createActionSprites(cannonSprite, cannonSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		createObjectSprites(cannonSprite, cannonSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		if (type == Type.CANNON_LEFT) {
 			flipX = 0;
 			flipWidth = 1;
@@ -76,7 +79,7 @@ public class Cannon extends GameObject {
 		int playerTileY = (int) (getGameObjectManager().getPlayer().getHitBox().getMinY() / Game.TILES_SIZE);
 		int playerTileX = (int) (getGameObjectManager().getPlayer().getHitBox().getMinX() / Game.TILES_SIZE);
 		int cannonTileY = (int) (getHitBox().getMinY() / Game.TILES_SIZE);
-		if (playerTileY == cannonTileY) {
+		if (playerTileY == cannonTileY && isInViewport()) {
 			switch (direction) {
 			case LEFT:
 				if (getGameObjectManager().getPlayer().getHitBox().getMinX() < getHitBox().getMinX() && clearSight(playerTileY)) {
@@ -95,8 +98,14 @@ public class Cannon extends GameObject {
 			return false;
 		}
 	}
-
-
+	
+	private boolean isInViewport() {
+		if (getHitBox().getMinX() < Game.GAMEWIDTH + hOffset && getHitBox().getMaxX() > hOffset) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	private boolean clearSight(int playerTileY) {
 		for (Tile tile : getGameObjectManager().getTiles()) {
@@ -121,5 +130,16 @@ public class Cannon extends GameObject {
 			}
 		}	
 		return true;
+	}
+
+
+
+	@Override
+	public void handle(GameEvent event) {
+		switch (event.getEventType().getName()) {
+		case "JR_H_OFFSET":
+			hOffset = (int) event.getData();
+		}
+		
 	}
 }

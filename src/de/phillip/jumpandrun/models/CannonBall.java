@@ -15,6 +15,9 @@ public class CannonBall extends GameObject {
 	public static final float SPEED = 0.75f * Game.SCALE;
 	public static final double HITBOX_WIDTH = 15 * Game.SCALE;
 	public static final double HITBOX_HEIGHT = 15 * Game.SCALE;
+	public static final double X_OFFSET_LEFT = -3 * Game.SCALE;
+	public static final double X_OFFSET_RIGHT = 29 * Game.SCALE;
+	public static final double Y_OFFSET = 5 * Game.SCALE;
 	
 	private Direction direction;
 	private Image ballImage = ResourcePool.getInstance().getCannonBall();
@@ -23,17 +26,16 @@ public class CannonBall extends GameObject {
 		super(WIDTH, HEIGHT, Type.CANNON_BALL);
 		this.direction = direction;
 		initHitbox(0, 0, HITBOX_WIDTH, HITBOX_HEIGHT);
-		/*switch (direction) {
+		switch (direction) {
 		case LEFT:
-			setDrawPosition();
+			setDrawPosition(startPos.getX() + X_OFFSET_LEFT, startPos.getY() + Y_OFFSET);
 			break;
 		case RIGHT:
-			setDrawPosition();
+			setDrawPosition(startPos.getX() + X_OFFSET_RIGHT, startPos.getY() + Y_OFFSET);
 			break;
 		default:
 			break;
-		}*/
-		setDrawPosition(startPos.getX(), startPos.getY());
+		}
 	}
 	
 	@Override

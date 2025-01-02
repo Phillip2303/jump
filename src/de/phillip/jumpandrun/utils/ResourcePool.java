@@ -30,6 +30,7 @@ public class ResourcePool {
 	public static final String POTION_SPRITES = "potions_sprites.png";
 	public static final String CONTAINER_SPRITES = "objects_sprites.png";
 	public static final String CANNON_SPRITES = "cannon_sprites.png";
+	public static final String GRASS_SPRITES = "grass_sprites.png";
 
 	private static ResourcePool resourcePool;
 	// private Image background;
@@ -43,6 +44,9 @@ public class ResourcePool {
 	private Image healthPowerBar;
 	private Image spike;
 	private Image cannonBall;
+	private int[][] levelData;
+	private List<Enemy> enemies = new ArrayList<Enemy>();
+	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 
 	private ResourcePool() {
 
@@ -93,7 +97,72 @@ public class ResourcePool {
 	public Image getLevelAtlas(String atlas) {
 		return new Image(getClass().getResource(LEVEL_PATH + atlas).toString());
 	}
+	
+	public void loadLevelData(int level) {
+		enemies.clear();
+		gameObjects.clear();
+		String resourcePath = LEVEL_PATH + String.valueOf(level) + ".png"; 
+		Image levelAtlas = new Image(getClass().getResource(resourcePath).toString());
+		levelData = new int[Game.TILES_IN_HEIGHT][(int) levelAtlas.getWidth()];
+		for (int j = 0; j < levelAtlas.getHeight(); j++) {
+			for (int i = 0; i < levelAtlas.getWidth(); i++) {
+				Color color = levelAtlas.getPixelReader().getColor(i, j);
+				int redValue = (int) (color.getRed() * 255);
+				if (redValue >= 48) {
+					redValue = 0;
+				}
+				levelData[j][i] = redValue;
+				
+				
+				int greenValue = (int) (color.getGreen() * 255);
+				if (greenValue == Enemy.Type.CRABBY.getColorValue()) {
+					Crabby crabby = createCrabby(i, j); 
+					enemies.add(crabby);
+				} else if (greenValue == Enemy.Type.SHARK.getColorValue()) {
+					createShark();
+				}
+				
+				
+				int blueValue = (int) (color.getBlue() * 255);
+				if (blueValue == GameObject.Type.SPIKE.getColorValue()) {
+					Spike spike = createSpikes(i, j);
+					gameObjects.add(spike);
+				} else if (blueValue == GameObject.Type.BLUE_POTION.getColorValue()) {
+					Potion bluePotion = createPotion(i, j, GameObject.Type.BLUE_POTION);
+					gameObjects.add(bluePotion);
+				} else if (blueValue == GameObject.Type.RED_POTION.getColorValue()) {
+					Potion redPotion = createPotion(i, j, GameObject.Type.RED_POTION);
+					gameObjects.add(redPotion);
+				} else if (blueValue == GameObject.Type.BOX.getColorValue()) {
+					Container box = createContainer(i, j, GameObject.Type.BOX);
+					gameObjects.add(box);
+				} else if (blueValue == GameObject.Type.BARREL.getColorValue()) {
+					Container barrel = createContainer(i, j, GameObject.Type.BARREL);
+					gameObjects.add(barrel);
+				} else if (blueValue == GameObject.Type.CANNON_LEFT.getColorValue()) {
+					Cannon cannonLeft = createCannon(i, j, GameObject.Type.CANNON_LEFT);
+					gameObjects.add(cannonLeft);
+				} else if (blueValue == GameObject.Type.CANNON_RIGHT.getColorValue()) {
+					Cannon cannonRight = createCannon(i, j, GameObject.Type.CANNON_RIGHT);
+					gameObjects.add(cannonRight);
+				}
+				
+			}
+		}
+	}
 
+	public Image getBigClouds() {
+		return bigClouds;
+	}
+
+	public Image getSmallClouds() {
+		return smallClouds;
+	}
+
+	public Image getPlayingBg() {
+		return playingBg;
+	}
+	/*
 	public int[][] getLevelData(int level) {
 		String resourcePath = LEVEL_PATH + String.valueOf(level) + ".png"; 
 		Image levelAtlas = new Image(getClass().getResource(resourcePath).toString());
@@ -110,18 +179,6 @@ public class ResourcePool {
 			}
 		}
 		return levelData;
-	}
-
-	public Image getBigClouds() {
-		return bigClouds;
-	}
-
-	public Image getSmallClouds() {
-		return smallClouds;
-	}
-
-	public Image getPlayingBg() {
-		return playingBg;
 	}
 	
 	public List<Enemy> getEnemies(int level) {
@@ -179,7 +236,7 @@ public class ResourcePool {
 		return gameObjects;
 		
 	}
-
+*/
 	private Cannon createCannon(int i, int j, GameObject.Type type) {
 		Cannon cannon = new Cannon(type);
 		cannon.setDrawPosition(i * Game.TILES_SIZE + Cannon.X_OFFSET, j * Game.TILES_SIZE + Cannon.Y_OFFSET);
@@ -241,5 +298,17 @@ public class ResourcePool {
 
 	public Image getCannonBall() {
 		return cannonBall;
+	}
+
+	public int[][] getLevelData() {
+		return levelData;
+	}
+
+	public List<Enemy> getLevelEnemies() {
+		return enemies;
+	}
+
+	public List<GameObject> getLevelGameObjects() {
+		return gameObjects;
 	} 
 }

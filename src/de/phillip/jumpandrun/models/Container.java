@@ -30,7 +30,7 @@ public class Container extends GameObject {
 
 	public Container(GameObject.Type type) {
 		super(WIDTH, HEIGHT, type);
-		createActionSprites(containerSprite, containerSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		createObjectSprites(containerSprite, containerSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		if (type == GameObject.Type.BOX) {
 			initHitbox(BOX_X_OFFSET, BOX_Y_OFFSET, BOX_HITBOX_WIDTH, BOX_HITBOX_HEIGHT);
 		} else {

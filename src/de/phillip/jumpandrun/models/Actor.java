@@ -181,7 +181,7 @@ public abstract class Actor implements Drawable {
 		return true;
 	}
 	
-	public void createActionSprites(Image sprite, Image[][] actionSprites, int defaultWidth, int defaultHeight) {
+	public void createObjectSprites(Image sprite, Image[][] actionSprites, int defaultWidth, int defaultHeight) {
 		PixelReader pr = sprite.getPixelReader();
 		for (int j = 0; j < actionSprites.length; j++) {
 			for (int i = 0; i < actionSprites[j].length; i++) {

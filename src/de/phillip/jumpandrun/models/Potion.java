@@ -27,7 +27,7 @@ public class Potion extends GameObject {
 	public Potion(GameObject.Type type) {
 		super(WIDTH, HEIGHT, type);
 		doAnimation(true);
-		createActionSprites(potionSprite, potionSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		createObjectSprites(potionSprite, potionSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);
 		// TODO Auto-generated constructor stub
 	}

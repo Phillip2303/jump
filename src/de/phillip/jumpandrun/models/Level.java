@@ -15,9 +15,10 @@ public class Level {
 
 	public Level(int levelNumber) {
 		this.levelNumber = levelNumber;
-		levelData = ResourcePool.getInstance().getLevelData(levelNumber);
-		enemies = ResourcePool.getInstance().getEnemies(levelNumber);
-		gameObjects = ResourcePool.getInstance().getGameObjects(levelNumber);
+		ResourcePool.getInstance().loadLevelData(levelNumber);
+		levelData = ResourcePool.getInstance().getLevelData();
+		enemies = ResourcePool.getInstance().getLevelEnemies();
+		gameObjects = ResourcePool.getInstance().getLevelGameObjects();
 	}
 
 	public int getSpriteIndex(int x, int y) {

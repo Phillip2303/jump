@@ -81,7 +81,7 @@ public class Player extends Actor {
 		initHitbox(xOffset, yOffset, hitboxWidth, hitboxHeight);
 		initAttackBox(20 * Game.SCALE, 20 * Game.SCALE);
 		this.playerSprite = playerSprite;
-		createActionSprites(playerSprite, actionSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		createObjectSprites(playerSprite, actionSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 	
 	public void setEnemyManager(EnemyManager enemyManager) {
@@ -163,6 +163,9 @@ public class Player extends Actor {
 				break;
 			case CANNON_LEFT, CANNON_RIGHT:
 				break;
+			case CANNON_BALL:
+				checkForCannonHit((CannonBall) gameObject);
+				break;
 			default:
 				break;
 			}
@@ -204,6 +207,13 @@ public class Player extends Actor {
 			setPlayerAction(DEAD);
 			//FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
 			//setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() - Game.TILES_SIZE);
+		}
+	}
+	
+	private void checkForCannonHit(CannonBall cannonBall) {
+		if (cannonBall.isActive() && getHitBox().intersects(cannonBall.getHitBox())) {
+			gotHit(50);
+			cannonBall.setActive(false);
 		}
 	}
 

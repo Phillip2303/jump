@@ -31,7 +31,7 @@ public class Crabby extends Enemy {
 
 	public Crabby() {
 		super(WIDTH, HEIGHT, Enemy.Type.CRABBY);
-		createActionSprites(enemySprite, actionSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		createObjectSprites(enemySprite, actionSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);
 		initAttackBox(82 * Game.SCALE, HITBOX_HEIGHT);
 	}

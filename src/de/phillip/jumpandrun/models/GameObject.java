@@ -1,5 +1,7 @@
 package de.phillip.jumpandrun.models;
 
+import java.util.Random;
+
 import de.phillip.jumpandrun.controllers.GameObjectManager;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
@@ -18,11 +20,20 @@ public class GameObject extends Actor {
 		TREE_1(7, 0, 0),
 		TREE_2(8, 0, 0),
 		TREE_3(9, 0, 0),
-		CANNON_BALL(10, 0, 0);
+		CANNON_BALL(10, 0, 0),
+		GRASS_LEFT(11, 0, 0),
+		GRASS_RIGHT(12, 0, 0);
+		
+		private static final Type[] GRASSTYPES = { GRASS_LEFT, GRASS_RIGHT };
+		private static final Random RND = new Random();
 		
 		private final int colorValue;
 		private final int healthValue;
 		private final int powerValue;
+		
+		public static Type randomGrass() {
+			return GRASSTYPES[RND.nextInt(GRASSTYPES.length)];
+		}
 		
 		private Type(int colorValue, int healthValue, int powerValue) {
 			this.colorValue = colorValue;
@@ -155,6 +166,8 @@ public class GameObject extends Actor {
 		case BARREL:
 			return 1;
 		case CANNON_LEFT, CANNON_RIGHT:
+			return 0;
+		case GRASS_LEFT, GRASS_RIGHT:
 			return 0;
 		default:
 			return 0;

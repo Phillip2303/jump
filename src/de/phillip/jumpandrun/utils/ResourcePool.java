@@ -31,6 +31,7 @@ public class ResourcePool {
 	public static final String CONTAINER_SPRITES = "objects_sprites.png";
 	public static final String CANNON_SPRITES = "cannon_sprites.png";
 	public static final String GRASS_SPRITES = "grass_sprites.png";
+	public static final String WATER_SPRITES = "water_sprites.png";
 
 	private static ResourcePool resourcePool;
 	// private Image background;
@@ -44,6 +45,7 @@ public class ResourcePool {
 	private Image healthPowerBar;
 	private Image spike;
 	private Image cannonBall;
+	private Image water;
 	private int[][] levelData;
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
@@ -88,6 +90,7 @@ public class ResourcePool {
 		healthPowerBar = new Image(getClass().getResource("/assets/images/health_power_bar.png").toString());
 		spike = new Image(getClass().getResource("/assets/images/spikes_atlas.png").toString());
 		cannonBall = new Image(getClass().getResource("/assets/images/ball.png").toString());
+		water = new Image(getClass().getResource("/assets/images/water.png").toString());
 	}
 
 	public Image getSpriteAtlas(String atlas) {
@@ -108,7 +111,7 @@ public class ResourcePool {
 			for (int i = 0; i < levelAtlas.getWidth(); i++) {
 				Color color = levelAtlas.getPixelReader().getColor(i, j);
 				int redValue = (int) (color.getRed() * 255);
-				if (redValue >= 48) {
+				if (redValue >= 50) {
 					redValue = 0;
 				}
 				levelData[j][i] = redValue;
@@ -157,6 +160,10 @@ public class ResourcePool {
 
 	public Image getSmallClouds() {
 		return smallClouds;
+	}
+
+	public Image getWater() {
+		return water;
 	}
 
 	public Image getPlayingBg() {

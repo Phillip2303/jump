@@ -56,16 +56,7 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 	}
 
 	private void createLevelTiles() {
-		for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
-			for (int i = 0; i < levelManager.getActiveLevel().getTilesInWidth(); i++) {
-				int index = levelManager.getActiveLevel().getSpriteIndex(i, j);
-				// System.out.println("Sprite Index: " + index);
-				Image image = levelManager.getLevelTiles()[index];
-				Tile tile = new Tile(Game.TILES_SIZE, Game.TILES_SIZE, image, index);
-				tile.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
-				actors.add(tile);
-			}
-		}
+		actors.addAll(levelManager.createLevelTiles());
 	}
 
 	private void createPlayer() {
@@ -112,10 +103,11 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 	public void updateLayer(float secondsSinceLastFrame) {
 		if (isListening) {
 			updateKeyEvents(secondsSinceLastFrame);
-			player.update();
 		}
+		player.update();
 		enemyManager.update();
 		gameObjectManager.update();
+		levelManager.update();
 	}
 
 	@Override

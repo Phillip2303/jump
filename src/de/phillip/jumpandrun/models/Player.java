@@ -101,7 +101,7 @@ public class Player extends Actor {
 		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX() + flipX, getDrawPosition().getY(),
 				getWidth() * flipWidth, getHeight());
 		playerStatus.drawToCanvas(gc);
-		//drawHitbox(gc, Color.RED);
+		drawHitbox(gc, Color.RED);
 		//drawAttackBox(gc, Color.GREEN);
 		
 	}
@@ -214,6 +214,34 @@ public class Player extends Actor {
 		if (cannonBall.isActive() && getHitBox().intersects(cannonBall.getHitBox())) {
 			gotHit(50);
 			cannonBall.setActive(false);
+		}
+	}
+	
+	public void checkDeadFalling() {
+		Point2D oldPosition = getDrawPosition();
+		for (Tile tile : tiles) {
+			setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + hitboxHeight);
+			Rectangle2D hitBox = tile.getHitBox();
+			/*if (!tile.isSolid() && hitBox.intersects(getHitBox())) {
+				System.out.println("Falling");
+				return;
+			} else {
+				setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			}*/
+			
+			if (!tile.isSolid() && hitBox.intersects(getHitBox()) && hitBox.getMinX() < getHitBox().getMinX()
+					&& hitBox.getMaxX() > getHitBox().getMaxX()) {
+				setDrawPosition(oldPosition.getX(), oldPosition.getY());
+				canJumpHere(fallSpeedAfterCollision);
+				return;
+			} else {
+				setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			}
+			
+			/*if (!tile.isSolid() && hitBox.intersects(getHitBox()) && hitBox.getMinX() < getHitBox().getMinX()
+					&& hitBox.getMaxX() > getHitBox().getMaxX()) {
+				setPlayerAction(FALLING);
+			}*/
 		}
 	}
 

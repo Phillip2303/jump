@@ -22,7 +22,8 @@ public class GameObject extends Actor {
 		TREE_3(9, 0, 0),
 		CANNON_BALL(10, 0, 0),
 		GRASS_LEFT(11, 0, 0),
-		GRASS_RIGHT(12, 0, 0);
+		GRASS_RIGHT(12, 0, 0),
+		SHIP(13, 0 , 0);
 		
 		private static final Type[] GRASSTYPES = { GRASS_LEFT, GRASS_RIGHT };
 		private static final Random RND = new Random();
@@ -132,6 +133,8 @@ public class GameObject extends Actor {
 			return 8;
 		case CANNON_LEFT, CANNON_RIGHT:
 			return 7;
+		case TREE_1, TREE_2, TREE_3, SHIP:
+			return 4;
 		default:
 			return 0;
 		}
@@ -168,6 +171,8 @@ public class GameObject extends Actor {
 		case CANNON_LEFT, CANNON_RIGHT:
 			return 0;
 		case GRASS_LEFT, GRASS_RIGHT:
+			return 0;
+		case TREE_1, TREE_2, TREE_3, SHIP:
 			return 0;
 		default:
 			return 0;

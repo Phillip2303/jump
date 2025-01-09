@@ -9,6 +9,7 @@ import de.phillip.jumpandrun.models.Drawable;
 import de.phillip.jumpandrun.models.Level;
 import de.phillip.jumpandrun.models.Tile;
 import de.phillip.jumpandrun.utils.ResourcePool;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;

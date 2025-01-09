@@ -12,7 +12,10 @@ import de.phillip.jumpandrun.models.Enemy;
 import de.phillip.jumpandrun.models.GameObject;
 import de.phillip.jumpandrun.models.GameObject.Type;
 import de.phillip.jumpandrun.models.Potion;
+import de.phillip.jumpandrun.models.Ship;
 import de.phillip.jumpandrun.models.Spike;
+import de.phillip.jumpandrun.models.Tree;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
@@ -32,6 +35,9 @@ public class ResourcePool {
 	public static final String CANNON_SPRITES = "cannon_sprites.png";
 	public static final String GRASS_SPRITES = "grass_sprites.png";
 	public static final String WATER_SPRITES = "water_sprites.png";
+	public static final String TREE_1_SPRITES = "tree_one_sprites.png";
+	public static final String TREE_2_SPRITES = "tree_two_sprites.png";
+	public static final String SHIP_SPRITES = "ship_sprites.png";
 
 	private static ResourcePool resourcePool;
 	// private Image background;
@@ -49,6 +55,7 @@ public class ResourcePool {
 	private int[][] levelData;
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
+	private Point2D playerSpawn = new Point2D(215, 196);
 
 	private ResourcePool() {
 
@@ -125,6 +132,11 @@ public class ResourcePool {
 					createShark();
 				}
 				
+				int greenPlayerValue = (int) (color.getGreen() * 255);
+				if (greenPlayerValue == 100) {
+					playerSpawn = new Point2D(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
+				}
+				
 				
 				int blueValue = (int) (color.getBlue() * 255);
 				if (blueValue == GameObject.Type.SPIKE.getColorValue()) {
@@ -148,6 +160,15 @@ public class ResourcePool {
 				} else if (blueValue == GameObject.Type.CANNON_RIGHT.getColorValue()) {
 					Cannon cannonRight = createCannon(i, j, GameObject.Type.CANNON_RIGHT);
 					gameObjects.add(cannonRight);
+				} else if (blueValue == GameObject.Type.TREE_1.getColorValue()) {
+					Tree tree1 = createTree(i, j, GameObject.Type.TREE_1);
+					gameObjects.add(tree1);
+				} else if (blueValue == GameObject.Type.TREE_2.getColorValue()) {
+					Tree tree2 = createTree(i, j, GameObject.Type.TREE_2);
+					gameObjects.add(tree2);
+				} else if (blueValue == GameObject.Type.TREE_3.getColorValue()) {
+					Tree tree3 = createTree(i, j, GameObject.Type.TREE_3);
+					gameObjects.add(tree3);
 				}
 				
 			}
@@ -273,6 +294,25 @@ public class ResourcePool {
 			container.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + 2 * Game.SCALE);	
 		return container;
 	}
+	
+	private Tree createTree(int i, int j, Type type) {
+		switch (type) {
+		case TREE_1:
+			Tree tree1 = new Tree(Tree.WIDTH_1, Tree.HEIGHT_1, type);
+			tree1.setDrawPosition(i * Game.TILES_SIZE + Tree.X_OFFSET_1, j * Game.TILES_SIZE + Tree.Y_OFFSET_1);
+			return tree1;
+		case TREE_2:
+			Tree tree2 = new Tree(Tree.WIDTH_2, Tree.HEIGHT_2, type);
+			tree2.setDrawPosition(i * Game.TILES_SIZE + Tree.X_OFFSET_2, j * Game.TILES_SIZE + Tree.Y_OFFSET_2);
+			return tree2;
+		case TREE_3:
+			Tree tree3 = new Tree(Tree.WIDTH_3, Tree.HEIGHT_3, type);
+			tree3.setDrawPosition(i * Game.TILES_SIZE + Tree.X_OFFSET_3, j * Game.TILES_SIZE + Tree.Y_OFFSET_3);
+			return tree3;
+		default:
+			return null;
+		}
+	}
 
 	public Image getGameOverBackground() {
 		return gameOverBackground;
@@ -317,5 +357,12 @@ public class ResourcePool {
 
 	public List<GameObject> getLevelGameObjects() {
 		return gameObjects;
+	}
+
+	/**
+	 * @return the playerSpawn
+	 */
+	public Point2D getPlayerSpawn() {
+		return playerSpawn;
 	} 
 }

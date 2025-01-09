@@ -10,6 +10,7 @@ import de.phillip.jumpandrun.models.GameObject.Type;
 import de.phillip.jumpandrun.models.Level;
 import de.phillip.jumpandrun.models.Player;
 import de.phillip.jumpandrun.models.Potion;
+import de.phillip.jumpandrun.models.Ship;
 import de.phillip.jumpandrun.models.Tile;
 import javafx.geometry.Point2D;
 
@@ -38,6 +39,11 @@ public class GameObjectManager {
 		gameObjects.addAll(level.getGameObjects());
 		for (GameObject gameObject: gameObjects) {
 			gameObject.setGameObjectManager(this);
+		}
+		if (level.getLevelNumber() == 1) {
+			Ship ship = new Ship();
+			ship.setDrawPosition(100 * Game.SCALE, 288 * Game.SCALE);
+			gameObjects.add(ship);
 		}
 	}
 

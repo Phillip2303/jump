@@ -73,7 +73,7 @@ public class Player extends Actor {
 	private boolean dead;
 	private boolean dying;
 	private PlayerStatus playerStatus;
-	
+	private boolean deadOnGround = false;
 
 	public Player(double width, double height, Image playerSprite) {
 		super(width, height);
@@ -140,6 +140,10 @@ public class Player extends Actor {
 					checkAttack();
 				}
 				checkGameObjects();
+			} else {
+				if (!deadOnGround) {
+					checkDeadFalling();
+				} 
 			}
 		}
 	}
@@ -205,6 +209,7 @@ public class Player extends Actor {
 		if (getHitBox().intersects(gameObject.getHitBox())) {
 			playerStatus.setCurrentHealth(0);
 			setPlayerAction(DEAD);
+			deadOnGround = true;
 			//FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
 			//setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() - Game.TILES_SIZE);
 		}
@@ -218,36 +223,16 @@ public class Player extends Actor {
 	}
 	
 	public void checkDeadFalling() {
-		Point2D oldPosition = getDrawPosition();
+		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + fallSpeedAfterCollision);
+		System.out.println("Test");
 		for (Tile tile : tiles) {
-			setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + hitboxHeight);
 			Rectangle2D hitBox = tile.getHitBox();
-			/*if (!tile.isSolid() && hitBox.intersects(getHitBox())) {
-				System.out.println("Falling");
+			if (tile.isSolid() && hitBox.intersects(getHitBox())) {
+				deadOnGround = true;
 				return;
-			} else {
-				setDrawPosition(oldPosition.getX(), oldPosition.getY());
-			}*/
-			
-			if (!tile.isSolid() && hitBox.intersects(getHitBox()) && hitBox.getMinX() < getHitBox().getMinX()
-					&& hitBox.getMaxX() > getHitBox().getMaxX()) {
-				setDrawPosition(oldPosition.getX(), oldPosition.getY());
-				canJumpHere(fallSpeedAfterCollision);
-				return;
-			} else {
-				setDrawPosition(oldPosition.getX(), oldPosition.getY());
 			}
-			
-			/*if (!tile.isSolid() && hitBox.intersects(getHitBox()) && hitBox.getMinX() < getHitBox().getMinX()
-					&& hitBox.getMaxX() > getHitBox().getMaxX()) {
-				setPlayerAction(FALLING);
-			}*/
 		}
 	}
-
-	/*private void updateHealthBar() {
-		healthWidth = healthBarWidth * (currentHealth / MAXHEALTH);
-	}*/
 
 	private void checkAttack() {
 		if (attackChecked || aniIndex != 1) {
@@ -315,8 +300,6 @@ public class Player extends Actor {
 			if (dying) {
 				dead = true;
 				aniIndex = 7;
-			}
-			if (dead) {
 				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
 			} else {
 				aniIndex = 0;
@@ -512,6 +495,7 @@ public class Player extends Actor {
 		airSpeed = 0;
 		dead = false;
 		dying = false;
+		deadOnGround = false;
 		setPlayerAction(IDLE);
 	}
 }

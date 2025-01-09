@@ -68,7 +68,7 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 		player.reset(nextLevel);
 		player.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
 				.collect(Collectors.toList()));
-		player.setDrawPosition(215, 196);
+		player.setDrawPosition(levelManager.getActiveLevel().getPlayerSpawn().getX(), levelManager.getActiveLevel().getPlayerSpawn().getY());
 		player.setLevelWidth((int) getWidth());
 		actors.add(player);
 	}

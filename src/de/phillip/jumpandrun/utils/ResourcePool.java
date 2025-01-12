@@ -11,7 +11,9 @@ import de.phillip.jumpandrun.models.Crabby;
 import de.phillip.jumpandrun.models.Enemy;
 import de.phillip.jumpandrun.models.GameObject;
 import de.phillip.jumpandrun.models.GameObject.Type;
+import de.phillip.jumpandrun.models.Pinkstar;
 import de.phillip.jumpandrun.models.Potion;
+import de.phillip.jumpandrun.models.Shark;
 import de.phillip.jumpandrun.models.Ship;
 import de.phillip.jumpandrun.models.Spike;
 import de.phillip.jumpandrun.models.Tree;
@@ -38,6 +40,8 @@ public class ResourcePool {
 	public static final String TREE_1_SPRITES = "tree_one_sprites.png";
 	public static final String TREE_2_SPRITES = "tree_two_sprites.png";
 	public static final String SHIP_SPRITES = "ship_sprites.png";
+	public static final String PINKSTAR_SPRITES = "pinkstar_sprites.png";
+	public static final String SHARK_SPRITES = "shark_sprites.png";
 
 	private static ResourcePool resourcePool;
 	// private Image background;
@@ -128,8 +132,12 @@ public class ResourcePool {
 				if (greenValue == Enemy.Type.CRABBY.getColorValue()) {
 					Crabby crabby = createCrabby(i, j); 
 					enemies.add(crabby);
+				} else if (greenValue == Enemy.Type.PINKSTAR.getColorValue()) {
+					Pinkstar pinkstar = createPinkstar(i, j);
+					enemies.add(pinkstar);
 				} else if (greenValue == Enemy.Type.SHARK.getColorValue()) {
-					createShark();
+					Shark shark = createShark(i, j);
+					enemies.add(shark);
 				}
 				
 				int greenPlayerValue = (int) (color.getGreen() * 255);
@@ -190,81 +198,7 @@ public class ResourcePool {
 	public Image getPlayingBg() {
 		return playingBg;
 	}
-	/*
-	public int[][] getLevelData(int level) {
-		String resourcePath = LEVEL_PATH + String.valueOf(level) + ".png"; 
-		Image levelAtlas = new Image(getClass().getResource(resourcePath).toString());
-		int[][] levelData = new int[Game.TILES_IN_HEIGHT][(int) levelAtlas.getWidth()];
-		for (int j = 0; j < levelAtlas.getHeight(); j++) {
-			for (int i = 0; i < levelAtlas.getWidth(); i++) {
-				Color color = levelAtlas.getPixelReader().getColor(i, j);
-				int colorValue = (int) (color.getRed() * 255);
-				if (colorValue >= 48) {
-					colorValue = 0;
-				}
-				// System.out.println("Color value " + colorValue);
-				levelData[j][i] = colorValue;
-			}
-		}
-		return levelData;
-	}
 	
-	public List<Enemy> getEnemies(int level) {
-		String resourcePath = LEVEL_PATH + String.valueOf(level) + ".png"; 
-		Image levelAtlas = new Image(getClass().getResource(resourcePath).toString());		
-		List<Enemy> enemies = new ArrayList<>();
-		for (int j = 0; j < levelAtlas.getHeight(); j++) {
-			for (int i = 0; i < levelAtlas.getWidth(); i++) {
-				Color color = levelAtlas.getPixelReader().getColor(i, j);
-				int colorValue = (int) (color.getGreen() * 255);
-				if (colorValue == Enemy.Type.CRABBY.getColorValue()) {
-					Crabby crabby = createCrabby(i, j); 
-					enemies.add(crabby);
-				} else if (colorValue == Enemy.Type.SHARK.getColorValue()) {
-					createShark();
-				}
-			}
-		}
-		return enemies;
-		
-	}
-	
-	public List<GameObject> getGameObjects(int level) {
-		String resourcePath = LEVEL_PATH + String.valueOf(level) + ".png"; 
-		Image levelAtlas = new Image(getClass().getResource(resourcePath).toString());		
-		List<GameObject> gameObjects = new ArrayList<>();
-		for (int j = 0; j < levelAtlas.getHeight(); j++) {
-			for (int i = 0; i < levelAtlas.getWidth(); i++) {
-				Color color = levelAtlas.getPixelReader().getColor(i, j);
-				int colorValue = (int) (color.getBlue() * 255);
-				if (colorValue == GameObject.Type.SPIKE.getColorValue()) {
-					Spike spike = createSpikes(i, j);
-					gameObjects.add(spike);
-				} else if (colorValue == GameObject.Type.BLUE_POTION.getColorValue()) {
-					Potion bluePotion = createPotion(i, j, GameObject.Type.BLUE_POTION);
-					gameObjects.add(bluePotion);
-				} else if (colorValue == GameObject.Type.RED_POTION.getColorValue()) {
-					Potion redPotion = createPotion(i, j, GameObject.Type.RED_POTION);
-					gameObjects.add(redPotion);
-				} else if (colorValue == GameObject.Type.BOX.getColorValue()) {
-					Container box = createContainer(i, j, GameObject.Type.BOX);
-					gameObjects.add(box);
-				} else if (colorValue == GameObject.Type.BARREL.getColorValue()) {
-					Container barrel = createContainer(i, j, GameObject.Type.BARREL);
-					gameObjects.add(barrel);
-				} else if (colorValue == GameObject.Type.CANNON_LEFT.getColorValue()) {
-					Cannon cannonLeft = createCannon(i, j, GameObject.Type.CANNON_LEFT);
-					gameObjects.add(cannonLeft);
-				} else if (colorValue == GameObject.Type.CANNON_RIGHT.getColorValue()) {
-					Cannon cannonRight = createCannon(i, j, GameObject.Type.CANNON_RIGHT);
-					gameObjects.add(cannonRight);
-				}
-			}
-		}
-		return gameObjects;
-		
-	}
-*/
 	private Cannon createCannon(int i, int j, GameObject.Type type) {
 		Cannon cannon = new Cannon(type);
 		cannon.setDrawPosition(i * Game.TILES_SIZE + Cannon.X_OFFSET, j * Game.TILES_SIZE + Cannon.Y_OFFSET);
@@ -332,15 +266,22 @@ public class ResourcePool {
 		return spike;
 	}
 
-	private void createShark() {
-		// TODO Auto-generated method stub
-		
+	private Shark createShark(int i, int j) {
+		Shark shark= new Shark();
+		shark.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
+		return shark;
 	}
 
 	private Crabby createCrabby(int i, int j) {
 		Crabby crabby = new Crabby();
 		crabby.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + (Crabby.HEIGHT - Crabby.Y_OFFSET - Crabby.HITBOX_HEIGHT));
 		return crabby;
+	}
+	
+	private Pinkstar createPinkstar(int i, int j) {
+		Pinkstar pinkstar= new Pinkstar();
+		pinkstar.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
+		return pinkstar;
 	}
 
 	public Image getCannonBall() {

@@ -14,13 +14,16 @@ public class Tile extends Actor {
 
 	private Image imageSprite;
 	private boolean solid = true;
+	private boolean water = false;
 	private Grass grass;
+	private int index;
 	private List<Integer> grassTiles = Arrays.asList(0, 1, 2, 3, 30, 31, 33, 34, 35, 36, 37, 38, 39);
 
 	public Tile(double width, double height, Image imageSprite, int index) {
 		super(width, height);
+		this.index = index;
 		initHitbox(0, 0, width, height);
-		if (index == 11) {
+		if (index == 11 || index == 48 || index == 49) {
 			solid = false;
 		}
 		if (grassTiles.contains(index)) {
@@ -52,12 +55,20 @@ public class Tile extends Actor {
 		return solid;
 	}
 	
+	public boolean isWater() {
+		return water;
+	}
+	
 	@Override
 	public void setDrawPosition(double x, double y) {
 		if (grass != null) {
 			grass.setDrawPosition(x, y - Grass.SIZE);
 		}
 		super.setDrawPosition(x, y);
+	}
+	
+	public void setWater(boolean value) {
+		water = value;
 	}
 
 }

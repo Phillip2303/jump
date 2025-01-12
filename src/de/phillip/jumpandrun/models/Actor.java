@@ -16,7 +16,9 @@ public abstract class Actor implements Drawable {
 	
 	public enum Direction {
 		LEFT(-1),
-		RIGHT(1);
+		RIGHT(1),
+		UP(-1),
+		DOWN(1);
 		
 		private int value;
 		

@@ -140,6 +140,7 @@ public class Player extends Actor {
 					checkAttack();
 				}
 				checkGameObjects();
+				checkForWater();
 			} else {
 				if (!deadOnGround) {
 					checkDeadFalling();
@@ -215,6 +216,17 @@ public class Player extends Actor {
 		}
 	}
 	
+	private void checkForWater() {
+		for (Tile tile: tiles) {
+			if (getHitBox().intersects(tile.getHitBox()) && tile.isWater()) {
+				System.out.println("Is Water");
+				playerStatus.setCurrentHealth(0);
+				setPlayerAction(DEAD);
+				//deadOnGround = true;
+			}
+		}
+	}
+	
 	private void checkForCannonHit(CannonBall cannonBall) {
 		if (cannonBall.isActive() && getHitBox().intersects(cannonBall.getHitBox())) {
 			gotHit(50);
@@ -227,7 +239,8 @@ public class Player extends Actor {
 		System.out.println("Test");
 		for (Tile tile : tiles) {
 			Rectangle2D hitBox = tile.getHitBox();
-			if (tile.isSolid() && hitBox.intersects(getHitBox())) {
+			if (hitBox.intersects(getHitBox()) && ((tile.isSolid()) || getDrawPosition().getY() > Game.TILES_IN_HEIGHT * Game.TILES_SIZE - Player.DEFAULT_HEIGHT * Game.TILES_SIZE)) {
+				System.out.println("Is Solid");
 				deadOnGround = true;
 				return;
 			}

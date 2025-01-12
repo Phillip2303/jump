@@ -16,6 +16,7 @@ public class AnimatedWaterTile extends Tile {
 
 	public AnimatedWaterTile(double width, double height, Image imageSprite, int index) {
 		super(width, height, imageSprite, index);
+		setWater(true);
 		createObjectSprites(imageSprite, actionSprites, Game.TILES_DEFAULT_SIZE, Game.TILES_DEFAULT_SIZE);
 	}
 

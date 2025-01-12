@@ -17,6 +17,10 @@ public class Ship extends GameObject {
 	public static final double Y_OFFSET = 5 * Game.SCALE;*/
 	
 	public Image[][] shipSprites = new Image[1][4];
+	private float heightDelta;
+	private float immersionDepth = 5f * Game.SCALE;
+	private float immersionSpeed = 0.05f * Game.SCALE;
+	private Direction direction = Direction.DOWN;
 
 	public Ship() {
 		super(WIDTH, HEIGHT, GameObject.Type.SHIP);
@@ -27,10 +31,20 @@ public class Ship extends GameObject {
 	@Override
 	public void drawToCanvas(GraphicsContext gc) {
 		if (isActive()) {
-			gc.drawImage(shipSprites[getSpriteIndex()][getAniIndex()], getDrawPosition().getX(), getDrawPosition().getY(),
+			gc.drawImage(shipSprites[getSpriteIndex()][getAniIndex()], getDrawPosition().getX(), getDrawPosition().getY() + heightDelta,
 					getWidth(), getHeight());
 		}
 	}
 	
-	
+	@Override
+	public void update() {
+		heightDelta += immersionSpeed * direction.getValue();
+		heightDelta = Math.max(Math.min(heightDelta, immersionDepth), 0);
+		if (heightDelta == immersionDepth) {
+			direction = Direction.UP;
+		} else if (heightDelta == 0) {
+			direction = Direction.DOWN;
+		}
+		super.update();
+	}
 }

@@ -10,7 +10,7 @@ public abstract class Enemy extends Actor {
 	public enum Type {
 		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 5, 30), 
 		PINKSTAR(1, Game.TILES_SIZE, Game.TILES_SIZE * 5, 50),
-		SHARK(2, Game.TILES_SIZE, Game.TILES_SIZE * 5, 50);
+		SHARK(2, Shark.WIDTH, Game.TILES_SIZE * 5, 50);
 		
 		
 		private final int colorValue;
@@ -135,6 +135,21 @@ public abstract class Enemy extends Actor {
 			default:
 				return 0;
 			}
+		case SHARK:
+			switch (enemyAction) {
+			case IDLE:
+				return 8;
+			case RUNNING:
+				return 6;
+			case ATTACK:
+				return 8;
+			case HIT:
+				return 4;
+			case DEAD:
+				return 5;
+			default:
+				return 0;
+			}
 		default:
 			return 0;
 		}
@@ -198,6 +213,7 @@ public abstract class Enemy extends Actor {
 	}
 	
 	public void checkPlayerHit(double xOffset, double yOffset) {
+		//System.out.println("Check Player Hit");
 		Rectangle2D enemyAttackBox = getAttackBox(xOffset, yOffset);
 		if (enemyAttackBox.intersects(enemyManager.getPlayer().getHitBox())) {
 			enemyManager.getPlayer().gotHit(20);

@@ -24,7 +24,8 @@ public class AnimatedWaterTile extends Tile {
 	public void drawToCanvas(GraphicsContext gc) {
 		gc.drawImage(actionSprites[0][aniIndex], getDrawPosition().getX(), getDrawPosition().getY(),
 				getWidth(), getHeight());
-		drawHitbox(gc, Color.BLUE);
+		//drawHitbox(gc, Color.BLUE);
+		drawSpriteBox(gc, Color.BLUE);
 	}
 	
 	public void update() {

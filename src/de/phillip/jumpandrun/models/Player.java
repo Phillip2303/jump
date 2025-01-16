@@ -102,7 +102,7 @@ public class Player extends Actor {
 				getWidth() * flipWidth, getHeight());
 		playerStatus.drawToCanvas(gc);
 		drawHitbox(gc, Color.RED);
-		//drawAttackBox(gc, Color.GREEN);
+		drawAttackBox(gc, Color.GREEN);
 		
 	}
 	
@@ -113,9 +113,9 @@ public class Player extends Actor {
 	private double getXOffsetAttackBox() {
 		switch (getDirection()) {
 		case LEFT:
-			return xOffset - hitboxWidth - 10 * Game.SCALE;
+			return xOffset - hitboxWidth;
 		case RIGHT:
-			return hitboxWidth + xOffset + 10 * Game.SCALE;
+			return hitboxWidth + xOffset;
 		default:
 			return hitboxWidth + xOffset + 10 * Game.SCALE;
 		}
@@ -229,7 +229,7 @@ public class Player extends Actor {
 	
 	private void checkForCannonHit(CannonBall cannonBall) {
 		if (cannonBall.isActive() && getHitBox().intersects(cannonBall.getHitBox())) {
-			gotHit(50);
+			gotHit(20);
 			cannonBall.setActive(false);
 		}
 	}
@@ -239,9 +239,10 @@ public class Player extends Actor {
 		System.out.println("Test");
 		for (Tile tile : tiles) {
 			Rectangle2D hitBox = tile.getHitBox();
-			if (hitBox.intersects(getHitBox()) && ((tile.isSolid()) || getDrawPosition().getY() > Game.TILES_IN_HEIGHT * Game.TILES_SIZE - Player.DEFAULT_HEIGHT * Game.TILES_SIZE)) {
+			if (hitBox.intersects(getHitBox()) && ((tile.isSolid()) || getHitBox().getMaxY() + 2 * Game.SCALE >= Game.TILES_IN_HEIGHT * Game.TILES_SIZE)) {
 				System.out.println("Is Solid");
 				deadOnGround = true;
+				tile.showSpriteBox(true);
 				return;
 			}
 		}
@@ -470,12 +471,13 @@ public class Player extends Actor {
 	}
 	
 	public void gotHit(int amount) {
+	//	System.out.println("Got Hit");
 		playerStatus.decreaseHealth(amount);
 		if (playerStatus.getCurrentHealth() <= 0) {
 			setPlayerAction(DEAD);
 			//FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
 		} else {
-			System.out.println("Treffer");
+			//System.out.println("Treffer");
 		}
 	}
 

@@ -42,6 +42,7 @@ public abstract class Actor implements Drawable {
 	private double hitboxWidth, hitboxHeight;
 	private double attackBoxWidth, attackBoxHeight;
 	private Direction direction = Direction.RIGHT;
+	private boolean showSpriteBox;
 
 	public Actor(double width, double height) {
 		this.width = width;
@@ -164,8 +165,14 @@ public abstract class Actor implements Drawable {
 	}
 	
 	public void drawSpriteBox(GraphicsContext gc, Color color) {
-		gc.setStroke(color);
-		gc.strokeRect(position.getX(), position.getY(), getWidth(), getHeight());
+		if (showSpriteBox) {
+			gc.setStroke(color);
+			gc.strokeRect(position.getX(), position.getY(), getWidth(), getHeight());
+		}
+	}
+	
+	public void showSpriteBox(boolean value) {
+		showSpriteBox = value;
 	}
 	
 	public boolean canMoveHere(List<Tile> tiles, Point2D oldPosition, int levelWidth) {

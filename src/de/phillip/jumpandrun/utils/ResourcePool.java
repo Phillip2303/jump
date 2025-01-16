@@ -268,7 +268,7 @@ public class ResourcePool {
 
 	private Shark createShark(int i, int j) {
 		Shark shark= new Shark();
-		shark.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
+		shark.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + Game.SCALE * 6);
 		return shark;
 	}
 

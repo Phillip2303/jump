@@ -25,8 +25,6 @@ public class Pinkstar extends Enemy {
 
 	private Image[][] pinkstarSprites = new Image[5][8];
 	private Direction direction = Direction.LEFT;
-	private double maxHealth = 30;
-	private double currentHealth = maxHealth;
 	
 	public Pinkstar() {
 		super(WIDTH, HEIGHT, Enemy.Type.PINKSTAR);

@@ -1,15 +1,10 @@
 package de.phillip.jumpandrun.models;
 
 import de.phillip.jumpandrun.Game;
-import de.phillip.jumpandrun.models.Actor.Direction;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 public class Shark extends Enemy {
@@ -27,16 +22,16 @@ public class Shark extends Enemy {
 
 	private Image[][] sharkSprites = new Image[5][8];
 	private Direction direction = Direction.LEFT;
-	private double maxHealth = 30;
-	private double currentHealth = maxHealth;
 	private int flipX;
 	private int flipWidth;
+	private double walkSpeed = SPEED;
 	
 	public Shark() {
 		super(WIDTH, HEIGHT, Enemy.Type.SHARK);
+	//	showSpriteBox(true);
 		createObjectSprites(ResourcePool.getInstance().getSpriteAtlas(ResourcePool.SHARK_SPRITES), sharkSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);
-		initAttackBox(20 * Game.SCALE, HITBOX_HEIGHT);
+		initAttackBox(WIDTH, HEIGHT);
 	}
 
 	@Override
@@ -62,11 +57,11 @@ public class Shark extends Enemy {
 	}
 	
 	private void drawAttackBox(GraphicsContext gc, Color color) {
-		super.drawAttackBox(gc, color, getXOffsetAttackBox(), Y_OFFSET);
+		super.drawAttackBox(gc, color, getXOffsetAttackBox(), 0);
 	}
 	
 	private double getXOffsetAttackBox() {
-		return X_OFFSET;
+		return 0;
 	}
 
 	/*
@@ -106,36 +101,40 @@ public class Shark extends Enemy {
 
 	private void updateMove() {
 		Point2D oldPosition = getDrawPosition();
-		switch (direction) {
-		case LEFT:
-			setDrawPosition(getDrawPosition().getX() - SPEED, getDrawPosition().getY());
-			break;
-		case RIGHT:
-			setDrawPosition(getDrawPosition().getX() + SPEED, getDrawPosition().getY());
-			break;
-		default:
-			break;
+		if (!isAttacking()) {
+			setDrawPosition(oldPosition.getX() + direction.getValue() * walkSpeed, oldPosition.getY());
 		}
-		if (!canMoveHere(getEnemyManager().getTiles(), getDrawPosition(), getEnemyManager().getLevelWidth())) {
+		if (!canMoveHere(getEnemyManager().getTiles(), oldPosition, getEnemyManager().getLevelWidth())) {
 			if (direction == Direction.LEFT) {
 				changeDirection(Direction.RIGHT);
 			} else {
 				changeDirection(Direction.LEFT);
 			}
 		} else {
-			if (checkFalling()) {
+			if (checkFalling(HITBOX_HEIGHT)) {
 				if (direction == Direction.LEFT) {
 					changeDirection(Direction.RIGHT);
 				} else {
 					changeDirection(Direction.LEFT);
 				}
 			} else {
-				if (canSeePlayer(getEnemyManager().getPlayer()) && !getEnemyManager().getPlayer().isDying()) {
-					moveTowardsPlayer();
-					if (canAttackPlayer(getEnemyManager().getPlayer())) {
-						System.out.println("Attack");
-						setEnemyAction(ATTACK);
+				if (canSeePlayer()) {
+					walkSpeed = ATTACK_SPEED;
+					if (!isPlayerInSight()) {
+						moveTowardsPlayer();
 					}
+					setPlayerInSight(true);
+					if (canAttackPlayer()) {
+						setAttacking(true);
+						//System.out.println("Attack");
+						setEnemyAction(ATTACK);
+					} else {
+						setAttacking(false);
+					}
+				} else {
+					walkSpeed = SPEED;
+					setPlayerInSight(false);
+					setAttacking(false);
 				}
 			}
 
@@ -150,21 +149,4 @@ public class Shark extends Enemy {
 		}
 	}
 
-	private boolean checkFalling() {
-		Point2D oldPosition = getDrawPosition();
-		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + HITBOX_HEIGHT);
-		boolean isFalling = false;
-		for (Tile tile : getEnemyManager().getTiles()) {
-			Rectangle2D hitBox = tile.getHitBox();
-			if (!tile.isSolid() && hitBox.intersects(getHitBox())
-					&& (hitBox.getMinX() < getHitBox().getMinX() || hitBox.getMaxX() > getHitBox().getMaxX())) {
-				isFalling = true;
-				break;
-			}
-		}
-		setDrawPosition(oldPosition.getX(), oldPosition.getY());
-		return isFalling;
-	}
-	
-	
 }

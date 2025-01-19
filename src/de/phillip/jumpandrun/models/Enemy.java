@@ -2,27 +2,30 @@ package de.phillip.jumpandrun.models;
 
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.controllers.EnemyManager;
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 
 public abstract class Enemy extends Actor {
 
 	public enum Type {
-		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 5, 30), 
-		PINKSTAR(1, Game.TILES_SIZE, Game.TILES_SIZE * 5, 50),
-		SHARK(2, Shark.WIDTH, Game.TILES_SIZE * 5, 50);
+		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 5, 30, 20), 
+		PINKSTAR(1, Game.TILES_SIZE, Game.TILES_SIZE * 5, 50, 10),
+		SHARK(2, (int) (Game.SCALE * 20), Game.TILES_SIZE * 5, 50, 10);
 		
 		
 		private final int colorValue;
 		private final int attackDistance;
 		private final int sightDistance;
 		private final int health;
+		private final int damage;
 		
-		private Type(int colorValue, int attackDistance, int sightDistance, int health) {
+		private Type(int colorValue, int attackDistance, int sightDistance, int health, int damage) {
 			this.colorValue = colorValue;
 			this.attackDistance = attackDistance;
 			this.sightDistance = sightDistance;
 			this.health = health;
+			this.damage = damage;
 		}
 		
 		public int getColorValue() {
@@ -39,6 +42,10 @@ public abstract class Enemy extends Actor {
 	
 		public int getHealth() {
 			return health;
+		}
+		
+		public int getDamage() {
+			return damage;
 		}
 	}
 
@@ -59,6 +66,8 @@ public abstract class Enemy extends Actor {
 	private int currentHealth;
 	private boolean active = true;
 	private boolean attackChecked = false;
+	private boolean attacking;
+	private boolean playerInSight;
 
 	public Enemy(double width, double height, Enemy.Type type) {
 		super(width, height);
@@ -182,12 +191,12 @@ public abstract class Enemy extends Actor {
 		}
 	}
 	
-	protected boolean canSeePlayer(Player player) {
-		return checkPlayerDistance(player, type.getSightDistance());
+	protected boolean canSeePlayer() {
+		return checkPlayerDistance(getEnemyManager().getPlayer(), type.getSightDistance()) && !getEnemyManager().getPlayer().isDying();
 	}
 	
-	protected boolean canAttackPlayer(Player player) {
-		return checkPlayerDistance(player, type.getAttackDistance());
+	protected boolean canAttackPlayer() {
+		return checkPlayerDistance(getEnemyManager().getPlayer(), type.getAttackDistance());
 	}
 	
 	private boolean checkPlayerDistance(Player player, int distance) {
@@ -216,7 +225,7 @@ public abstract class Enemy extends Actor {
 		//System.out.println("Check Player Hit");
 		Rectangle2D enemyAttackBox = getAttackBox(xOffset, yOffset);
 		if (enemyAttackBox.intersects(enemyManager.getPlayer().getHitBox())) {
-			enemyManager.getPlayer().gotHit(20);
+			enemyManager.getPlayer().gotHit(type.getDamage());
 		}
 	}
 
@@ -232,6 +241,50 @@ public abstract class Enemy extends Actor {
 	 */
 	public void setAttackChecked(boolean attackChecked) {
 		this.attackChecked = attackChecked;
+	}
+	
+	protected boolean checkFalling(double hitbox_height) {
+		Point2D oldPosition = getDrawPosition();
+		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + hitbox_height);
+		boolean isFalling = false;
+		for (Tile tile : getEnemyManager().getTiles()) {
+			Rectangle2D hitBox = tile.getHitBox();
+			if (!tile.isSolid() && hitBox.intersects(getHitBox())
+					&& (hitBox.getMinX() < getHitBox().getMinX() || hitBox.getMaxX() > getHitBox().getMaxX())) {
+				isFalling = true;
+				break;
+			}
+		}
+		setDrawPosition(oldPosition.getX(), oldPosition.getY());
+		return isFalling;
+	}
+
+	/**
+	 * @return the attacking
+	 */
+	public boolean isAttacking() {
+		return attacking;
+	}
+
+	/**
+	 * @param attacking the attacking to set
+	 */
+	public void setAttacking(boolean attacking) {
+		this.attacking = attacking;
+	}
+
+	/**
+	 * @return the playerInSight
+	 */
+	public boolean isPlayerInSight() {
+		return playerInSight;
+	}
+
+	/**
+	 * @param playerInSight the playerInSight to set
+	 */
+	public void setPlayerInSight(boolean playerInSight) {
+		this.playerInSight = playerInSight;
 	}
 	
 	

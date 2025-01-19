@@ -26,11 +26,10 @@ public class Crabby extends Enemy {
 	private Image enemySprite = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.CRABBY_SPRITES);
 	private Image[][] actionSprites = new Image[5][9];
 	private Direction direction = Direction.LEFT;
-	private double maxHealth = 30;
-	private double currentHealth = maxHealth;
 
 	public Crabby() {
 		super(WIDTH, HEIGHT, Enemy.Type.CRABBY);
+//		showSpriteBox(true);
 		createObjectSprites(enemySprite, actionSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);
 		initAttackBox(82 * Game.SCALE, HITBOX_HEIGHT);
@@ -43,6 +42,7 @@ public class Crabby extends Enemy {
 					getWidth(), getHeight());
 			drawHitbox(gc, Color.BLUE);
 			drawAttackBox(gc, Color.ORANGE);
+			drawSpriteBox(gc, Color.ORANGE);
 		}
 	}
 	
@@ -91,35 +91,31 @@ public class Crabby extends Enemy {
 
 	private void updateMove() {
 		Point2D oldPosition = getDrawPosition();
-		switch (direction) {
-		case LEFT:
-			setDrawPosition(getDrawPosition().getX() - SPEED, getDrawPosition().getY());
-			break;
-		case RIGHT:
-			setDrawPosition(getDrawPosition().getX() + SPEED, getDrawPosition().getY());
-			break;
-		default:
-			break;
-		}
-		if (!canMoveHere(getEnemyManager().getTiles(), getDrawPosition(), getEnemyManager().getLevelWidth())) {
+		setDrawPosition(oldPosition.getX() + direction.getValue() * SPEED, oldPosition.getY());
+		if (!canMoveHere(getEnemyManager().getTiles(), oldPosition, getEnemyManager().getLevelWidth())) {
 			if (direction == Direction.LEFT) {
 				direction = Direction.RIGHT;
 			} else {
 				direction = Direction.LEFT;
 			}
 		} else {
-			if (checkFalling()) {
+			if (checkFalling(HITBOX_HEIGHT)) {
 				if (direction == Direction.LEFT) {
 					direction = Direction.RIGHT;
 				} else {
 					direction = Direction.LEFT;
 				}
 			} else {
-				if (canSeePlayer(getEnemyManager().getPlayer()) && !getEnemyManager().getPlayer().isDying()) {
-					moveTowardsPlayer();
-					if (canAttackPlayer(getEnemyManager().getPlayer())) {
+				if (canSeePlayer()) {
+					if (!isPlayerInSight()) {
+						moveTowardsPlayer();
+					}
+					setPlayerInSight(true);
+					if (canAttackPlayer()) {
 						setEnemyAction(ATTACK);
 					}
+				} else {
+					setPlayerInSight(false);
 				}
 			}
 
@@ -133,22 +129,5 @@ public class Crabby extends Enemy {
 			direction = Direction.RIGHT;
 		}
 	}
-
-	private boolean checkFalling() {
-		Point2D oldPosition = getDrawPosition();
-		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + HITBOX_HEIGHT);
-		boolean isFalling = false;
-		for (Tile tile : getEnemyManager().getTiles()) {
-			Rectangle2D hitBox = tile.getHitBox();
-			if (!tile.isSolid() && hitBox.intersects(getHitBox())
-					&& (hitBox.getMinX() < getHitBox().getMinX() || hitBox.getMaxX() > getHitBox().getMaxX())) {
-				isFalling = true;
-				break;
-			}
-		}
-		setDrawPosition(oldPosition.getX(), oldPosition.getY());
-		return isFalling;
-	}
-	
 	
 }

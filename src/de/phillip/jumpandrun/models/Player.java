@@ -77,6 +77,7 @@ public class Player extends Actor {
 
 	public Player(double width, double height, Image playerSprite) {
 		super(width, height);
+	//	showSpriteBox(true);
 		playerStatus = new PlayerStatus();
 		initHitbox(xOffset, yOffset, hitboxWidth, hitboxHeight);
 		initAttackBox(20 * Game.SCALE, 20 * Game.SCALE);
@@ -103,6 +104,7 @@ public class Player extends Actor {
 		playerStatus.drawToCanvas(gc);
 		drawHitbox(gc, Color.RED);
 		drawAttackBox(gc, Color.GREEN);
+		drawSpriteBox(gc, Color.BLUE);
 		
 	}
 	
@@ -383,12 +385,17 @@ public class Player extends Actor {
 			break;
 		case FALLING:
 			if (!isFalling) {
+				System.out.println("Falling");
 				isFalling = true;
 				airSpeed = fallSpeedAfterCollision;
 			}
 			break;
 		case ATTACK:
-			isAttacking = true;
+			if (isFalling) {
+				this.playerAction = FALLING;
+			} else {
+				isAttacking = true;
+			}
 			break;
 		case DEAD:
 			dying = true;

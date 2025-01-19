@@ -1,4 +1,4 @@
-*.class
+/*.class
 bin/
 .DS_Store
-.classpath
+/.classpath

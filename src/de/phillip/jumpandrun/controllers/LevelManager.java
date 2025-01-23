@@ -24,7 +24,7 @@ public class LevelManager {
 	private Level activeLevel;
 	private Image[] levelTiles;
 	private List<AnimatedWaterTile> animatedWaterTiles = new ArrayList<>();
-	private int level = 3;
+	private int level = 4;
 	private int oldLevel = 1;
 
 	public LevelManager() {

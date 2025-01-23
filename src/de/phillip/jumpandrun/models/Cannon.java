@@ -59,7 +59,7 @@ public class Cannon extends GameObject implements EventHandler<GameEvent> {
 	
 	@Override
 	public void update() {
-		if (canShootPlayer() && !isAnimate()) {
+		if (canShootPlayer() && !isAnimate() && !getGameObjectManager().getPlayer().isDying()) {
 			shoot();
 			doAnimation(true);
 		}

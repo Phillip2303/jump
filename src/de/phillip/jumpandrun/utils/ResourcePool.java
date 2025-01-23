@@ -280,7 +280,7 @@ public class ResourcePool {
 	
 	private Pinkstar createPinkstar(int i, int j) {
 		Pinkstar pinkstar= new Pinkstar();
-		pinkstar.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
+		pinkstar.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE + Game.SCALE * 5);
 		return pinkstar;
 	}
 

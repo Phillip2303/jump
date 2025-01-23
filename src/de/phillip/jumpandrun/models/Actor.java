@@ -179,6 +179,7 @@ public abstract class Actor implements Drawable {
 		for (Tile tile : tiles) {
 			Rectangle2D hitBox = tile.getHitBox();
 			if (tile.isSolid() && hitBox.intersects(getHitBox())) {
+				tile.showSpriteBox(true);
 				setDrawPosition(oldPosition.getX(), oldPosition.getY());
 				return false;
 			}

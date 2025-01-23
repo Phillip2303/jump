@@ -348,16 +348,16 @@ public class Player extends Actor {
 		if (isJumping && playerAction == JUMPING) {
 			return;
 		}
-		if (isAttacking) {
+		/*if (isAttacking) {
 			return;
-		}
+		}*/
 		if (dying) {
 			return;
 		}
-		if (this.playerAction != playerAction && !isJumping) {
+		if (this.playerAction != playerAction && !isJumping && !isAttacking) {
 			resetAniTic();
+			this.playerAction = playerAction;
 		}
-		this.playerAction = playerAction;
 		switch (playerAction) {
 		case JUMPING:
 			if (isFalling) {

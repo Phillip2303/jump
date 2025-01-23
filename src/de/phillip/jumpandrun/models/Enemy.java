@@ -10,7 +10,7 @@ public abstract class Enemy extends Actor {
 
 	public enum Type {
 		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 5, 30, 20), 
-		PINKSTAR(1, Game.TILES_SIZE, Game.TILES_SIZE * 5, 50, 10),
+		PINKSTAR(1, (int) Game.SCALE * 20, Game.TILES_SIZE * 5, 50, 10),
 		SHARK(2, (int) (Game.SCALE * 20), Game.TILES_SIZE * 5, 50, 10);
 		
 		
@@ -159,6 +159,21 @@ public abstract class Enemy extends Actor {
 			default:
 				return 0;
 			}
+		case PINKSTAR:
+			switch (enemyAction) {
+			case IDLE:
+				return 8;
+			case RUNNING:
+				return 6;
+			case ATTACK:
+				return 7;
+			case HIT:
+				return 4;
+			case DEAD:
+				return 5;
+			default:
+				return 0;
+			}
 		default:
 			return 0;
 		}
@@ -251,6 +266,7 @@ public abstract class Enemy extends Actor {
 			Rectangle2D hitBox = tile.getHitBox();
 			if (!tile.isSolid() && hitBox.intersects(getHitBox())
 					&& (hitBox.getMinX() < getHitBox().getMinX() || hitBox.getMaxX() > getHitBox().getMaxX())) {
+				tile.showSpriteBox(true);
 				isFalling = true;
 				break;
 			}

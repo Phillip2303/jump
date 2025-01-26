@@ -123,14 +123,18 @@ public class PlayerStatus implements Drawable, EventHandler<GameEvent>{
 	
 	public void increasePower() {
 		if (currentPower < MAXPOWER) {
-			currentPower++;
+			currentPower += 2;
 		}
 		updatePowerBar(currentPower);
 	}
 	
-	private void setCurrentPower(double currentPower) {
+	public void setCurrentPower(double currentPower) {
 		this.currentPower = currentPower;
 		updatePowerBar(currentPower);
+	}
+
+	public double getCurrentPower() {
+		return currentPower;
 	}
 
 }

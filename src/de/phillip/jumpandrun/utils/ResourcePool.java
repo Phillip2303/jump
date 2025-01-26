@@ -56,6 +56,7 @@ public class ResourcePool {
 	private Image spike;
 	private Image cannonBall;
 	private Image water;
+	private Image rain;
 	private int[][] levelData;
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
@@ -102,6 +103,7 @@ public class ResourcePool {
 		spike = new Image(getClass().getResource("/assets/images/spikes_atlas.png").toString());
 		cannonBall = new Image(getClass().getResource("/assets/images/ball.png").toString());
 		water = new Image(getClass().getResource("/assets/images/water.png").toString());
+		rain = new Image(getClass().getResource("/assets/images/rain_particle.png").toString());
 	}
 
 	public Image getSpriteAtlas(String atlas) {
@@ -305,5 +307,12 @@ public class ResourcePool {
 	 */
 	public Point2D getPlayerSpawn() {
 		return playerSpawn;
+	}
+
+	/**
+	 * @return the rain
+	 */
+	public Image getRain() {
+		return rain;
 	} 
 }

@@ -17,6 +17,7 @@ import de.phillip.jumpandrun.models.GameObject.Type;
 import de.phillip.jumpandrun.models.Player;
 import de.phillip.jumpandrun.models.PlayerStatus;
 import de.phillip.jumpandrun.models.Potion;
+import de.phillip.jumpandrun.models.Rain;
 import de.phillip.jumpandrun.models.Tile;
 import de.phillip.jumpandrun.utils.KeyPolling;
 import de.phillip.jumpandrun.utils.ResourcePool;
@@ -36,6 +37,7 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 	private KeyPolling kp = KeyPolling.getInstance();
 	private boolean isListening = true;
 	private boolean hasStarted = true;
+	private Rain rain;
 
 	public ActionLayer(int width, int height, LevelManager levelManager) {
 		super(width, height);
@@ -53,6 +55,12 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 		gameObjectManager = new GameObjectManager(player);
 		player.setGameObjectManager(gameObjectManager);
 		initGameObjects();
+		rain = new Rain();
+		initRain();
+	}
+
+	private void initRain() {
+		actors.add(rain);
 	}
 
 	private void createLevelTiles() {

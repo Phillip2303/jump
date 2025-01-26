@@ -40,9 +40,9 @@ public class Crabby extends Enemy {
 		if (isActive()) {
 			gc.drawImage(actionSprites[getEnemyAction()][getAniIndex()], getDrawPosition().getX(), getDrawPosition().getY(),
 					getWidth(), getHeight());
-			drawHitbox(gc, Color.BLUE);
-			drawAttackBox(gc, Color.ORANGE);
-			drawSpriteBox(gc, Color.ORANGE);
+			//drawHitbox(gc, Color.BLUE);
+			//drawAttackBox(gc, Color.ORANGE);
+		//	drawSpriteBox(gc, Color.ORANGE);
 		}
 	}
 	

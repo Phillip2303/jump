@@ -102,9 +102,9 @@ public class Player extends Actor {
 		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX() + flipX, getDrawPosition().getY(),
 				getWidth() * flipWidth, getHeight());
 		playerStatus.drawToCanvas(gc);
-		drawHitbox(gc, Color.RED);
-		drawAttackBox(gc, Color.GREEN);
-		drawSpriteBox(gc, Color.BLUE);
+		//drawHitbox(gc, Color.RED);
+		//drawAttackBox(gc, Color.GREEN);
+		//drawSpriteBox(gc, Color.BLUE);
 		
 	}
 	
@@ -223,6 +223,7 @@ public class Player extends Actor {
 			if (getHitBox().intersects(tile.getHitBox()) && tile.isWater()) {
 				System.out.println("Is Water");
 				playerStatus.setCurrentHealth(0);
+				isJumping = false;
 				setPlayerAction(DEAD);
 				//deadOnGround = true;
 			}
@@ -258,7 +259,7 @@ public class Player extends Actor {
 		for (Enemy enemy: enemyManager.getEnemies()) {
 			if (enemy.isActive()) {
 				if (enemy.getHitBox().intersects(getAttackBox(getXOffsetAttackBox(), yOffsetAttackBox))) {
-					enemy.gotHit(10);
+					enemy.gotHit((int) (10 * (1 + playerStatus.getCurrentPower())));
 					//System.out.println("Treffer");
 					return;
 				}
@@ -360,6 +361,7 @@ public class Player extends Actor {
 		}
 		switch (playerAction) {
 		case JUMPING:
+			System.out.println("Jumping");
 			if (isFalling) {
 				this.playerAction = FALLING;
 			} else {
@@ -384,6 +386,7 @@ public class Player extends Actor {
 			}
 			break;
 		case FALLING:
+			System.out.println("Falling");
 			if (!isFalling) {
 				System.out.println("Falling");
 				isFalling = true;
@@ -478,11 +481,9 @@ public class Player extends Actor {
 	}
 	
 	public void gotHit(int amount) {
-	//	System.out.println("Got Hit");
 		playerStatus.decreaseHealth(amount);
 		if (playerStatus.getCurrentHealth() <= 0) {
 			setPlayerAction(DEAD);
-			//FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
 		} else {
 			//System.out.println("Treffer");
 		}

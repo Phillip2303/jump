@@ -37,7 +37,7 @@ public class Tile extends Actor {
 		gc.drawImage(imageSprite, 0, 0, imageSprite.getWidth(), imageSprite.getHeight(), getDrawPosition().getX(),
 				getDrawPosition().getY(), Game.TILES_SIZE, Game.TILES_SIZE);
 	//	drawHitbox(gc, Color.BLACK);
-		drawSpriteBox(gc, Color.BLACK);
+		//drawSpriteBox(gc, Color.BLACK);
 		if (grass != null) {
 			grass.drawToCanvas(gc);
 		}

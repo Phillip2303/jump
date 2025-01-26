@@ -39,9 +39,9 @@ public class Shark extends Enemy {
 		if (isActive()) {
 			gc.drawImage(sharkSprites[getEnemyAction()][getAniIndex()], getDrawPosition().getX() + flipX, getDrawPosition().getY(),
 					getWidth() * flipWidth, getHeight());
-			drawSpriteBox(gc, Color.BLUE);
-			drawHitbox(gc, Color.RED);
-			drawAttackBox(gc, Color.ORANGE);
+			//drawSpriteBox(gc, Color.BLUE);
+			//drawHitbox(gc, Color.RED);
+			//drawAttackBox(gc, Color.ORANGE);
 		}
 	}
 	

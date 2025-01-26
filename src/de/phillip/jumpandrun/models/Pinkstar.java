@@ -13,7 +13,7 @@ public class Pinkstar extends Enemy {
 	public static final int DEFAULT_HEIGHT = 30;
 	public static final int WIDTH = (int) (DEFAULT_WIDTH * Game.SCALE);
 	public static final int HEIGHT = (int) (DEFAULT_HEIGHT * Game.SCALE);
-	public static final double HITBOX_WIDTH = 17 * Game.SCALE;
+	public static final double HITBOX_WIDTH = 19 * Game.SCALE;
 	public static final double HITBOX_HEIGHT = 21 * Game.SCALE;
 	public static final double X_OFFSET = 7 * Game.SCALE;
 	public static final double Y_OFFSET = 2 * Game.SCALE;
@@ -28,7 +28,7 @@ public class Pinkstar extends Enemy {
 	
 	public Pinkstar() {
 		super(WIDTH, HEIGHT, Enemy.Type.PINKSTAR);
-		showSpriteBox(true);
+		//showSpriteBox(true);
 		createObjectSprites(ResourcePool.getInstance().getSpriteAtlas(ResourcePool.PINKSTAR_SPRITES), pinkstarSprites, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		initHitbox(X_OFFSET, Y_OFFSET, HITBOX_WIDTH, HITBOX_HEIGHT);
 		initAttackBox(WIDTH, HEIGHT);
@@ -39,9 +39,9 @@ public class Pinkstar extends Enemy {
 		if (isActive()) {
 			gc.drawImage(pinkstarSprites[getEnemyAction()][getAniIndex()], getDrawPosition().getX() + flipX, getDrawPosition().getY(),
 					getWidth() * flipWidth, getHeight());
-			drawSpriteBox(gc, Color.GREEN);
-			drawHitbox(gc, Color.RED);
-			drawAttackBox(gc, Color.ORANGE);
+			//drawSpriteBox(gc, Color.GREEN);
+			//drawHitbox(gc, Color.RED);
+			//drawAttackBox(gc, Color.ORANGE);
 		}
 	}
 	
@@ -71,6 +71,7 @@ public class Pinkstar extends Enemy {
 			setEnemyAction(RUNNING);
 			break;
 		case ATTACK:
+			updateMove();
 		//	System.out.println("Attack");
 			if (getAniIndex() == 0) {
 				setAttackChecked(false);
@@ -114,6 +115,7 @@ public class Pinkstar extends Enemy {
 			} else {
 				if (canSeePlayer()) {
 					walkSpeed = ATTACK_SPEED;
+					setEnemyAction(ATTACK);
 					if (!isPlayerInSight()) {
 						moveTowardsPlayer();
 					}
@@ -121,7 +123,7 @@ public class Pinkstar extends Enemy {
 					if (canAttackPlayer()) {
 						setAttacking(true);
 						//System.out.println("Attack");
-						setEnemyAction(ATTACK);
+						//setEnemyAction(ATTACK);
 					} else {
 						setAttacking(false);
 					}

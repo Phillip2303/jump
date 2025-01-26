@@ -9,9 +9,9 @@ import javafx.scene.canvas.GraphicsContext;
 public abstract class Enemy extends Actor {
 
 	public enum Type {
-		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 5, 30, 20), 
-		PINKSTAR(1, (int) Game.SCALE * 20, Game.TILES_SIZE * 5, 50, 10),
-		SHARK(2, (int) (Game.SCALE * 20), Game.TILES_SIZE * 5, 50, 10);
+		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 6, 40, 10), 
+		PINKSTAR(1, (int) Game.SCALE * 20, Game.TILES_SIZE * 3, 100, 20),
+		SHARK(2, (int) (Game.SCALE * 20), Game.TILES_SIZE * 5, 75, 15);
 		
 		
 		private final int colorValue;
@@ -260,13 +260,13 @@ public abstract class Enemy extends Actor {
 	
 	protected boolean checkFalling(double hitbox_height) {
 		Point2D oldPosition = getDrawPosition();
-		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + hitbox_height);
+		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + hitbox_height + 10);
 		boolean isFalling = false;
 		for (Tile tile : getEnemyManager().getTiles()) {
 			Rectangle2D hitBox = tile.getHitBox();
 			if (!tile.isSolid() && hitBox.intersects(getHitBox())
 					&& (hitBox.getMinX() < getHitBox().getMinX() || hitBox.getMaxX() > getHitBox().getMaxX())) {
-				tile.showSpriteBox(true);
+				//tile.showSpriteBox(true);
 				isFalling = true;
 				break;
 			}

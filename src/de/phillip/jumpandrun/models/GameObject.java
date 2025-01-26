@@ -10,8 +10,8 @@ import javafx.scene.canvas.GraphicsContext;
 public class GameObject extends Actor {
 	
 	public enum Type {
-		RED_POTION(0, 15, 0),
-		BLUE_POTION(1, 0, 10),
+		RED_POTION(0, 40, 0),
+		BLUE_POTION(1, 0, 20),
 		BARREL(2, 0, 0),
 		BOX(3, 0, 0),
 		SPIKE(4, 0, 0),
@@ -23,7 +23,8 @@ public class GameObject extends Actor {
 		CANNON_BALL(10, 0, 0),
 		GRASS_LEFT(11, 0, 0),
 		GRASS_RIGHT(12, 0, 0),
-		SHIP(13, 0 , 0);
+		SHIP(13, 0 , 0),
+		RAIN(14, 0, 0);
 		
 		private static final Type[] GRASSTYPES = { GRASS_LEFT, GRASS_RIGHT };
 		private static final Random RND = new Random();

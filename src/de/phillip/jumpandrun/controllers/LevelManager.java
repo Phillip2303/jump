@@ -1,7 +1,11 @@
 package de.phillip.jumpandrun.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.models.AnimatedWaterTile;
@@ -24,15 +28,29 @@ public class LevelManager {
 	private Level activeLevel;
 	private Image[] levelTiles;
 	private List<AnimatedWaterTile> animatedWaterTiles = new ArrayList<>();
-	private int level = 1;
+	private int level = 5;
 	private int oldLevel = 1;
+	private Map <Integer, List<Integer>> cloudNumbers = new HashMap<>();
+	private List<List<Tile>> tileRows = new ArrayList<>();
 
 	public LevelManager() {
 		outsideAtlas = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.OUTSIDE_ATLAS);
 		waterSprites = ResourcePool.getInstance().getSpriteAtlas(ResourcePool.WATER_SPRITES);
 		waterImage = ResourcePool.getInstance().getWater();
 		createLevel();
+		initClouds();
 		// canvas.getGraphicsContext2D().drawImage(wi, 0, 0);
+	}
+
+	private void initClouds() {
+		cloudNumbers.put(1, Arrays.asList(5, 8));
+		cloudNumbers.put(2, Arrays.asList(8, 12));
+		
+		cloudNumbers.put(3, List.of(8, 13));
+		cloudNumbers.put(4, List.of(8, 15));
+
+		
+		cloudNumbers.put(5, Stream.of(8, 12).toList());
 	}
 
 	private void createLevelTilesFromAtlas() {
@@ -59,9 +77,12 @@ public class LevelManager {
 	}
 	
 	public List<Drawable> createLevelTiles() {
+		tileRows.clear();
 		animatedWaterTiles.clear();
 		List<Drawable> tiles = new ArrayList<>();
 		for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
+			List<Tile> column = new ArrayList<>();
+			tileRows.add(column);
 			for (int i = 0; i < getActiveLevel().getTilesInWidth(); i++) {
 				int index = getActiveLevel().getSpriteIndex(i, j);
 				Tile tile = null;
@@ -80,9 +101,14 @@ public class LevelManager {
 				// System.out.println("Sprite Index: " + index);				
 				tile.setDrawPosition(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
 				tiles.add(tile);
+				column.add(tile);
 			}
 		}
 		return tiles;
+	}
+	
+	public List<List<Tile>> getTileRows() {
+		return tileRows;
 	}
 	
 	public void update() {
@@ -115,5 +141,9 @@ public class LevelManager {
 	 */
 	public int getOldLevel() {
 		return oldLevel;
+	}
+
+	public Map<Integer, List<Integer>> getCloudNumbers() {
+		return cloudNumbers;
 	}
 }

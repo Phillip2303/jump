@@ -10,8 +10,8 @@ import javafx.scene.canvas.GraphicsContext;
 public class GameObject extends Actor {
 	
 	public enum Type {
-		RED_POTION(0, 40, 0),
-		BLUE_POTION(1, 0, 20),
+		RED_POTION(0, 60, 0),
+		BLUE_POTION(1, 0, 30),
 		BARREL(2, 0, 0),
 		BOX(3, 0, 0),
 		SPIKE(4, 0, 0),

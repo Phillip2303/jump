@@ -21,6 +21,7 @@ public class Tile extends Actor {
 
 	public Tile(double width, double height, Image imageSprite, int index) {
 		super(width, height);
+		showSpriteBox(false);
 		this.index = index;
 		initHitbox(0, 0, width, height);
 		if (index == 11 || index == 48 || index == 49) {
@@ -37,7 +38,7 @@ public class Tile extends Actor {
 		gc.drawImage(imageSprite, 0, 0, imageSprite.getWidth(), imageSprite.getHeight(), getDrawPosition().getX(),
 				getDrawPosition().getY(), Game.TILES_SIZE, Game.TILES_SIZE);
 	//	drawHitbox(gc, Color.BLACK);
-		//drawSpriteBox(gc, Color.BLACK);
+		drawSpriteBox(gc, Color.BLACK);
 		if (grass != null) {
 			grass.drawToCanvas(gc);
 		}

@@ -9,6 +9,7 @@ import de.phillip.jumpandrun.controllers.LevelManager;
 import de.phillip.jumpandrun.models.CanvasLayer;
 import de.phillip.jumpandrun.models.Cloud;
 import de.phillip.jumpandrun.models.Drawable;
+import de.phillip.jumpandrun.models.Rain;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
@@ -31,6 +32,9 @@ public class BackgroundLayer extends Canvas implements CanvasLayer {
 	private Image smallClouds;
 	private LevelManager levelManager;
 	private List<Drawable> actors = new ArrayList<Drawable>();
+	private Rain rain = new Rain();
+	private Random random = new Random();
+	private boolean drawRain;
 
 	public BackgroundLayer(double width, double height, LevelManager levelManager) {
 		super(width, height);
@@ -38,9 +42,21 @@ public class BackgroundLayer extends Canvas implements CanvasLayer {
 		playingBg = ResourcePool.getInstance().getPlayingBg();
 		bigClouds = ResourcePool.getInstance().getBigClouds();
 		smallClouds = ResourcePool.getInstance().getSmallClouds();
-		createBigClouds();
-		createSmallClouds();
+		createBigClouds(levelManager.getCloudNumbers().get(levelManager.getActiveLevel().getLevelNumber()).get(0));
+		createSmallClouds(levelManager.getCloudNumbers().get(levelManager.getActiveLevel().getLevelNumber()).get(1));
+		setLevelWithRain();
+
 	}
+	
+	private void setLevelWithRain() {
+		/*if (random.nextFloat() >= 0.8f)	{
+			drawRain = true;
+			actors.add(rain);
+		}*/
+		drawRain = true;
+		actors.add(rain);
+	}
+
 
 	@Override
 	public List<Drawable> getDrawables() {
@@ -55,25 +71,36 @@ public class BackgroundLayer extends Canvas implements CanvasLayer {
 
 	@Override
 	public void updateLayer(float secondsSinceLastFrame) {
-
+		if (drawRain) {
+			rain.update();
+		}
 	}
 
 	@Override
 	public void buildLevel(boolean nextLevel) {
+		reset();
 		setWidth(levelManager.getActiveLevel().getTilesInWidth() * Game.TILES_SIZE);
+		setLevelWithRain();
+		createBigClouds(levelManager.getCloudNumbers().get(levelManager.getActiveLevel().getLevelNumber()).get(0));
+		createSmallClouds(levelManager.getCloudNumbers().get(levelManager.getActiveLevel().getLevelNumber()).get(1));
+	}
+	
+	private void reset() {
+		drawRain = false;
+		actors.clear();
 	}
 
-	private void createBigClouds() {
-		for (int i = 0; i < 5; i++) {
+	private void createBigClouds(int count) {
+		for (int i = 0; i < count; i++) {
 			Cloud bigCloud = new Cloud(i * BIGCLOUD_WIDTH, 204 * Game.SCALE, BIGCLOUD_WIDTH, BIGCLOUD_HEIGHT, bigClouds,
 					BIGCLOUD_SPEED);
 			actors.add(bigCloud);
 		}
 	}
 
-	private void createSmallClouds() {
+	private void createSmallClouds(int count) {
 		Random random = new Random();
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < count; i++) {
 			int yPos = random.nextInt((int) (100 * Game.SCALE)) + (int) (90 * Game.SCALE);
 			Cloud smallCloud = new Cloud(4 * i * SMALLCLOUD_WIDTH, yPos, SMALLCLOUD_WIDTH, SMALLCLOUD_HEIGHT,
 					smallClouds, SMALLCLOUD_SPEED);

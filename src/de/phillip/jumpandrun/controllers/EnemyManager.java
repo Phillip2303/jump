@@ -19,6 +19,7 @@ public class EnemyManager implements EventHandler<GameEvent>{
 	private int levelWidth;
 	private Player player;
 	private boolean isActive = true;
+	private List<List<Tile>> tileRows;
 	
 	
 	public List<Enemy> getEnemies() {
@@ -70,6 +71,14 @@ public class EnemyManager implements EventHandler<GameEvent>{
 
 	public void setTiles(List<Tile> tiles) {
 		this.tiles = tiles;
+	}
+	
+	public void setTileRows(List<List<Tile>> tileRows) {
+		this.tileRows = tileRows;
+	}
+	
+	public Tile getTileAt(int x, int y) {
+		return tileRows.get(y).get(x);
 	}
 	
 	public void setLevelWidth(int levelWidth) {

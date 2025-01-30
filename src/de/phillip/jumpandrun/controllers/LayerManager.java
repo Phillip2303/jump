@@ -72,6 +72,7 @@ public class LayerManager implements EventHandler<GameEvent> {
 	public void update(float secondsSinceLastFrame) {
 		renderer.prepare();
 		actionLayer.updateLayer(secondsSinceLastFrame);
+		backgroundLayer.updateLayer(secondsSinceLastFrame);
 		renderer.render();
 	}
 	

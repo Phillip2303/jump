@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 
 public class PlayerStatus implements Drawable, EventHandler<GameEvent>{
 	
-	public static final double MAXHEALTH = 100;
+	public static final double MAXHEALTH = 120;
 	public static final double MAXPOWER = 10;
 	
 	

@@ -1,7 +1,9 @@
 package de.phillip.jumpandrun.models;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.geometry.Point2D;

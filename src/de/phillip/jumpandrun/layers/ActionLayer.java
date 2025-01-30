@@ -37,7 +37,6 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 	private KeyPolling kp = KeyPolling.getInstance();
 	private boolean isListening = true;
 	private boolean hasStarted = true;
-	private Rain rain;
 
 	public ActionLayer(int width, int height, LevelManager levelManager) {
 		super(width, height);
@@ -55,14 +54,9 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 		gameObjectManager = new GameObjectManager(player);
 		player.setGameObjectManager(gameObjectManager);
 		initGameObjects();
-		rain = new Rain();
-		initRain();
 	}
 
-	private void initRain() {
-		actors.add(rain);
-	}
-
+	
 	private void createLevelTiles() {
 		actors.addAll(levelManager.createLevelTiles());
 	}
@@ -85,6 +79,7 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 		enemyManager.createEnemies(levelManager.getActiveLevel());
 		enemyManager.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
 				.collect(Collectors.toList()));
+		enemyManager.setTileRows(levelManager.getTileRows());
 		enemyManager.setLevelWidth((int) getWidth());
 		actors.addAll(enemyManager.getEnemies());
 	}

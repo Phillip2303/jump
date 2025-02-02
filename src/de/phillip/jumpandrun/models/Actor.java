@@ -175,14 +175,11 @@ public abstract class Actor implements Drawable {
 		showSpriteBox = value;
 	}
 	
-	public boolean canMoveHere(List<Tile> tiles, Point2D oldPosition, int levelWidth) {
-		for (Tile tile : tiles) {
-			Rectangle2D hitBox = tile.getHitBox();
-			if (tile.isSolid() && hitBox.intersects(getHitBox())) {
-				tile.showSpriteBox(true);
-				setDrawPosition(oldPosition.getX(), oldPosition.getY());
-				return false;
-			}
+	public boolean canMoveHere(Tile intersectingTile, Point2D oldPosition, int levelWidth) {
+		if (intersectingTile.isSolid()) {
+			intersectingTile.showSpriteBox(true);
+			setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			return false;
 		}
 		if (getHitBox().getMinX() < 0 || getHitBox().getMaxX() > levelWidth) {
 			setDrawPosition(oldPosition.getX(), oldPosition.getY());

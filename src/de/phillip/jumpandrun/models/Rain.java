@@ -39,7 +39,7 @@ public class Rain extends GameObject implements EventHandler<GameEvent>{
 			for (int i = 0; i < drops.length; i++) {
 				Drop point = drops[i];
 				gc.drawImage(rainParticle, 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, 
-						point.getX() - hOffset, point.getY(), WIDTH, HEIGHT);
+						point.getX(), point.getY(), WIDTH, HEIGHT);
 			}
 		}
 	}

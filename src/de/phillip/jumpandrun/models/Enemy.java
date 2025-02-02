@@ -262,24 +262,12 @@ public abstract class Enemy extends Actor {
 		Point2D oldPosition = getDrawPosition();
 		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + hitbox_height + 10);
 		boolean isFalling = false;
-		/*for (Tile tile : getEnemyManager().getTiles()) {
-			Rectangle2D hitBox = tile.getHitBox();
-			if (!tile.isSolid() && hitBox.intersects(getHitBox())
-					&& (hitBox.getMinX() < getHitBox().getMinX() || hitBox.getMaxX() > getHitBox().getMaxX())) {
-				//tile.showSpriteBox(true);
-				isFalling = true;
-				break;
-			}
-		}*/
-		int y = (int) (getHitBox().getMinY() / Game.TILES_SIZE);
-		int x = (int) (getHitBox().getMinX() / Game.TILES_SIZE);
-		Tile intersectingTile = getEnemyManager().getTileAt(x, y);
+		Tile intersectingTile = getEnemyManager().getTileAt(getHitBox().getMinX(), getHitBox().getMinY());
 		if (!intersectingTile.isSolid()) {
 			isFalling = true;
 			intersectingTile.showSpriteBox(true);
 		}
-		x = (int) (getHitBox().getMaxX() / Game.TILES_SIZE);
-		intersectingTile = getEnemyManager().getTileAt(x, y);
+		intersectingTile = getEnemyManager().getTileAt(getHitBox().getMaxX(), getHitBox().getMinY());
 		if (!intersectingTile.isSolid()) {
 			isFalling = true;
 			intersectingTile.showSpriteBox(true);

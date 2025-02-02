@@ -1,6 +1,7 @@
 package de.phillip.jumpandrun.models;
 
 import de.phillip.jumpandrun.Game;
+import de.phillip.jumpandrun.models.Actor.Direction;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
@@ -40,7 +41,7 @@ public class Crabby extends Enemy {
 		if (isActive()) {
 			gc.drawImage(actionSprites[getEnemyAction()][getAniIndex()], getDrawPosition().getX(), getDrawPosition().getY(),
 					getWidth(), getHeight());
-			//drawHitbox(gc, Color.BLUE);
+			drawHitbox(gc, Color.BLUE);
 			//drawAttackBox(gc, Color.ORANGE);
 		//	drawSpriteBox(gc, Color.ORANGE);
 		}
@@ -92,7 +93,13 @@ public class Crabby extends Enemy {
 	private void updateMove() {
 		Point2D oldPosition = getDrawPosition();
 		setDrawPosition(oldPosition.getX() + direction.getValue() * SPEED, oldPosition.getY());
-		if (!canMoveHere(getEnemyManager().getTiles(), oldPosition, getEnemyManager().getLevelWidth())) {
+		Tile intersectingTile;
+		if (getDirection() == Direction.RIGHT) {
+			intersectingTile = getEnemyManager().getTileAt(getHitBox().getMaxX(), getHitBox().getMinY());
+		} else {
+			intersectingTile = getEnemyManager().getTileAt(getHitBox().getMinX(), getHitBox().getMinY());
+		}
+		if (!canMoveHere(intersectingTile, oldPosition, getEnemyManager().getLevelWidth())) {
 			if (direction == Direction.LEFT) {
 				direction = Direction.RIGHT;
 			} else {

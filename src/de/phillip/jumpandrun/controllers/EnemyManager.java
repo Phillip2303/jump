@@ -3,6 +3,7 @@ package de.phillip.jumpandrun.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.models.Enemy;
@@ -57,9 +58,11 @@ public class EnemyManager implements EventHandler<GameEvent>{
 		}
 	}
 	
+	/*
 	public List<Tile> getTiles() {
 		return tiles;
 	}
+	*/
 	
 	public Player getPlayer() {
 		return player;
@@ -77,8 +80,8 @@ public class EnemyManager implements EventHandler<GameEvent>{
 		this.tileRows = tileRows;
 	}
 	
-	public Tile getTileAt(int x, int y) {
-		return tileRows.get(y).get(x);
+	public Tile getTileAt(double x, double y) {
+		return tileRows.get((int) y / Game.TILES_SIZE).get((int) x / Game.TILES_SIZE);
 	}
 	
 	public void setLevelWidth(int levelWidth) {

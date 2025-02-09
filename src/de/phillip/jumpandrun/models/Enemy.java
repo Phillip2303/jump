@@ -2,11 +2,14 @@ package de.phillip.jumpandrun.models;
 
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.controllers.EnemyManager;
+import de.phillip.jumpandrun.events.FXEventBus;
+import de.phillip.jumpandrun.events.GameEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 
-public abstract class Enemy extends Actor {
+public abstract class Enemy extends Actor{
 
 	public enum Type {
 		CRABBY(0, Game.TILES_SIZE, Game.TILES_SIZE * 6, 40, 10), 
@@ -68,6 +71,7 @@ public abstract class Enemy extends Actor {
 	private boolean attackChecked = false;
 	private boolean attacking;
 	private boolean playerInSight;
+	private boolean scoreFired;
 
 	public Enemy(double width, double height, Enemy.Type type) {
 		super(width, height);
@@ -86,6 +90,13 @@ public abstract class Enemy extends Actor {
 	
 	public void update() {
 		updateAnimationTic();
+	}
+	
+	protected boolean canMoveHere(Point2D oldPosition) {
+		Tile tileLeft = getEnemyManager().getTileAt(getHitBox().getMinX(), getHitBox().getMinY());
+		Tile tileRight = getEnemyManager().getTileAt(getHitBox().getMaxX(), getHitBox().getMinY());
+		int levelWidth = getEnemyManager().getLevelWidth();
+		return canMoveHere(tileLeft, tileRight, oldPosition, levelWidth);
 	}
 
 	private void updateAnimationTic() {
@@ -227,6 +238,10 @@ public abstract class Enemy extends Actor {
 		currentHealth -= amount;
 		if (currentHealth <= 0) {
 			setEnemyAction(DEAD);
+			if (!scoreFired) {
+				FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_DEAD_ENEMY, null));
+				scoreFired = true;
+			}
 		} else {
 			setEnemyAction(HIT);
 		}

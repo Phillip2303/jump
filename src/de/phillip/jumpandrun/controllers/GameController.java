@@ -1,5 +1,12 @@
 package de.phillip.jumpandrun.controllers;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.animation.GameLoopTimer;
 import de.phillip.jumpandrun.events.FXEventBus;
@@ -16,6 +23,8 @@ public class GameController implements EventHandler<GameEvent> {
 	private GameLoopTimer loop;
 	private boolean isStarted;
 	private LayerManager layerManager;
+	private String connectionURL = "jdbc:derby:C:/Users/phill/derby_db/jumpdb";
+	private Connection connection;
 
 	public GameController(ScrollPane scrollPane) {
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_MOVE_LEFT, this);
@@ -35,11 +44,20 @@ public class GameController implements EventHandler<GameEvent> {
 	}
 
 	public void startGame() {
+		initDataBase();
 		if (!isStarted) {
 			isStarted = true;
 			layerManager = new LayerManager((StackPane) scrollPane.getContent());
 		}
 		loop.start();
+	}
+
+	private void initDataBase() {
+		if (Files.isDirectory(Paths.get("C:/Users/phill/derby_db/jumpdb"))) {
+			createConnection();
+		} else {
+			createDataBase();
+		}
 	}
 
 	@Override
@@ -105,5 +123,32 @@ public class GameController implements EventHandler<GameEvent> {
 			return true;
 		}
 		return false;
+	}
+	
+	private void createDataBase() {
+		try {
+			String url = connectionURL + ";create=true";
+			connection = DriverManager.getConnection(url);
+			Statement statement = connection.createStatement();
+			statement.execute("CREATE TABLE playerStatus (name varchar(16), score integer, primary key(name))");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void createConnection() {
+		try {
+			connection = DriverManager.getConnection(connectionURL);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void closeConnection() {
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

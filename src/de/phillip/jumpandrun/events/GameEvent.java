@@ -43,6 +43,10 @@ public class GameEvent extends Event {
 	public static final EventType<GameEvent> JR_CREATE_BLUE_POTION = new EventType<>(GameEvent.ANY, "JR_CREATE_BLUE_POTION");
 	
 	public static final EventType<GameEvent> JR_SHOOT_BALL = new EventType<>(GameEvent.ANY, "JR_SHOOT_BALL");
+	
+	public static final EventType<GameEvent> JR_DEAD_ENEMY = new EventType<>(GameEvent.ANY, "JR_DEAD_ENEMY");
+	
+	public static final EventType<GameEvent> JR_SCORE = new EventType<>(GameEvent.ANY, "JR_SCORE");
 
 
 

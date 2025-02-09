@@ -70,7 +70,7 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 		player.reset(nextLevel);
 		/*player.setTiles(actors.stream().filter(actor -> actor instanceof Tile).map(actor -> (Tile) actor)
 				.collect(Collectors.toList()));*/
-		player.setTileRows(levelManager.getTileRows());
+		//player.setTileRows(levelManager.getTileRows());
 		player.setDrawPosition(levelManager.getActiveLevel().getPlayerSpawn().getX(), levelManager.getActiveLevel().getPlayerSpawn().getY());
 		player.setLevelWidth((int) getWidth());
 		actors.add(player);
@@ -164,12 +164,12 @@ public class ActionLayer extends Canvas implements CanvasLayer, EventHandler<Gam
 			FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_PAUSE_MENU, null));
 		}
 		if (!kp.keysPressed()) {
-			if (hasStarted) {
+			/*if (hasStarted) {
 				player.checkFalling();
 				hasStarted = false;
-			} else {
+			} else {*/
 				player.setPlayerAction(Player.IDLE);
-			}
+			
 		}
 	}
 

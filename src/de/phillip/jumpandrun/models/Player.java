@@ -103,7 +103,7 @@ public class Player extends Actor {
 		gc.drawImage(actionSprites[playerAction][aniIndex], getDrawPosition().getX() + flipX, getDrawPosition().getY(),
 				getWidth() * flipWidth, getHeight());
 		playerStatus.drawToCanvas(gc);
-		//drawHitbox(gc, Color.RED);
+		drawHitbox(gc, Color.RED);
 		//drawAttackBox(gc, Color.GREEN);
 		//drawSpriteBox(gc, Color.BLUE);
 		
@@ -212,21 +212,31 @@ public class Player extends Actor {
 	private void checkForSpikeTrap(GameObject gameObject) {
 		if (getHitBox().intersects(gameObject.getHitBox())) {
 			playerStatus.setCurrentHealth(0);
-			setPlayerAction(DEAD);
 			deadOnGround = true;
+			isJumping = false;
+			setPlayerAction(DEAD);
 			//FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_GAME_OVER, null));
 			//setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() - Game.TILES_SIZE);
 		}
 	}
 	
 	private void checkForWater() {
-		Tile intersectingTile = getTileAt(getHitBox().getMinX(), getHitBox().getMaxY());
-		if (intersectingTile.isWater()) {
+		Tile tileLeft = enemyManager.getTileAt(getHitBox().getMinX(), getHitBox().getMinY());
+		if (tileLeft.isWater()) {
+	//		System.out.println("Is Water");
+			playerStatus.setCurrentHealth(0);
+			isJumping = false;
+			setPlayerAction(DEAD);
+			return;
+		}
+		Tile tileRight = enemyManager.getTileAt(getHitBox().getMaxX(), getHitBox().getMinY());
+		if (tileRight.isWater()) {
 			System.out.println("Is Water");
 			playerStatus.setCurrentHealth(0);
 			isJumping = false;
 			setPlayerAction(DEAD);
 			//deadOnGround = true;
+			return;
 		}
 	}
 	
@@ -240,13 +250,24 @@ public class Player extends Actor {
 	public void checkDeadFalling() {
 		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + fallSpeedAfterCollision);
 		System.out.println("Test");
-		Tile intersectingTile = getTileAt(getHitBox().getMinX(), getHitBox().getMaxY());
-		if (intersectingTile.isSolid() || getHitBox().getMaxY() + 2 * Game.SCALE >= Game.TILES_IN_HEIGHT * Game.TILES_SIZE) {
+		Tile tileLeft = enemyManager.getTileAt(getHitBox().getMinX(), getHitBox().getMaxY());
+		Tile tileRight = enemyManager.getTileAt(getHitBox().getMaxX(), getHitBox().getMaxY());
+		if (tileLeft.isSolid() || isOnGameBottom(getHitBox().getMaxY())) {
 			System.out.println("Is Solid");
 			deadOnGround = true;
-			intersectingTile.showSpriteBox(true);
+			tileLeft.showSpriteBox(true);
 			return;
 		}
+		if (tileRight.isSolid() || isOnGameBottom(getHitBox().getMaxY())) {
+			System.out.println("Is Solid");
+			deadOnGround = true;
+			tileRight.showSpriteBox(true);
+			return;
+		}
+	}
+	
+	private boolean isOnGameBottom(double maxY) {
+		return maxY + 2 * Game.SCALE >= Game.TILES_IN_HEIGHT * Game.TILES_SIZE;
 	}
 
 	private void checkAttack() {
@@ -268,24 +289,34 @@ public class Player extends Actor {
 	public void checkFalling() {
 		Point2D oldPosition = getDrawPosition();
 		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + hitboxHeight);
-		Tile intersectingTile = getTileAt(getHitBox().getMinX(), getHitBox().getMinY());
-		if (isFalling) { 
-			if (!intersectingTile.isSolid()) {
+		Tile tileLeft = enemyManager.getTileAt(getHitBox().getMinX(), getHitBox().getMinY());
+		if (isFalling) {
+			if (!tileLeft.isSolid()) {
 				setPlayerAction(FALLING);
+				setDrawPosition(oldPosition.getX(), oldPosition.getY());
+				return;
 			}
 		} else {
-			if (!intersectingTile.isSolid()) {
+			Rectangle2D leftHitbox = tileLeft.getHitBox();
+			if (!tileLeft.isSolid() && leftHitbox.getMinX() < getHitBox().getMinX() && leftHitbox.getMaxX() > getHitBox().getMaxX()) {
 				setPlayerAction(FALLING);
+				setDrawPosition(oldPosition.getX(), oldPosition.getY());
+				return;
 			}
 		}
-		intersectingTile = getTileAt(getHitBox().getMaxX(), getHitBox().getMinY());
-		if (isFalling) { 
-			if (!intersectingTile.isSolid()) {
+		Tile tileRight = enemyManager.getTileAt(getHitBox().getMaxX(), getHitBox().getMinY());
+		if (isFalling) {
+			if (!tileRight.isSolid()) {
 				setPlayerAction(FALLING);
+				setDrawPosition(oldPosition.getX(), oldPosition.getY());
+				return;
 			}
 		} else {
-			if (!intersectingTile.isSolid()) {
+			Rectangle2D rightHitbox = tileRight.getHitBox();
+			if (!tileRight.isSolid() && rightHitbox.getMinX() < getHitBox().getMinX() && rightHitbox.getMaxX() > getHitBox().getMaxX()) {
 				setPlayerAction(FALLING);
+				setDrawPosition(oldPosition.getX(), oldPosition.getY());
+				return;
 			}
 		}
 		setDrawPosition(oldPosition.getX(), oldPosition.getY());
@@ -360,7 +391,7 @@ public class Player extends Actor {
 		if (dying) {
 			return;
 		}
-		if (this.playerAction != playerAction && !isJumping && !isAttacking) {
+		if ((this.playerAction != playerAction && !isJumping && !isAttacking) || playerAction == DEAD) {
 			resetAniTic();
 			this.playerAction = playerAction;
 		}
@@ -439,13 +470,9 @@ public class Player extends Actor {
 		} else {
 			setDrawPosition(getDrawPosition().getX() + direction, getDrawPosition().getY());
 		}
-		Tile intersectingTile;
-		if (getDirection() == Direction.RIGHT) {
-			intersectingTile = getTileAt(getHitBox().getMaxX(), getHitBox().getMinY());
-		} else {
-			intersectingTile = getTileAt(getHitBox().getMinX(), getHitBox().getMinY());
-		}
-		if (super.canMoveHere(intersectingTile, oldPosition, levelWidth)) {
+		Tile tileLeft = enemyManager.getTileAt(getHitBox().getMinX(), getHitBox().getMinY());
+		Tile tileRight = enemyManager.getTileAt(getHitBox().getMaxX(), getHitBox().getMinY());
+		if (canMoveHere(tileLeft, tileRight, oldPosition, enemyManager.getLevelWidth())) {
 			if (!isJumping) {
 				checkFalling();
 			}
@@ -472,19 +499,23 @@ public class Player extends Actor {
 	public boolean canJumpHere(double speed) {
 		Point2D oldPosition = getDrawPosition();
 		setDrawPosition(getDrawPosition().getX(), getDrawPosition().getY() + speed);
-		Tile intersectingTile;
-		if (getDirection() == Direction.RIGHT) {
-			intersectingTile = getTileAt(getHitBox().getMaxX(), getHitBox().getMinY());
-		} else {
-			intersectingTile = getTileAt(getHitBox().getMinX(), getHitBox().getMinY());
-		}
-	//	Tile intersectingTile = getTileAt(getHitBox().getMinX(), getHitBox().getMinY());
-		if (intersectingTile.isSolid()) {
+		Tile tileLeft = enemyManager.getTileAt(getHitBox().getMinX(), getHitBox().getMaxY());
+		Tile tileRight = enemyManager.getTileAt(getHitBox().getMaxX(), getHitBox().getMaxY());
+		if (tileLeft.isSolid()) {
 			int compare = Double.compare(speed, 0);
 			if (compare < 0) {
 				setDrawPosition(oldPosition.getX(), oldPosition.getY());
 			} else {
-				setDrawPosition(oldPosition.getX(), intersectingTile.getDrawPosition().getY() - (yOffset + hitboxHeight));
+				setDrawPosition(oldPosition.getX(), tileLeft.getDrawPosition().getY() - (yOffset + hitboxHeight));
+			}
+			return false;
+		}
+		if (tileRight.isSolid()) {
+			int compare = Double.compare(speed, 0);
+			if (compare < 0) {
+				setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			} else {
+				setDrawPosition(oldPosition.getX(), tileRight.getDrawPosition().getY() - (yOffset + hitboxHeight));
 			}
 			return false;
 		}
@@ -517,13 +548,13 @@ public class Player extends Actor {
 		return dying;
 	}
 	
-	public void setTileRows(List<List<Tile>> tileRows) {
+	/*public void setTileRows(List<List<Tile>> tileRows) {
 		this.tileRows = tileRows;
 	}
 	
 	private Tile getTileAt(double x, double y) {
 		return tileRows.get((int) y / Game.TILES_SIZE).get((int) x / Game.TILES_SIZE);
-	}
+	}*/
 	
 	public void reset(boolean nextLevel) {
 		if (!nextLevel) {

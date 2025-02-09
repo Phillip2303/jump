@@ -1,6 +1,7 @@
 package de.phillip.jumpandrun.models;
 
 import de.phillip.jumpandrun.Game;
+import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.models.Actor.Direction;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.geometry.Point2D;
@@ -93,13 +94,7 @@ public class Crabby extends Enemy {
 	private void updateMove() {
 		Point2D oldPosition = getDrawPosition();
 		setDrawPosition(oldPosition.getX() + direction.getValue() * SPEED, oldPosition.getY());
-		Tile intersectingTile;
-		if (getDirection() == Direction.RIGHT) {
-			intersectingTile = getEnemyManager().getTileAt(getHitBox().getMaxX(), getHitBox().getMinY());
-		} else {
-			intersectingTile = getEnemyManager().getTileAt(getHitBox().getMinX(), getHitBox().getMinY());
-		}
-		if (!canMoveHere(intersectingTile, oldPosition, getEnemyManager().getLevelWidth())) {
+		if (!canMoveHere(oldPosition)) {
 			if (direction == Direction.LEFT) {
 				direction = Direction.RIGHT;
 			} else {

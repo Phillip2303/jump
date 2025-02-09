@@ -28,7 +28,7 @@ public class LevelManager {
 	private Level activeLevel;
 	private Image[] levelTiles;
 	private List<AnimatedWaterTile> animatedWaterTiles = new ArrayList<>();
-	private int level = 2;
+	private int level = 1;
 	private int oldLevel = 1;
 	private Map <Integer, List<Integer>> cloudNumbers = new HashMap<>();
 	private List<List<Tile>> tileRows = new ArrayList<>();

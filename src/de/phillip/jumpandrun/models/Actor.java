@@ -188,6 +188,24 @@ public abstract class Actor implements Drawable {
 		return true;
 	}
 	
+	public boolean canMoveHere(Tile tileLeft, Tile tileRight, Point2D oldPosition, int levelWidth) {
+		if (tileLeft.isSolid()) {
+			tileLeft.showSpriteBox(true);
+			setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			return false;
+		}
+		if (tileRight.isSolid()) {
+			tileRight.showSpriteBox(true);
+			setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			return false;
+		}
+		if (getHitBox().getMinX() < 0 || getHitBox().getMaxX() > levelWidth) {
+			setDrawPosition(oldPosition.getX(), oldPosition.getY());
+			return false;
+		}
+		return true;
+	}
+	
 	public void createObjectSprites(Image sprite, Image[][] actionSprites, int defaultWidth, int defaultHeight) {
 		PixelReader pr = sprite.getPixelReader();
 		for (int j = 0; j < actionSprites.length; j++) {

@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public class PlayerStatus implements Drawable, EventHandler<GameEvent>{
 	
@@ -37,9 +38,12 @@ public class PlayerStatus implements Drawable, EventHandler<GameEvent>{
 	private double oldHealth = currentHealth;
 	private double currentPower = 0;
 	private double oldPower = currentPower;
+	private int score;
 	
 	public PlayerStatus() {
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_H_OFFSET, this);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_DEAD_ENEMY, this);
+		FXEventBus.getInstance().addEventHandler(GameEvent.JR_SCORE, this);
 	}
 
 	@Override
@@ -47,6 +51,7 @@ public class PlayerStatus implements Drawable, EventHandler<GameEvent>{
 		gc.drawImage(statusBar, statusBarX + hOffset, statusBarY, statusBarWidth, statusBarHeight);
 		drawHealthBar(gc);
 		drawPowerBar(gc);
+		drawStatus(gc);
 	}
 	
 	private void drawHealthBar(GraphicsContext gc) {
@@ -58,12 +63,24 @@ public class PlayerStatus implements Drawable, EventHandler<GameEvent>{
 		gc.setFill(Color.ORANGE);
 		gc.fillRect(statusBarX + powerBarX + hOffset, statusBarY + powerBarY, powerWidth, powerBarHeight);
 	}
+	
+	private void drawStatus(GraphicsContext gc) {
+		gc.setFont(Font.font(50));
+		gc.setFill(Color.RED);
+		gc.fillText("Score: " + Integer.toString(score), statusBarX + hOffset, 2 * (statusBarY + powerBarY));
+	}
 
 	@Override
 	public void handle(GameEvent event) {
 		switch (event.getEventType().getName()) {
 		case "JR_H_OFFSET":
 			hOffset = (int) event.getData();
+			break;
+		case "JR_DEAD_ENEMY":
+			score++;
+			break;
+		case "SCORE":
+			score = (int) event.getData();
 			break;
 		default:
 			break;
@@ -135,6 +152,14 @@ public class PlayerStatus implements Drawable, EventHandler<GameEvent>{
 
 	public double getCurrentPower() {
 		return currentPower;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
 	}
 
 }

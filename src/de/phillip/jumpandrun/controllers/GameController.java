@@ -12,6 +12,7 @@ import de.phillip.jumpandrun.animation.GameLoopTimer;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
 import de.phillip.jumpandrun.models.Player;
+import de.phillip.jumpandrun.utils.GameDAO;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.control.ScrollPane;
@@ -23,8 +24,7 @@ public class GameController implements EventHandler<GameEvent> {
 	private GameLoopTimer loop;
 	private boolean isStarted;
 	private LayerManager layerManager;
-	private String connectionURL = "jdbc:derby:C:/Users/phill/derby_db/jumpdb";
-	private Connection connection;
+	
 
 	public GameController(ScrollPane scrollPane) {
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_MOVE_LEFT, this);
@@ -44,20 +44,11 @@ public class GameController implements EventHandler<GameEvent> {
 	}
 
 	public void startGame() {
-		initDataBase();
 		if (!isStarted) {
 			isStarted = true;
 			layerManager = new LayerManager((StackPane) scrollPane.getContent());
 		}
 		loop.start();
-	}
-
-	private void initDataBase() {
-		if (Files.isDirectory(Paths.get("C:/Users/phill/derby_db/jumpdb"))) {
-			createConnection();
-		} else {
-			createDataBase();
-		}
 	}
 
 	@Override
@@ -79,7 +70,7 @@ public class GameController implements EventHandler<GameEvent> {
 			}
 			break;
 		case "JR_QUIT":
-			System.exit(0);
+			stopGame();
 			break;
 		case "JR_RESET_GAME":
 			scrollPane.setHvalue(0);
@@ -91,6 +82,12 @@ public class GameController implements EventHandler<GameEvent> {
 		default:
 			break;
 		}
+	}
+
+	public void stopGame() {
+		GameDAO.getInstance().closeConnection();
+		System.exit(0);
+		
 	}
 
 	private void moveContent(double movingX) {
@@ -125,30 +122,5 @@ public class GameController implements EventHandler<GameEvent> {
 		return false;
 	}
 	
-	private void createDataBase() {
-		try {
-			String url = connectionURL + ";create=true";
-			connection = DriverManager.getConnection(url);
-			Statement statement = connection.createStatement();
-			statement.execute("CREATE TABLE playerStatus (name varchar(16), score integer, primary key(name))");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 	
-	private void createConnection() {
-		try {
-			connection = DriverManager.getConnection(connectionURL);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void closeConnection() {
-		try {
-			connection.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 }

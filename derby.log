@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+Sun Feb 23 17:20:37 CET 2025D001 : [0] The Apache Software Foundation - Apache Derby - 10.16.1.1 - (1901046), [1] a816c00e-0195-339c-5005-00000e317290, [2] C:\Users\phill\derby_db\jumpdb, [3] jdk.internal.loader.ClassLoaders$AppClassLoader@39ba5a14, [4] file:/C:/Users/phill/derby/db-derby-10.16.1.1-bin/lib/derby.jar
+java.vendor=Eclipse Adoptium
+java.runtime.version=17.0.10+7
+user.dir=C:\Users\phill\Git\jump
+os.name=Windows 11
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+C005 : [0] 

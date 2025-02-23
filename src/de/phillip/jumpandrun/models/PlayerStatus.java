@@ -3,6 +3,7 @@ package de.phillip.jumpandrun.models;
 import de.phillip.jumpandrun.Game;
 import de.phillip.jumpandrun.events.FXEventBus;
 import de.phillip.jumpandrun.events.GameEvent;
+import de.phillip.jumpandrun.utils.GameDAO;
 import de.phillip.jumpandrun.utils.ResourcePool;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
@@ -43,7 +44,8 @@ public class PlayerStatus implements Drawable, EventHandler<GameEvent>{
 	public PlayerStatus() {
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_H_OFFSET, this);
 		FXEventBus.getInstance().addEventHandler(GameEvent.JR_DEAD_ENEMY, this);
-		FXEventBus.getInstance().addEventHandler(GameEvent.JR_SCORE, this);
+		//FXEventBus.getInstance().addEventHandler(GameEvent.JR_SCORE, this);
+		score = GameDAO.getInstance().getScore();
 	}
 
 	@Override
@@ -78,10 +80,11 @@ public class PlayerStatus implements Drawable, EventHandler<GameEvent>{
 			break;
 		case "JR_DEAD_ENEMY":
 			score++;
+			GameDAO.getInstance().setScore(score);
 			break;
-		case "SCORE":
+		/*case "SCORE":
 			score = (int) event.getData();
-			break;
+			break;*/
 		default:
 			break;
 		}

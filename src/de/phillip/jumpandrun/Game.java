@@ -36,6 +36,9 @@ public class Game extends Application {
 		primaryStage.setScene(scene);
 		KeyPolling.getInstance().pollScene(scene);
 		primaryStage.show();
+		primaryStage.setOnCloseRequest(e -> {
+			gameController.stopGame();
+		});
 		gameController.startGame();
 		FXEventBus.getInstance().fireEvent(new GameEvent(GameEvent.JR_SHOW_MENU, null));
 	}
